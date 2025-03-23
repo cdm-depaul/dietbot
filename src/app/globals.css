@@ -1,63 +1,24 @@
 @import 'tailwindcss';
 
 :root {
-  --bg-1: rgba(215, 245, 245, 0.5);
-  --bg-2: rgba(245, 215, 245, 0.5);
-  --bg-3: rgba(245, 245, 215, 0.3);
+  --background: rgb(245, 245, 245);
   --foreground: #171717;
 }
+
 @theme inline {
-  --color-background: var(--bg-1);
+  --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono); */
 }
 
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-} */
+}
 
 body {
-  background-color: var(--bg-1);
-  transition: background 0.5s ease-in;
-  /* background-size: 300%; */
+  background-color: var(--background);
   color: var(--foreground);
   font-family: 'Open Sans';
 }
-body:hover {
-  background-color: var(--bg-2);
-}
-
-.font-primary {
-  font-family: var(--font-primary);
-}
-
-/* .app-container {
-  width: 100%;
-  height: 100vh;
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: 70px auto;
-  grid-template-columns: 1fr;
-} */
-
-.app-navbar {
-  width: 100%;
-  position: absolute;
-  top: 0%;
-}
-
-.app-body {
-  width: 100%;
-  height: 100vh;
-  min-height: 100vh;
-}
-
-/* .back {
-  box-shadow: 1px 2px transparent, 0 -1px 1px transparent,
-    inset 0 -1px 1px rgba(0, 0, 0, 0.25),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8);
-} */

@@ -8,6 +8,7 @@ export * from './ChatBox';
 export * from './Home';
 
 // I
+export * from './ImageUploadsInChatBox';
 export * from './Intent';
 
 // N

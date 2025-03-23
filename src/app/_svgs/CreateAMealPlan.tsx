@@ -3,8 +3,8 @@ import { withSVGStylerHOC } from './SVGStylerHOC';
 import { classNameProp } from './interface';
 const CreateAMealPlanSVG: React.FC<classNameProp> = ({ className }) => {
   return (
-    <div className={`${className} w-3 h-3`}>
-      <svg fill="#000000" viewBox="0 0 512 512">
+    <div className={`${className}`}>
+      <svg viewBox="0 0 512 512">
         <g>
           <g>
             <path

@@ -4,7 +4,7 @@ import { classNameProp } from './interface';
 export const EducateMe: React.FC<classNameProp> = ({ className }) => {
   return (
     <div className={className}>
-      <svg fill="#000000" version="1.1" id="Layer_1" viewBox="0 0 512 512">
+      <svg version="1.1" id="Layer_1" viewBox="0 0 512 512">
         <g>
           <g>
             <path

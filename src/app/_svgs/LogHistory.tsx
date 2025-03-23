@@ -4,7 +4,7 @@ import { classNameProp } from './interface';
 export const LogHistory: React.FC<classNameProp> = ({ className }) => {
   return (
     <div className={className}>
-      <svg fill="#000000" id="Layer_1" viewBox="0 0 512 512">
+      <svg id="Layer_1" viewBox="0 0 512 512">
         <g>
           <g>
             <path

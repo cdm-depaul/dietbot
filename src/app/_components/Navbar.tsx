@@ -1,5 +1,7 @@
-import React from 'react';
+'use client';
+import React, { memo } from 'react';
 
-export const Navbar = () => {
-  return <div className="app-navbar">Navbar</div>;
-};
+export const Navbar = memo(() => {
+  console.log('hello');
+  return <div className="w-full absolute top-0">Navbar</div>;
+});

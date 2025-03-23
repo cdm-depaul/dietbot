@@ -2,6 +2,14 @@ import React from 'react';
 import { conversationalTyping } from './interface';
 import './reusable.css';
 
+/**
+ * This Component is for having conversational style of displaying text.
+ * @param animationDelay
+ * @param animationDuration
+ * @param animationSteps
+ * @param className
+ * @param text Pass a string of css properties. Intented to work with tailwindCSS
+ */
 export const Conversation: React.FC<conversationalTyping> = ({
   animationDelay,
   animationDuration,
