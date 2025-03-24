@@ -1,6 +1,17 @@
+/**
+ * All the interfaces that are used by Components in reusables are present here.
+ */
+
+/**
+ * Any component that accept children can use this interface or any interface can extend this functionality.
+ */
 export interface childProps {
   children: React.ReactNode;
 }
+
+/**
+ * Any component that passes its own styles can use this interface or any interface can extend this functionality.
+ */
 export interface className {
   className: string;
 }

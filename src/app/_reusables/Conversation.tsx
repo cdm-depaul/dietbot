@@ -3,7 +3,7 @@ import { conversationalTyping } from './interface';
 import './reusable.css';
 
 /**
- * This Component is for having conversational style of displaying text.
+ * Renders conversational style of displaying text.
  * @param animationDelay
  * @param animationDuration
  * @param animationSteps

@@ -1,3 +1,8 @@
+/**
+ * This file imports all the reusable files that can be imported in a single line.
+ * @example import {Button, Conversation} from './'
+ */
+
 // B
 export * from './Button';
 
