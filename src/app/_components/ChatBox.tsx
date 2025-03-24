@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Button, FileInput, TextArea } from '../_reusables';
+import { Button, FileInput, Switch, TextArea } from '../_reusables';
 import { AttachSVG, SubmitSVG } from '../_svgs';
 import { ImageUploadsInChatBox } from './index';
 import { readFromClipOrDropData } from './utils';
@@ -56,6 +56,7 @@ export const ChatBox: React.FC = () => {
         callback={onImageCancel}
         cancelRequired={true}
       />
+      <Switch />
       {/*
         TextArea is a component from Reusables that is present here in chatbox for user queries. Refer the component for props and functionality
          */}
@@ -74,6 +75,7 @@ export const ChatBox: React.FC = () => {
         >
           <AttachSVG />
         </FileInput>
+
         {/*
         Button is a component from Reusables that is present here for submitting queries. Refer the component for props and functionality
          */}

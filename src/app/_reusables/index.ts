@@ -15,6 +15,9 @@ export * from './FileInput';
 // H
 export * from './HorizontalRule';
 
+// S
+export * from './Switch';
+
 // T
 export * from './Text';
 
