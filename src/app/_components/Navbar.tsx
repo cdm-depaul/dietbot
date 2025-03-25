@@ -1,7 +1,35 @@
 'use client';
 import React, { memo } from 'react';
+import Link from 'next/link';
+import { ChatHistory, NewChat, Setting } from '../_svgs';
+import { Button } from '../_reusables';
 
+/**
+ * Renders a Navbar that is shared across all the pages and routes.
+ * Contains company name that is static as of now, as in could be changed to image that could be taken as a prop
+ * Displays a icon for new chat, that redirects to homepage.
+ * Displays a history icon, that displays all the previous chats.
+ * Displays a settings icon, for settings and profile related queries.
+ * @returns JSX
+ */
 export const Navbar = memo(() => {
-  // console.log('hello');
-  return <div className="w-full absolute top-0">Navbar</div>;
+  return (
+    <div className="w-full absolute top-0 flex justify-between items-center p-3">
+      <span>Name</span>
+      <div className="flex items-center gap-5 ">
+        <Link
+          href="/"
+          className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300 "
+        >
+          <NewChat />
+        </Link>
+        <Button className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300  stroke-stone-400">
+          <ChatHistory />
+        </Button>
+        <Button className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300  stroke-stone-400">
+          <Setting />
+        </Button>
+      </div>
+    </div>
+  );
 });
