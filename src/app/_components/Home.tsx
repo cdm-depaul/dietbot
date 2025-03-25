@@ -32,7 +32,7 @@ export const Home: React.FC = () => {
           />
         </div>
 
-        <ChatBox />
+        <ChatBox className="sm:mb-0" />
         {/* 
         <div className="w-full flex justify-center items-start gap-2 sm:mt-6 flex-wrap">
           <Intent

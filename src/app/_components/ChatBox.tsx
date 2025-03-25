@@ -4,12 +4,13 @@ import { Button, FileInput, Switch, TextArea } from '../_reusables';
 import { AttachSVG, SubmitSVG } from '../_svgs';
 import { ImageUploadsInChatBox } from './index';
 import { readFromClipOrDropData } from './utils';
+import { chatBoxInterface } from './interface';
 /**
  *
  * Component that displays the chatbox on the screen.
  * Consists of ImageUploadsInChatBox,TextArea, FileInput components within.
  */
-export const ChatBox: React.FC = () => {
+export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
   const [images, setImages] = useState<string[]>([]);
 
   /**
@@ -27,8 +28,10 @@ export const ChatBox: React.FC = () => {
    * Method used to read images onDrop or onPaste.
    * @param items
    */
-  const readImages = (items: DataTransferItemList | FileList): void => {
-    const newImages = readFromClipOrDropData(items, 'image');
+  const readImages = async (
+    items: DataTransferItemList | FileList
+  ): Promise<void> => {
+    const newImages = await readFromClipOrDropData(items, 'image');
     setImages((prevImages) => [...prevImages, ...newImages]);
   };
   /**
@@ -41,7 +44,7 @@ export const ChatBox: React.FC = () => {
   };
   return (
     <div
-      className="sm:w-full w-[95%] flex flex-col shadow-md mb-5 sm:mb-0 mx-1 sm:mx-0 px-4 py-3 absolute sm:relative bottom-0 bg-white rounded-3xl max-h-[200px]"
+      className={`sm:w-full w-[95%] flex flex-col shadow-md mb-5 mx-1 sm:mx-0 px-4 py-3 absolute sm:relative bottom-0 bg-white rounded-3xl max-h-[200px] ${className}`}
       onPaste={(e) => readImages(e.clipboardData.items)}
       onDrop={(e) => {
         e.preventDefault();
@@ -56,6 +59,7 @@ export const ChatBox: React.FC = () => {
         callback={onImageCancel}
         cancelRequired={true}
       />
+
       {/*
         TextArea is a component from Reusables that is present here in chatbox for user queries. Refer the component for props and functionality
          */}

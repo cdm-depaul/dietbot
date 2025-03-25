@@ -37,6 +37,7 @@ const ImageDisplayInChatBox: React.FC<imageDisplayInterface> = memo(
         key={index}
         onMouseEnter={() => setCancelDisplayStatus(true)}
         onMouseLeave={() => setCancelDisplayStatus(false)}
+        onTouchStart={() => setCancelDisplayStatus(true)}
       >
         {isCancel && cancelRequired ? (
           <Button

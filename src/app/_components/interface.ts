@@ -5,6 +5,14 @@ export interface className {
   className: string;
 }
 
+export interface optionalClassName {
+  className?: string;
+}
+
+export interface bodyInterface extends childProps, optionalClassName {}
+
+export interface chatBoxInterface extends optionalClassName {}
+
 interface optionalImageArgs {
   callback?: (index: number) => void;
   cancelRequired?: boolean;
