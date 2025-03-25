@@ -56,7 +56,6 @@ export const ChatBox: React.FC = () => {
         callback={onImageCancel}
         cancelRequired={true}
       />
-      <Switch />
       {/*
         TextArea is a component from Reusables that is present here in chatbox for user queries. Refer the component for props and functionality
          */}

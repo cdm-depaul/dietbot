@@ -1,3 +1,4 @@
+'use client';
 import { Home } from './_components';
 import { memo } from 'react';
 /**

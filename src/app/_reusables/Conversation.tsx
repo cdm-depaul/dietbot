@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { conversationalTyping } from './interface';
 import './reusable.css';

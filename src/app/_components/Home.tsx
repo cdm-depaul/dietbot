@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Body, ChatBox, Intent } from './index';
 import { Conversation, Text } from '../_reusables';

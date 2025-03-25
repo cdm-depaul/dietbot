@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { withSVGStylerHOC } from './SVGStylerHOC';
 import { classNameProp } from './interface';
