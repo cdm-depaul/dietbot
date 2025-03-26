@@ -37,7 +37,6 @@ body {
   text-align: center;
   top: 170%;
   left: 50%;
-  border-radius: 8px;
   transform: translate(-50%, -50%);
   transition: all 0.1s 0.2s ease-in-out;
 }
