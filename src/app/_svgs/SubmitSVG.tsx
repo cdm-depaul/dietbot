@@ -4,7 +4,7 @@ import { withSVGStylerHOC } from './SVGStylerHOC';
 import { classNameProp } from './interface';
 const SubmitSVG: React.FC<classNameProp> = ({ className }) => {
   return (
-    <div className={className}>
+    <div className={`stroke-0 ${className}`}>
       <svg viewBox="-1.5 0 19 19">
         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
         <g

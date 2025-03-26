@@ -5,7 +5,7 @@ import { classNameProp } from './interface';
 
 const AttachSVG: React.FC<classNameProp> = ({ className }) => {
   return (
-    <span className={className}>
+    <span className={`stroke-0 ${className}`}>
       <svg viewBox="0 0 24 24">
         <path
           fillRule="evenodd"

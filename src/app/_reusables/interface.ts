@@ -18,6 +18,7 @@ export interface className {
 
 export interface buttonProps extends childProps, className {
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export interface conversationalTyping extends textInterface {
@@ -32,10 +33,19 @@ export interface fileInputInterface extends className, childProps {
   onChange: (files: FileList) => void;
 }
 
+export interface modalInterface extends childProps {
+  open: boolean;
+}
+
 export interface textInterface extends className {
   text: string;
 }
 
 export interface textAreaInterace extends className {
+  // properties
   placeholder: string;
+  value: string;
+  // callback functions
+  onChange: (query: string) => void;
+  onKeyDown: (key: string) => void;
 }

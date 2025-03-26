@@ -41,10 +41,10 @@ const ImageDisplayInChatBox: React.FC<imageDisplayInterface> = memo(
       >
         {isCancel && cancelRequired ? (
           <Button
-            className="w-3 h-3 absolute -top-1 right-1 transition-all "
+            className="w-3 h-3 absolute -top-1 right-1 cursor-pointer"
             onClick={() => callback && callback(index)}
           >
-            <CancelSVG className="rounded-full p-0.5 max-w-5 max-h-5 bg-stone-200 fill-red-400 hover:bg-stone-300 transition-all duration-300" />
+            <CancelSVG className="rounded-full p-0.5 max-w-5 max-h-5  !fill-red-400 !bg-red-300 !stroke-none hover:bg-stone-300 !before:content-none hover-none" />
           </Button>
         ) : (
           ''

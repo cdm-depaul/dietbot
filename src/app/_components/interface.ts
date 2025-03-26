@@ -1,7 +1,7 @@
 export interface childProps {
   children: React.ReactNode;
 }
-export interface className {
+export interface classNameInterface {
   className: string;
 }
 
@@ -27,6 +27,6 @@ export interface imageDisplayInterface extends optionalImageArgs {
   index: number;
 }
 
-export interface intentInterface extends childProps, className {
+export interface intentInterface extends childProps, classNameInterface {
   text: string;
 }

@@ -11,10 +11,11 @@ import { buttonProps } from './interface';
 export const Button: React.FC<buttonProps> = ({
   children,
   className,
+  disabled,
   onClick,
 }) => {
   return (
-    <button className={className} onClick={onClick}>
+    <button disabled={disabled} className={className} onClick={onClick}>
       {children}
     </button>
   );

@@ -12,6 +12,7 @@ import { chatBoxInterface } from './interface';
  */
 export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
   const [images, setImages] = useState<string[]>([]);
+  const [query, setQuery] = useState<string>('');
 
   /**
    * This method is used here as it is passed as a callback to FileInput and creates a url for the image once the image is read and fed back.
@@ -64,26 +65,38 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
         TextArea is a component from Reusables that is present here in chatbox for user queries. Refer the component for props and functionality
          */}
       <TextArea
-        placeholder="What do you want to know?"
         className="w-full min-h-10 mb-4 field-sizing-content resize-none px-1 pt-1 focus:none outline-none overscroll-contain placeholder:text-stone-400"
+        placeholder="What do you want to know?"
+        value={query}
+        onChange={(text: string) => text !== '\n' && setQuery(text)}
+        onKeyDown={(key) => {
+          // when user clicks enter.
+          if (key === 'Enter') {
+            setQuery('');
+          }
+        }}
       />
       <div className="flex justify-between items-center mt-2">
         {/*
         FileInput is a component from Reusables that is present here for uploading images. Refer the component for props and functionality
          */}
         <FileInput
-          className="w-7 h-7 p-1 cursor-pointer border-stone-300 fill-stone-400 hover:rotate-45"
+          className="w-7 h-7 p-1 cursor-pointer relative"
           accept="image/png image/jpg image/jpeg"
           onChange={readImage}
         >
-          <AttachSVG />
+          <AttachSVG className="before:content-['Attach_Files'] before:-translate-y-7 before:translate-x-15 " />
         </FileInput>
 
         {/*
         Button is a component from Reusables that is present here for submitting queries. Refer the component for props and functionality
          */}
-        <Button className="relative hover:left-1 cursor-pointer">
-          <SubmitSVG className="fill-stone-400" />
+        <Button
+          disabled={images.length === 0 && query.length === 0 ? true : false}
+          className="w-7 h-7 p-1 relative cursor-pointer"
+          onClick={() => console.log(query)}
+        >
+          <SubmitSVG className="fill-blue-500 before:content-['Submit'] before:-translate-y-7 before:-translate-x-15" />
         </Button>
       </div>
     </div>

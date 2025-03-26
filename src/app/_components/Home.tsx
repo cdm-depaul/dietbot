@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Body, ChatBox, Intent } from './index';
-import { Conversation, Text } from '../_reusables';
+import { Conversation, Modal, Text } from '../_reusables';
 import {
   CreateAMealPlan,
   EducateMe,
@@ -12,7 +12,6 @@ import {
 /**
  * Homepage of the app when the user is logged in. Renders for route '/' by default.
  * Contains welcome message, Chatbox and the Intent for the user to choose manually.
- *
  */
 export const Home: React.FC = () => {
   return (
@@ -21,11 +20,12 @@ export const Home: React.FC = () => {
         <div className="flex flex-col justify-center items-center sm:mb-6 mb-4">
           <Text
             text="Hi Akshay, welcome back!"
-            className="gradient sm:text-3xl text-lg flex flex-wrap font-light "
+            className="gradient sm:text-3xl text-lg flex flex-wrap font-[320] "
           />
+
           <Conversation
             text="How can I help with your diet today?"
-            className="text-md sm:text-3xl text-stone-400 font-light flex flex-wrap"
+            className="text-md sm:text-3xl text-stone-400 flex flex-wrap font-[310]"
             animationDuration={1}
             animationDelay={2}
             animationSteps={50}

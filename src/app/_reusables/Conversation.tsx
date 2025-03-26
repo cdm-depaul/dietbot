@@ -22,7 +22,7 @@ export const Conversation: React.FC<conversationalTyping> = ({
     <div
       style={{
         ...({
-          '---animation-delay': `${animationDelay}s`,
+          '--animation-delay': `${animationDelay}s`,
           '--animation-duration': `${animationDuration}s`,
           '--animation-timing-function': `steps(${animationSteps}, end)`,
         } as React.CSSProperties),

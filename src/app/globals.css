@@ -22,3 +22,26 @@ body {
   color: var(--foreground);
   font-family: 'Open Sans';
 }
+
+.hover-none:before {
+  visibility: hidden !important;
+}
+
+.hover-text::before {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  position: absolute;
+  padding: 2px;
+  text-align: center;
+  top: 170%;
+  left: 50%;
+  border-radius: 8px;
+  transform: translate(-50%, -50%);
+  transition: all 0.1s 0.2s ease-in-out;
+}
+.hover-text:hover:before {
+  visibility: visible;
+  top: 150%;
+}

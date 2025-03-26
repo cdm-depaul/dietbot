@@ -17,17 +17,14 @@ export const Navbar = memo(() => {
     <div className="w-full absolute top-0 flex justify-between items-center p-3">
       <span>Name</span>
       <div className="flex items-center gap-5 ">
-        <Link
-          href="/"
-          className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300 "
-        >
-          <NewChat />
+        <Link href="/" className="w-9 h-9 p-1.5  relative rounded-full ">
+          <NewChat className="before:content-['New_Chat']" />
         </Link>
-        <Button className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300  stroke-stone-400">
-          <ChatHistory />
+        <Button className="w-9 h-9 p-1.5  relative rounded-full ">
+          <ChatHistory className="before:content-['Chat_History']" />
         </Button>
-        <Button className="w-9 h-9 p-1.5 fill-stone-400 rounded-full hover:bg-stone-300  stroke-stone-400">
-          <Setting />
+        <Button className="w-9 h-9 p-1.5  relative rounded-full">
+          <Setting className="before:content-['Settings'] before:-translate-x-7" />
         </Button>
       </div>
     </div>

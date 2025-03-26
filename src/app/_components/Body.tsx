@@ -9,7 +9,7 @@ import { bodyInterface } from './interface';
  */
 export const Body: React.FC<bodyInterface> = ({ children, className }) => {
   return (
-    <div className=" flex justify-center h-screen min-h-screen text-[16px]">
+    <div className=" flex justify-center h-screen min-h-screen">
       {/** Changing the width changes the extent to which the chat and its components takes space. */}
       <div className={`sm:w-[55%] w-full ${className}`}>{children}</div>
     </div>

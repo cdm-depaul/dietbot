@@ -15,6 +15,9 @@ export * from './FileInput';
 // H
 export * from './HorizontalRule';
 
+// M
+export * from './Modal';
+
 // S
 export * from './Switch';
 
