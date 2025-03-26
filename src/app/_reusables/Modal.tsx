@@ -10,12 +10,12 @@ export const Modal: React.FC<modalInterface> = memo(({ children, open }) => {
   };
   return (
     <div
-      className={`absolute w-full h-screen flex left-0 sm:justify-center sm:items-center backdrop-blur-[2px] z-10 ${
+      className={`fixed left-0 bottom-0 right-0 top-0 w-screen h-screen flex justify-center items-center backdrop-blur-[1px] z-10 pointer-events-auto ${
         open ? 'visible' : 'hidden'
       }`}
     >
       <div
-        className={`absolute w-full sm:relative bottom-0 bg-stone-100 ${sizes['large']}`}
+        className={`absolute w-full sm:relative bottom-0 bg-white ${sizes['large']}`}
       >
         {children}
       </div>

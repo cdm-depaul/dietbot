@@ -15,7 +15,11 @@ export const Button: React.FC<buttonProps> = ({
   onClick,
 }) => {
   return (
-    <button disabled={disabled} className={className} onClick={onClick}>
+    <button
+      disabled={disabled}
+      className={`${className} disabled:cursor-not-allowed cursor-pointer`}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Body, ChatBox, Intent } from './index';
-import { Conversation, Modal, Text } from '../_reusables';
+import { Conversation, Text } from '../_reusables';
 import {
   CreateAMealPlan,
   EducateMe,
@@ -31,7 +31,6 @@ export const Home: React.FC = () => {
             animationSteps={50}
           />
         </div>
-
         <ChatBox className="sm:mb-0" />
         {/* 
         <div className="w-full flex justify-center items-start gap-2 sm:mt-6 flex-wrap">

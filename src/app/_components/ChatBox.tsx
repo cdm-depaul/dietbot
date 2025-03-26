@@ -81,7 +81,7 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
         FileInput is a component from Reusables that is present here for uploading images. Refer the component for props and functionality
          */}
         <FileInput
-          className="w-7 h-7 p-1 cursor-pointer relative"
+          className="w-7 h-7 p-1 relative"
           accept="image/png image/jpg image/jpeg"
           onChange={readImage}
         >
@@ -93,10 +93,10 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
          */}
         <Button
           disabled={images.length === 0 && query.length === 0 ? true : false}
-          className="w-7 h-7 p-1 relative cursor-pointer"
+          className="w-7 h-7 p-1 relative !cursor-progress"
           onClick={() => console.log(query)}
         >
-          <SubmitSVG className="fill-blue-500 before:content-['Submit'] before:-translate-y-7 before:-translate-x-15" />
+          <SubmitSVG className="before:content-['Submit'] before:-translate-y-7 before:-translate-x-15" />
         </Button>
       </div>
     </div>
