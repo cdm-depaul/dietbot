@@ -39,16 +39,15 @@ const ImageDisplayInChatBox: React.FC<imageDisplayInterface> = memo(
         onMouseLeave={() => setCancelDisplayStatus(false)}
         onTouchStart={() => setCancelDisplayStatus(true)}
       >
-        {isCancel && cancelRequired ? (
-          <Button
-            className="w-3 h-3 absolute -top-1 right-1 cursor-pointer"
-            onClick={() => callback && callback(index)}
-          >
-            <CancelSVG className="rounded-full p-0.5 max-w-5 max-h-5  !fill-red-400 !bg-red-300 !stroke-none hover:bg-stone-300 !before:content-none hover-none" />
-          </Button>
-        ) : (
-          ''
-        )}
+        <Button
+          className={`w-3 h-3 absolute -top-1 right-1 cursor-pointer transition-all duration-200 ${
+            cancelRequired && isCancel ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => callback && callback(index)}
+        >
+          <CancelSVG className="rounded-full p-0.5 max-w-5 max-h-5  !fill-red-400 !bg-red-200 !stroke-none  hover:bg-stone-300 !before:content-none hover-none" />
+        </Button>
+
         <img className="w-14 h-14 rounded-xl" src={src} />
       </div>
     );
