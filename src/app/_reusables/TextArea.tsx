@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { textAreaInterace } from './interface';
 
 /**
@@ -9,23 +9,20 @@ import { textAreaInterace } from './interface';
  *
  * @returns JSX.
  */
-export const TextArea: React.FC<textAreaInterace> = ({
-  className,
-  placeholder,
-  value,
-  onChange,
-  onKeyDown,
-}) => {
-  return (
-    <textarea
-      className={className}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      onKeyDown={(e) => onKeyDown(e.key)}
-    />
-  );
-};
+export const TextArea: React.FC<textAreaInterace> = memo(
+  ({ className, placeholder, value, onChange, onKeyDown }) => {
+    console.log('Text area');
+    return (
+      <textarea
+        className={className}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => onKeyDown(e.key)}
+      />
+    );
+  }
+);
 
 // onKeyDown={async (e) => {
 //   if (e.key === 'Enter') {

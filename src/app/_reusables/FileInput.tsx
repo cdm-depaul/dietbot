@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { fileInputInterface } from './interface';
 
 /**
@@ -12,7 +12,7 @@ import { fileInputInterface } from './interface';
  */
 export const FileInput: React.FC<fileInputInterface> = memo(
   ({ accept, children, className, onChange }) => {
-    console.log('FileInput');
+    console.log('File Input');
     return (
       <div className={className}>
         <input
@@ -31,5 +31,6 @@ export const FileInput: React.FC<fileInputInterface> = memo(
         </label>
       </div>
     );
-  }
+  },
+  (prevProps, nextProps) => prevProps.children !== nextProps.children
 );

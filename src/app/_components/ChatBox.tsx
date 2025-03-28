@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useMemo } from 'react';
 import { Button, FileInput, TextArea } from '../_reusables';
 import { AttachSVG, SubmitSVG } from '../_svgs';
 import { ImageUploadsInChatBox } from './index';
@@ -51,6 +51,22 @@ export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
     },
     [images]
   );
+
+  const textOnChange = useCallback(
+    (text: string) => text !== '\n' && setQuery(text),
+    [query]
+  );
+
+  const textOnEnter = useCallback(
+    (key: string) => {
+      // when user clicks enter.
+      if (key === 'Enter') {
+        setQuery('');
+      }
+    },
+    [query]
+  );
+
   return (
     <div
       className={`sm:w-full w-[95%] flex flex-col shadow-md mb-5 mx-1 sm:mx-0 px-4 py-3 absolute sm:relative bottom-0 bg-white rounded-3xl max-h-[200px] ${className}`}
@@ -76,13 +92,8 @@ export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
         className="w-full min-h-10 mb-4 field-sizing-content resize-none px-1 pt-1 focus:none outline-none overscroll-contain placeholder:text-stone-400"
         placeholder="What do you want to know?"
         value={query}
-        onChange={(text: string) => text !== '\n' && setQuery(text)}
-        onKeyDown={(key) => {
-          // when user clicks enter.
-          if (key === 'Enter') {
-            setQuery('');
-          }
-        }}
+        onChange={textOnChange}
+        onKeyDown={textOnEnter}
       />
       <div className="flex justify-between items-center mt-2">
         {/*
@@ -102,7 +113,7 @@ export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
         <Button
           disabled={images.length === 0 && query.length === 0 ? true : false}
           className="w-7 h-7 p-1 relative disabled:cursor-not-allowed"
-          onClick={() => console.log(query)}
+          // onClick={() => console.log(query)}
         >
           <SubmitSVG className="before:content-['Submit'] before:-translate-y-7 before:-translate-x-15" />
         </Button>

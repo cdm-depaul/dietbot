@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { textInterface } from './interface';
 
 /**
@@ -8,8 +8,8 @@ import { textInterface } from './interface';
  * @param text
  *
  */
-export const Text: React.FC<textInterface> = ({ text, className }) => {
+export const Text: React.FC<textInterface> = memo(({ text, className }) => {
   return <div className={className}>{text}</div>;
-};
+});
 
 Text.displayName = 'Text';

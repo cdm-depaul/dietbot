@@ -2,6 +2,13 @@
 import React, { memo } from 'react';
 import { modalInterface } from './interface';
 
+/**
+ * Renders a Modal on the screen.
+ * @param children This component requires other html or components to be passed inside the body of the component.
+ * @param isOpen  This prop handles whether the modal should be displayed or not.
+ * @param size The size of the modal. Any one of [small, medium, large] should be passed and values here are case-sensitive
+ *
+ */
 export const Modal: React.FC<modalInterface> = memo(
   ({ children, isOpen, size }) => {
     const sizes = {
@@ -13,9 +20,9 @@ export const Modal: React.FC<modalInterface> = memo(
       <div
         className={`fixed left-0 bottom-0 right-0 top-0 w-screen h-screen flex justify-center items-center backdrop-blur-[1px] z-10 pointer-events-auto ${
           isOpen
-            ? 'transform sm:scale-100 scale-y-100'
-            : 'transform sm:scale-0 scale-y-0'
-        } transition-all sm:duration-100 duration-500`}
+            ? 'transform sm:scale-100 scale-y-100 origin-bottom'
+            : 'transform sm:scale-0 scale-y-0 origin-bottom'
+        } transition-all sm:duration-0 duration-500`}
       >
         <div
           className={`absolute w-full h-[90%] sm:relative bottom-0 bg-white ${sizes[size]}`}

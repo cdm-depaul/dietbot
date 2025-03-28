@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { className } from './interface';
 
 /**
@@ -11,14 +11,19 @@ import { className } from './interface';
 export const withSVGStylerHOC = <P extends className>(
   Component: React.ComponentType<P>
 ) => {
-  const WrappedComponent = ({ className, ...rest }: P) => {
-    return (
-      <Component
-        className={`w-5 h-5 mr-1 stroke-stone-400 hover-text before:w-24 before:h-8 before:text-stone-500 before:bg-stone-50 before:rounded-2xl before:shadow-md text-sm border-stone-300  fill-stone-400 ${className}`}
-        {...(rest as P)}
-      />
-    );
-  };
+  const WrappedComponent = memo(
+    ({ className, ...rest }: P) => {
+      return (
+        <Component
+          className={`w-5 h-5 mr-1 stroke-stone-400 hover-text before:w-24 before:h-7 before:text-stone-500 before:bg-stone-50 before:rounded-lg before:shadow-md text-sm border-stone-300  fill-stone-400 ${className}`}
+          {...(rest as P)}
+        />
+      );
+    },
+    (prevProps, nextProps) => {
+      return prevProps === nextProps;
+    }
+  );
 
   return WrappedComponent;
 };

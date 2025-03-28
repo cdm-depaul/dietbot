@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { className } from './interface';
 
 /**
@@ -8,6 +8,6 @@ import { className } from './interface';
  *
  * @returns JSX.
  */
-export const HorizontalRule: React.FC<className> = ({ className }) => {
+export const HorizontalRule: React.FC<className> = memo(({ className }) => {
   return <hr className={className} />;
-};
+});
