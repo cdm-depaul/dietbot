@@ -20,7 +20,6 @@ export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
    */
   const readImage = useCallback(
     (imageInput: FileList) => {
-      console.log('called');
       let image_urls = [];
       for (let i = 0; i < imageInput.length; i++) {
         image_urls[i] = URL.createObjectURL(imageInput[i]);
@@ -34,12 +33,13 @@ export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
    * Method used to read images onDrop or onPaste.
    * @param items
    */
-  const readImages = async (
-    items: DataTransferItemList | FileList
-  ): Promise<void> => {
-    const newImages = await readFromClipOrDropData(items, 'image');
-    setImages((prevImages) => [...prevImages, ...newImages]);
-  };
+  const readImages = useCallback(
+    async (items: DataTransferItemList | FileList): Promise<void> => {
+      const newImages = await readFromClipOrDropData(items, 'image');
+      setImages((prevImages) => [...prevImages, ...newImages]);
+    },
+    [images]
+  );
   /**
    * When the image is unselected, this method filters out the recently deleted image.
    * @param imageIndex The index of the image that is deselected.
