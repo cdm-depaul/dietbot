@@ -6,6 +6,7 @@ import { CancelSVG } from '../_svgs';
 
 export const ImageUploadsInChatBox: React.FC<imageUploadsInterface> = memo(
   ({ images, callback, cancelRequired }) => {
+    console.log('ImageUploadsInChatBox');
     return (
       <div
         className={`flex max-h-16 overflow-y-scroll ${
@@ -25,6 +26,8 @@ export const ImageUploadsInChatBox: React.FC<imageUploadsInterface> = memo(
     );
   }
 );
+
+ImageUploadsInChatBox.displayName = '/_components/ImageUploadsInChatBox';
 
 const ImageDisplayInChatBox: React.FC<imageDisplayInterface> = memo(
   ({ src, index, callback, cancelRequired }) => {

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Button, FileInput, TextArea } from '../_reusables';
 import { AttachSVG, SubmitSVG } from '../_svgs';
 import { ImageUploadsInChatBox } from './index';
@@ -10,21 +10,26 @@ import { chatBoxInterface } from './interface';
  * Component that displays the chatbox on the screen.
  * Consists of ImageUploadsInChatBox,TextArea, FileInput components within.
  */
-export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
+export const ChatBox: React.FC<chatBoxInterface> = memo(({ className }) => {
   const [images, setImages] = useState<string[]>([]);
   const [query, setQuery] = useState<string>('');
-
+  console.log('chatBox');
   /**
    * This method is used here as it is passed as a callback to FileInput and creates a url for the image once the image is read and fed back.
    * @param imageInput FileList, that is returned by FileInput Component.
    */
-  const readImage = (imageInput: FileList) => {
-    let image_urls = [];
-    for (let i = 0; i < imageInput.length; i++) {
-      image_urls[i] = URL.createObjectURL(imageInput[i]);
-    }
-    setImages((prevImages) => [...prevImages, ...image_urls]);
-  };
+  const readImage = useCallback(
+    (imageInput: FileList) => {
+      console.log('called');
+      let image_urls = [];
+      for (let i = 0; i < imageInput.length; i++) {
+        image_urls[i] = URL.createObjectURL(imageInput[i]);
+      }
+      setImages((prevImages) => [...prevImages, ...image_urls]);
+    },
+    [images]
+  );
+
   /**
    * Method used to read images onDrop or onPaste.
    * @param items
@@ -39,10 +44,13 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
    * When the image is unselected, this method filters out the recently deleted image.
    * @param imageIndex The index of the image that is deselected.
    */
-  const onImageCancel = (imageIndex: number): void => {
-    let newImages = images.filter((el, index) => index != imageIndex);
-    setImages([...newImages]);
-  };
+  const onImageCancel = useCallback(
+    (imageIndex: number): void => {
+      let newImages = images.filter((el, index) => index != imageIndex);
+      setImages([...newImages]);
+    },
+    [images]
+  );
   return (
     <div
       className={`sm:w-full w-[95%] flex flex-col shadow-md mb-5 mx-1 sm:mx-0 px-4 py-3 absolute sm:relative bottom-0 bg-white rounded-3xl max-h-[200px] ${className}`}
@@ -101,6 +109,6 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
       </div>
     </div>
   );
-};
+});
 
-ChatBox.displayName = 'ChatBox';
+ChatBox.displayName = '/_components/ChatBox';

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { buttonProps } from './interface';
 /**
  * Renders a button.
@@ -8,19 +8,16 @@ import { buttonProps } from './interface';
  * @param onClick Pass any callbacks to this prop that needs to be triggered on click of the button.
  * @returns JSX.
  */
-export const Button: React.FC<buttonProps> = ({
-  children,
-  className,
-  disabled,
-  onClick,
-}) => {
-  return (
-    <button
-      disabled={disabled}
-      className={`${className} disabled:cursor-not-allowed cursor-pointer`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-};
+export const Button: React.FC<buttonProps> = memo(
+  ({ children, className, disabled, onClick }) => {
+    return (
+      <button
+        disabled={disabled}
+        className={`${className} disabled:cursor-not-allowed cursor-pointer`}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    );
+  }
+);
