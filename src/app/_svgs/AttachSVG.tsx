@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import { withSVGStylerHOC } from './SVGStylerHOC';
-import { classNameProp } from './interface';
+import { className } from './interface';
 
-const AttachSVG: React.FC<classNameProp> = ({ className }) => {
+const AttachSVG: React.FC<className> = ({ className }) => {
   return (
     <span className={`stroke-0 ${className}`}>
       <svg viewBox="0 0 24 24">

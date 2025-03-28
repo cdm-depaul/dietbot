@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { classNameProp } from './interface';
+import { className } from './interface';
 import { withSVGStylerHOC } from './SVGStylerHOC';
 
-const ChatHistorySVG: React.FC<classNameProp> = ({ className }) => {
+const ChatHistorySVG: React.FC<className> = ({ className }) => {
   return (
     <span className={className}>
       <svg viewBox="0 0 24 24" fill="none">

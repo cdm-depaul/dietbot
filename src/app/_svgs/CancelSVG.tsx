@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { className } from '../_components/interface';
+import { className } from './interface';
 import { withSVGStylerHOC } from './SVGStylerHOC';
 
 const CancelSVG: React.FC<className> = ({ className }) => {

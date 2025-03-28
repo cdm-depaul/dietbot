@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { withSVGStylerHOC } from './SVGStylerHOC';
-import { classNameProp } from './interface';
-const CreateAMealPlanSVG: React.FC<classNameProp> = ({ className }) => {
+import { className } from './interface';
+const CreateAMealPlanSVG: React.FC<className> = ({ className }) => {
   return (
     <div className={`${className}`}>
       <svg viewBox="0 0 512 512">

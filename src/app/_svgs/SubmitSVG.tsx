@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { withSVGStylerHOC } from './SVGStylerHOC';
-import { classNameProp } from './interface';
-const SubmitSVG: React.FC<classNameProp> = ({ className }) => {
+import { className } from './interface';
+const SubmitSVG: React.FC<className> = ({ className }) => {
   return (
     <div className={`stroke-0 ${className}`}>
       <svg viewBox="-1.5 0 19 19">

@@ -3,10 +3,10 @@ import React from 'react';
 import { Body, ChatBox, Intent } from './index';
 import { Conversation, Text } from '../_reusables';
 import {
-  CreateAMealPlan,
-  EducateMe,
-  LogHistory,
-  MealSuggestion,
+  CreateAMealPlanSVG,
+  EducateMeSVG,
+  LogHistorySVG,
+  MealSuggestionSVG,
 } from '../_svgs';
 
 /**
@@ -38,25 +38,25 @@ export const Home: React.FC = () => {
             className="text-emerald-500  fill-emerald-500 hover:bg-emerald-500"
             text="Suggestion"
           >
-            <MealSuggestion />
+            <MealSuggestionSVG />
           </Intent>
           <Intent
             className="text-indigo-500 fill-indigo-500 hover:bg-indigo-500"
             text="History"
           >
-            <LogHistory />
+            <LogHistorySVG />
           </Intent>
           <Intent
             className="text-rose-500  fill-rose-500 hover:bg-rose-500"
             text="Learn"
           >
-            <EducateMe />
+            <EducateMeSVG />
           </Intent>
           <Intent
             className="text-teal-500  fill-teal-500 hover:bg-teal-500"
             text="Plan"
           >
-            <CreateAMealPlan />
+            <CreateAMealPlanSVG />
           </Intent>
         </div> */}
       </div>

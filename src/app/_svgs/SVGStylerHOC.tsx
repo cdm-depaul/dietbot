@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { classNameProp } from './interface';
+import { className } from './interface';
 
 /**
  * Higher-Order Component for adding common styling to all the icons including text with ::before pseudo selector.
@@ -8,7 +8,7 @@ import { classNameProp } from './interface';
  * @param Component
  * @returns
  */
-export const withSVGStylerHOC = <P extends classNameProp>(
+export const withSVGStylerHOC = <P extends className>(
   Component: React.ComponentType<P>
 ) => {
   const WrappedComponent = ({ className, ...rest }: P) => {

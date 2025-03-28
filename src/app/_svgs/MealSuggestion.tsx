@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
 import { withSVGStylerHOC } from './SVGStylerHOC';
-import { classNameProp } from './interface';
+import { className } from './interface';
 
-const MealSuggestion: React.FC<classNameProp> = ({ className }) => {
+const MealSuggestion: React.FC<className> = ({ className }) => {
   return (
     // <div className={className}>
     <svg

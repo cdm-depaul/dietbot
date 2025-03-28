@@ -2,19 +2,19 @@ export { default as AttachSVG } from './AttachSVG';
 
 export { default as CancelSVG } from './CancelSVG';
 
-export { default as CreateAMealPlan } from './CreateAMealPlan';
+export { default as CreateAMealPlanSVG } from './CreateAMealPlan';
 
-export { default as EducateMe } from './EducateMe';
+export { default as EducateMeSVG } from './EducateMe';
 
-export { default as ChatHistory } from './ChatHistorySVG';
+export { default as ChatHistorySVG } from './ChatHistorySVG';
 
-export { default as LogHistory } from './LogHistory';
+export { default as LogHistorySVG } from './LogHistory';
 
-export { default as MealSuggestion } from './MealSuggestion';
+export { default as MealSuggestionSVG } from './MealSuggestion';
 
-export { default as NewChat } from './NewChatSVG';
+export { default as NewChatSVG } from './NewChatSVG';
 
-export { default as Setting } from './SettingSVG';
+export { default as SettingSVG } from './SettingSVG';
 
 export { default as SubmitSVG } from './SubmitSVG';
 

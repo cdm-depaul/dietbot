@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Button, FileInput, Switch, TextArea } from '../_reusables';
+import { Button, FileInput, TextArea } from '../_reusables';
 import { AttachSVG, SubmitSVG } from '../_svgs';
 import { ImageUploadsInChatBox } from './index';
 import { readFromClipOrDropData } from './utils';
@@ -93,7 +93,7 @@ export const ChatBox: React.FC<chatBoxInterface> = ({ className }) => {
          */}
         <Button
           disabled={images.length === 0 && query.length === 0 ? true : false}
-          className="w-7 h-7 p-1 relative !cursor-progress"
+          className="w-7 h-7 p-1 relative disabled:cursor-not-allowed"
           onClick={() => console.log(query)}
         >
           <SubmitSVG className="before:content-['Submit'] before:-translate-y-7 before:-translate-x-15" />

@@ -34,7 +34,8 @@ export interface fileInputInterface extends className, childProps {
 }
 
 export interface modalInterface extends childProps {
-  open: boolean;
+  isOpen: boolean;
+  size: 'small' | 'medium' | 'large';
 }
 
 export interface textInterface extends className {
