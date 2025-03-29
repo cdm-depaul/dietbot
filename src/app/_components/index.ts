@@ -14,6 +14,4 @@ export * from './Intent';
 
 // N
 export * from './Navbar';
-
-// S
 export * from './Settings';

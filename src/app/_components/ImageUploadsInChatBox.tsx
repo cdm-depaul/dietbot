@@ -34,6 +34,7 @@ const ImageDisplayInChatBox: React.FC<imageDisplayInterface> = memo(
     const [isCancel, setCancel] = useState<boolean>(false);
     const setCancelDisplayStatus = (newState: boolean) =>
       cancelRequired && setCancel(newState);
+    console.log('ImageDisplayInChatBox');
     return (
       <div
         className="relative rounded-xl"

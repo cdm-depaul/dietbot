@@ -33,18 +33,24 @@ export interface fileInputInterface extends className, childProps {
   onChange: (files: FileList) => void;
 }
 
+export interface inputInterface extends className, placeholderInterface {}
+
 export interface modalInterface extends childProps {
   isOpen: boolean;
   size: 'small' | 'medium' | 'large';
+  onClose: () => void;
+}
+
+export interface placeholderInterface {
+  // properties
+  placeholder: string;
 }
 
 export interface textInterface extends className {
   text: string;
 }
 
-export interface textAreaInterace extends className {
-  // properties
-  placeholder: string;
+export interface textAreaInterace extends className, placeholderInterface {
   value: string;
   // callback functions
   onChange: (query: string) => void;
