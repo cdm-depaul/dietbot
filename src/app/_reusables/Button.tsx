@@ -10,7 +10,7 @@ import { buttonProps } from './interface';
  */
 export const Button: React.FC<buttonProps> = memo(
   ({ children, className, disabled, onClick }) => {
-    console.log('Button');
+    // console.log('Button');
     return (
       <button
         disabled={disabled}
@@ -20,6 +20,5 @@ export const Button: React.FC<buttonProps> = memo(
         {children}
       </button>
     );
-  },
-  (prevProps, nextProps) => prevProps.children !== nextProps.children
+  }
 );

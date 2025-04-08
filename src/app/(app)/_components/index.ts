@@ -2,6 +2,7 @@
 export * from './Body';
 
 // C
+export * from './Chat';
 export * from './ChatBox';
 export * from './ChatHistory';
 

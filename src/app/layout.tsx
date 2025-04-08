@@ -1,6 +1,5 @@
 'use client';
 import './globals.css';
-import { Navbar } from './_components';
 
 /**
  *
@@ -24,10 +23,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <div className="text-[16px]">
-          <Navbar />
-          {children}
-        </div>
+        <div className="text-[16px]">{children}</div>
       </body>
     </html>
   );

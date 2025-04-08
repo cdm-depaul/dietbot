@@ -17,7 +17,7 @@ export const Modal: React.FC<modalInterface> = memo(
       medium: 'sm:w-[60%] sm:h-[70%] shadow-xl rounded-2xl',
       large: 'sm:w-[70%] sm:h-[80%] shadow-2xl rounded-3xl',
     };
-    console.log('Modal');
+    // console.log('Modal');
     return (
       <div
         className={`fixed left-0 bottom-0 right-0 top-0 w-screen h-screen flex justify-center items-center backdrop-blur-[1px] z-10 pointer-events-auto ${

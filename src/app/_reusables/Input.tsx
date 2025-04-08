@@ -2,13 +2,11 @@ import React, { memo } from 'react';
 import { inputInterface } from './interface';
 
 export const Input: React.FC<inputInterface> = memo(
-  ({ className, placeholder }) => {
+  ({ className, placeholder, type }) => {
     return (
-      <>
-        <input type="text" className={className} placeholder={placeholder} />
-      </>
+      <input type={type} className={className} placeholder={placeholder} />
     );
   }
 );
 
-Input.displayName = '/_reusables/Input';
+Input.displayName = '_reusables/Input';

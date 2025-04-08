@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useState } from 'react';
-import { Button, Modal } from '../_reusables';
-import { SettingSVG } from '../_svgs';
+import { Button, Modal } from '_reusables';
+import { SettingSVG } from '_svgs';
 export const Settings: React.FC = () => {
   const [open, setOpen] = useState(false);
 

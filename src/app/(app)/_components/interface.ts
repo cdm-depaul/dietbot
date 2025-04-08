@@ -13,6 +13,10 @@ export interface bodyInterface extends childProps, optionalClassName {}
 
 export interface chatBoxInterface extends optionalClassName {}
 
+export interface chatComponentInterface
+  extends childProps,
+    classNameInterface {}
+
 interface optionalImageArgs {
   callback?: (index: number) => void;
   cancelRequired?: boolean;

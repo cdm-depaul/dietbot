@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
 import { Body, ChatBox, Intent } from './index';
-import { Conversation, Text } from '../_reusables';
+import { Conversation, Text } from '_reusables';
 import {
   CreateAMealPlanSVG,
   EducateMeSVG,
   LogHistorySVG,
   MealSuggestionSVG,
-} from '../_svgs';
+} from '../../_svgs';
 
 /**
  * Homepage of the app when the user is logged in. Renders for route '/' by default.
@@ -19,7 +19,7 @@ export const Home: React.FC = () => {
       <div className="h-full flex flex-col items-center justify-center relative sm:-top-10">
         <div className="flex flex-col justify-center items-center sm:mb-6 mb-4">
           <Text
-            text="Hi Akshay, welcome back!"
+            text="Hi Vedant, welcome back!"
             className="gradient sm:text-3xl text-lg flex flex-wrap font-[320] "
           />
 

@@ -33,7 +33,9 @@ export interface fileInputInterface extends className, childProps {
   onChange: (files: FileList) => void;
 }
 
-export interface inputInterface extends className, placeholderInterface {}
+export interface inputInterface extends className, placeholderInterface {
+  type: string;
+}
 
 export interface modalInterface extends childProps {
   isOpen: boolean;

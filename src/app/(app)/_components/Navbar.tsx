@@ -1,8 +1,9 @@
 'use client';
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import Link from 'next/link';
 import { ChatHistory, Settings } from './index';
-import { NewChatSVG } from '../_svgs';
+import { NewChatSVG } from '_svgs';
+import chatContext from '../_context/ChatContext';
 
 /**
  * Renders a Navbar that is shared across all the pages and routes.
@@ -13,11 +14,16 @@ import { NewChatSVG } from '../_svgs';
  * @returns JSX
  */
 export const Navbar = memo(() => {
+  const { newChat } = useContext(chatContext);
   return (
-    <div className="w-full z-10 absolute top-0 flex justify-between items-center p-3">
-      <span>Name</span>
+    <div className="w-full z-10 fixed top-0 flex justify-between items-center p-3">
+      <span>dietbot</span>
       <div className="flex items-center gap-5 ">
-        <Link href="/" className="w-9 h-9 p-1.5  relative rounded-full ">
+        <Link
+          href="/"
+          className="w-9 h-9 p-1.5  relative rounded-full"
+          onClick={newChat}
+        >
           <NewChatSVG className="before:content-['New_Chat']" />
         </Link>
         <ChatHistory />
