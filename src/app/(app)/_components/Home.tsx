@@ -19,7 +19,7 @@ export const Home: React.FC = () => {
       <div className="h-full flex flex-col items-center justify-center relative sm:-top-10">
         <div className="flex flex-col justify-center items-center sm:mb-6 mb-4">
           <Text
-            text="Hi Vedant, welcome back!"
+            text="Hi Akshay, welcome back!"
             className="gradient sm:text-3xl text-lg flex flex-wrap font-[320] "
           />
 
