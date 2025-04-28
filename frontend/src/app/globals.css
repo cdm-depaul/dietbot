@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+
+:root {
+  --background: rgb(245, 245, 245);
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Open Sans';
+}
+
+.hover-none:before {
+  visibility: hidden !important;
+}
+
+.hover-text::before {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  position: absolute;
+  padding: 2px;
+  text-align: center;
+  top: 170%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.1s 0.2s ease-in-out;
+}
+.hover-text:hover:before {
+  visibility: visible;
+  top: 150%;
+}
