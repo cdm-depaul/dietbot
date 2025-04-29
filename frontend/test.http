@@ -1,0 +1,14 @@
+# @BASE_URL = http://localhost:11434/
+@BASE_URL = http://localhost:4000
+
+
+# GET {{BASE_URL}}/api/ps
+
+
+POST {{BASE_URL}}/query HTTP/1.1
+User-Agent: rest-client
+Content-Type: application/json
+
+{
+  "msg" : "hello"
+}
