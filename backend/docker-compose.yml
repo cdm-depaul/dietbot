@@ -1,0 +1,48 @@
+# docker-compose.yml
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: dietbot_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-dietbotdb}
+    ports:
+      # This port mapping makes the DB accessible from your HOST machine's localhost:5432
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-dietbotdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: dietbot_app
+    build: .
+    ports:
+      - "8000:8000"
+    # Removing network_mode: host so containers can talk to each other by service name
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Update to use service name 'db' instead of 'localhost'
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-dietbotdb}
+      # Add these environment variables to ensure the app uses the right connection details
+      POSTGRES_HOST: db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-dietbotdb}
+      POSTGRES_PORT: 5432
+    volumes:
+      - .:/app
+    command: >
+      sh -c "echo 'Waiting for database...' &&
+             python init_db.py &&
+             echo 'Starting Uvicorn on port 8000...' &&
+             uvicorn dietbot.main:app --host 0.0.0.0 --port 8000 --reload"
+
+volumes:
+  postgres_data:

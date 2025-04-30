@@ -136,3 +136,5 @@ venv/
 .ionide
 .vscode/*
 *.code-workspace
+
+/backend/data/

@@ -1,6 +1,0 @@
-# FROM python3:alpine
-# WORKDIR "/app"
-# COPY ./requirements.txt ./
-# RUN pip install -U pip requirements.txt
-# COPY . .
-# CMD ["flask", "run", "--debug"]
