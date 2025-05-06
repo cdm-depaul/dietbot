@@ -6,7 +6,7 @@ This document provides instructions on how to set up and run the DietBot applica
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/cdm-depaul/dietbot.git
     cd dietbot
     ```
 
