@@ -1,1 +1,100 @@
-# DietBot
+# DietBot Project
+
+This document provides instructions on how to set up and run the DietBot application, including both the backend and frontend services.
+
+## Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repository-url>
+    cd dietbot
+    ```
+
+2.  **Set up the Backend:**
+    *   Navigate to the backend directory:
+        ```bash
+        cd backend
+        ```
+    *   **Supabase Project Setup:**
+        1.  Go to [Supabase](https://supabase.com/) and create a new project or use an existing one.
+        2.  In your Supabase project dashboard, navigate to **Project Settings** > **API**.
+        3.  You will find your **Project URL** (this is your `SUPABASE_URL`) and the **anon public** key (this is your `SUPABASE_ANON_KEY`).
+
+    *   The backend requires these environment variables. Create a `.env` file by copying the example file:
+        ```bash
+        cp .env.example .env
+        ```
+    *   Open the `.env` file and fill in the required values you obtained from your Supabase project:
+        *   `SUPABASE_URL`
+        *   `SUPABASE_ANON_KEY`
+        *   Also, configure your API keys for other services:
+        *   `NUTRITIONIX_APP_ID`
+        *   `NUTRITIONIX_API_KEY`
+        *   `OLLAMA_MODEL` (optional, defaults to `dietbot`)
+        *   `OLLAMA_API_URL` (optional, defaults to `http://host.docker.internal:11434/api/chat`)
+
+    *   **Populate Supabase Database:**
+        Once your `.env` file is configured with the Supabase credentials, run the script to populate your database with initial schema and data. Make sure you are in the `backend` directory.
+        ```bash
+        python scripts/populate_supabase.py
+        ```
+        This script will create necessary tables and insert some sample data.
+
+3.  **Set up the Frontend:**
+    *   Navigate to the frontend directory (from the project root):
+        ```bash
+        cd frontend
+        ```
+    *   Install the necessary Node.js dependencies:
+        ```bash
+        npm install
+        ```
+
+## Running the Application
+
+### 1. Start the Backend Service
+
+*   Navigate to the `backend` directory (if you're not already there):
+*   Start the backend services using Docker Compose:
+    ```bash
+    docker-compose up --build
+    ```
+    (You can omit `--build` on subsequent runs if the Docker image hasn't changed.)
+*   The backend API will be running at `http://localhost:8001`.
+
+### 2. Start the Frontend Service
+
+*   Navigate to the `frontend` directory (if you're not already there):
+*   Start the Next.js development server:
+    ```bash
+    npm run dev
+    ```
+*   The frontend application will be accessible at `http://localhost:3000`.
+
+## Accessing the Application
+
+Once both services are running, open your web browser and go to:
+
+[http://localhost:3000](http://localhost:3000)
+
+## Stopping the Application
+
+*   **Backend**: In the terminal where `docker-compose up` is running, press `Ctrl+C`. To stop and remove the containers, you can run `docker-compose down` from the `backend` directory.
+*   **Frontend**: In the terminal where `npm run dev` is running, press `Ctrl+C`.
+
+## Project Structure Overview
+
+*   `/backend`: Contains the Python FastAPI backend service, managed with Docker.
+*   `/frontend`: Contains the Next.js frontend application.
+*   `/worker`: (Potentially for background tasks - details TBD based on its usage).
+*   `/nginx`: (Likely for reverse proxy configuration in a production setup - details TBD based on its usage).
+*   `/docker-compose.yml`: (Root level - currently commented out, might be for a full stack deployment orchestration).
+
+---
+
+*This README was generated to help you get started. You may need to adjust paths or commands based on your specific setup or if the project structure evolves.*
+
+
+How to run the backend:
+
+#
