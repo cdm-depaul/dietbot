@@ -101,7 +101,7 @@ export const ChatContextProvider: React.FC<childProps> = ({ children }) => {
           requestBody
       );
       
-      if (responseData && responseData.response) {e
+      if (responseData && responseData.response) {
           dispatch({
               action: 'llmResponse',
               value: [llmResponseIndex, responseData.response]
