@@ -3,7 +3,7 @@ import { childProps } from '../_components/interface';
 import { Chat } from './../_components';
 import { API } from '../_api/api';
 
-const api = new API(new TextDecoder(), 'http://localhost:11434');
+const api = new API();
 
 interface chatInterface {
   chatHistory: React.ReactNode[];
@@ -67,11 +67,14 @@ export const ChatContextProvider: React.FC<childProps> = ({ children }) => {
     chatHistory: [],
   });
   const postQuery = async (query: string) => {
+    const userQueryIndex = state.chatHistory.length;
+    const llmResponseIndex = userQueryIndex + 1;
+
     dispatch({
       action: 'userQuery',
       value: [
         React.cloneElement(
-          <Chat key={state.chatHistory.length} className="my-3">
+          <Chat key={userQueryIndex} className="my-3">
             <div className="flex justify-end">
               <span
                 className="border rounded-xl p-1 px-3"
@@ -83,24 +86,41 @@ export const ChatContextProvider: React.FC<childProps> = ({ children }) => {
           </Chat>
         ),
         React.cloneElement(
-          <Chat className="" key={state.chatHistory.length + 1}>
-            <div>{}</div>
+          <Chat className="" key={llmResponseIndex}>
+            <div>...</div> 
           </Chat>
         ),
       ],
     });
-    let message = '';
-    api.postData(
-      'api/generate',
-      JSON.stringify({ model: 'llama3.2', prompt: query }),
-      (response: string) => {
-        message += response;
-        dispatch({
-          action: 'llmResponse',
-          value: [state.chatHistory.length + 1, message],
-        });
+
+    try {
+      const userId = 1; // Hardcoded user ID, replace later
+      const requestBody = { query: query };
+      const responseData = await api.postJsonData<{ response: string }>(
+          `chat/${userId}/ask`, // URL relative to base API URL
+          requestBody
+      );
+      
+      if (responseData && responseData.response) {e
+          dispatch({
+              action: 'llmResponse',
+              value: [llmResponseIndex, responseData.response]
+          });
+      } else {
+           // Improper message handling
+           dispatch({
+              action: 'llmResponse',
+              value: [llmResponseIndex, "Sorry, I couldn't get a response."]
+          });
+           console.error("Received empty or invalid response from backend:", responseData);
       }
-    );
+    } catch (error) {
+        console.error("Error posting query:", error);
+        dispatch({
+            action: 'llmResponse',
+            value: [llmResponseIndex, `Error: ${error instanceof Error ? error.message : 'Failed to fetch response'}`]
+        });
+    }
   };
 
   const newChat = () => {

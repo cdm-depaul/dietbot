@@ -17,7 +17,11 @@ export const Navbar = memo(() => {
   const { newChat } = useContext(chatContext);
   return (
     <div className="w-full z-10 fixed top-0 flex justify-between items-center p-3">
-      <span>dietbot</span>
+      <img
+        className="w-10 h-10 rounded-full"
+        src="/images/logo.png"
+        alt="dietbot logo"
+      />
       <div className="flex items-center gap-5 ">
         <Link
           href="/"

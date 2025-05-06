@@ -32,8 +32,32 @@ export const Home: React.FC = () => {
           />
         </div>
         <ChatBox className="sm:mb-0" />
-        {/* 
-        <div className="w-full flex justify-center items-start gap-2 sm:mt-6 flex-wrap">
+        <div className="flex flex-row justify-center gap-5 mt-5">
+          <Intent
+            className="text-emerald-500  fill-emerald-500 hover:bg-emerald-500"
+            text="Add Meal"
+          >
+            <p></p>
+          </Intent>
+          <Intent
+            className="text-indigo-500  fill-indigo-500 hover:bg-indigo-500"
+            text="Health Analytics"
+          >
+            <p></p>
+          </Intent>
+          <button
+            onClick={async () => {
+              const response = await fetch('http://localhost:8000', {
+                method: 'Get',
+              });
+              console.log(await response.json());
+            }}
+          >
+            tesing backend
+          </button>
+        </div>
+
+        {/* <div className="w-full flex justify-center items-start gap-2 sm:mt-6 flex-wrap">
           <Intent
             className="text-emerald-500  fill-emerald-500 hover:bg-emerald-500"
             text="Suggestion"
