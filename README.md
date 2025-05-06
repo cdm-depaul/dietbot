@@ -54,7 +54,7 @@ This document provides instructions on how to set up and run the DietBot applica
 
 ### 1. Start the Backend Service
 
-*   Navigate to the `backend` directory (if you're not already there):
+*   Navigate to the `backend` directory:
 *   Start the backend services using Docker Compose:
     ```bash
     docker-compose up --build
@@ -64,7 +64,7 @@ This document provides instructions on how to set up and run the DietBot applica
 
 ### 2. Start the Frontend Service
 
-*   Navigate to the `frontend` directory (if you're not already there):
+*   Navigate to the `frontend` directory:
 *   Start the Next.js development server:
     ```bash
     npm run dev
@@ -81,20 +81,3 @@ Once both services are running, open your web browser and go to:
 
 *   **Backend**: In the terminal where `docker-compose up` is running, press `Ctrl+C`. To stop and remove the containers, you can run `docker-compose down` from the `backend` directory.
 *   **Frontend**: In the terminal where `npm run dev` is running, press `Ctrl+C`.
-
-## Project Structure Overview
-
-*   `/backend`: Contains the Python FastAPI backend service, managed with Docker.
-*   `/frontend`: Contains the Next.js frontend application.
-*   `/worker`: (Potentially for background tasks - details TBD based on its usage).
-*   `/nginx`: (Likely for reverse proxy configuration in a production setup - details TBD based on its usage).
-*   `/docker-compose.yml`: (Root level - currently commented out, might be for a full stack deployment orchestration).
-
----
-
-*This README was generated to help you get started. You may need to adjust paths or commands based on your specific setup or if the project structure evolves.*
-
-
-How to run the backend:
-
-#
