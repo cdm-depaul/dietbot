@@ -4,10 +4,8 @@ import logging
 import requests
 from dotenv import load_dotenv
 
-# Use relative imports for modules within the 'backend' package
 from .potts import IntentClassifier
 from .retriever import Retriever
-# Assuming 'tools.py' is also in the 'backend' directory
 from .tools import meal_planning, meal_logging
 
 # Logging configuration
@@ -18,7 +16,8 @@ load_dotenv()
 
 DEFAULT_MODEL = "dietbot"
 AGENT_LOOP_LIMIT = 3
-OLLAMA_API_URL = "http://localhost:11434/api/chat"
+# Read Ollama API URL from environment variable, defaulting to localhost if not set
+OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434/api/chat')
 
 class LocalModel:
     def __init__(self) -> None:
@@ -50,6 +49,7 @@ class LocalModel:
                 "model": self.model,
                 "messages": messages
             }
+            # Use the configured OLLAMA_API_URL
             response = requests.post(OLLAMA_API_URL, json=payload, stream=True)
             response.raise_for_status()
             
@@ -180,6 +180,37 @@ class LocalModel:
                 "context_used": ""
             }
 
+        # Prepare system messages, including user profile if available
+        messages = [{"role": "system", "content": self.system_prompt}]
+        if user_context and 'profile' in user_context:
+            profile = user_context['profile']
+            profile_parts = []
+            if profile.get('allergies'):
+                profile_parts.append(f"Allergies: {', '.join(profile['allergies'])}")
+            if profile.get('likes'):
+                profile_parts.append(f"Likes: {', '.join(profile['likes'])}")
+            if profile.get('dislikes'):
+                profile_parts.append(f"Dislikes: {', '.join(profile['dislikes'])}")
+            if profile.get('diet'): # Assuming 'diet' key exists based on user data
+                profile_parts.append(f"Diet Type: {profile['diet']}")
+            if profile.get('goal'): # Assuming 'goal' key exists
+                profile_parts.append(f"Goal: {profile['goal']}")
+            # Add other relevant fields like age, sex, weight, height, activity_level if needed for the model's task
+            # if profile.get('age'): profile_parts.append(f"Age: {profile['age']}")
+            # if profile.get('sex'): profile_parts.append(f"Sex: {profile['sex']}")
+            # if profile.get('weight'): profile_parts.append(f"Weight: {profile['weight']}kg")
+            # if profile.get('height'): profile_parts.append(f"Height: {profile['height']}cm")
+            # if profile.get('activity_level'): profile_parts.append(f"Activity Level: {profile['activity_level']}")
+                
+            if profile_parts:
+                profile_context = "User Profile Constraints: " + "; ".join(profile_parts) + ". Please strictly adhere to these constraints, especially allergies, when generating meal plans or recommendations."
+                messages.append({"role": "system", "content": profile_context})
+                logger.info(f"Added user profile context to messages: {profile_context}")
+            else:
+                logger.info("User context provided, but no relevant profile constraints found to add.")
+        else:
+            logger.info("No user context provided or profile missing.")
+
         try:
             query_embedding = self.retriever.embed_query(query)
             intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
@@ -209,10 +240,8 @@ class LocalModel:
                     "your primary goal is to answer questions effectively using the provided context."
                 )
                 
-                messages = [
-                    {"role": "system", "content": system_content},
-                    {"role": "user", "content": query}
-                ]
+                messages.append({"role": "system", "content": system_content})
+                messages.append({"role": "user", "content": query})
             
             # Meal logging tool
             elif top_intent == "Meal-Logging":
@@ -226,13 +255,11 @@ class LocalModel:
                     "prioritize likes, and follow the user's diet/goal."
                 )
                 
-                messages = [
-                    {"role": "system", "content": prompt_with_context},
-                    {"role": "user", "content": query}
-                ]
+                messages.append({"role": "system", "content": prompt_with_context})
+                messages.append({"role": "user", "content": query})
 
             # Response generation
-            collected_contexts = []
+            collected_contexts = [initial_context]
             final_answer = None
             
             # Initial call to Ollama

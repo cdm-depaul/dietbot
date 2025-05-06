@@ -6,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
-from .database import init_db
 from .routers import user_routes, nutrient_routes, chat_routes
 
 from .local_model import LocalModel #or
@@ -26,8 +25,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-
-# Will ntegrated into the services layer 
 classifier = IntentClassifier()
 model = LocalModel()
 
@@ -39,7 +36,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include the new routers
 app.include_router(user_routes.router)
 app.include_router(nutrient_routes.router)
 app.include_router(chat_routes.router)

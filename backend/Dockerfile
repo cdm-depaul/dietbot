@@ -26,8 +26,6 @@ RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose the port the app will run on (matching the uvicorn command)
-EXPOSE 8000
+EXPOSE 8001
 
-# The command to run the application is specified in docker-compose.yml,
-# but we can add a default CMD here as a fallback or for running the container directly.
-# CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"] # Adjust 'app:app' if needed
+
