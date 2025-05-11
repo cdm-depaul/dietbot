@@ -33,12 +33,59 @@ This document provides instructions on how to set up and run the DietBot applica
         *   `OLLAMA_MODEL` (optional, defaults to `dietbot`)
         *   `OLLAMA_API_URL` (optional, defaults to `http://host.docker.internal:11434/api/chat`)
 
-    *   **Populate Supabase Database:**
-        Once your `.env` file is configured with the Supabase credentials, run the script to populate your database with initial schema and data. Make sure you are in the `backend` directory.
-        ```bash
-        python scripts/populate_supabase.py
-        ```
-        This script will create necessary tables and insert some sample data.
+## Supabase Table Schemas
+
+Create your db tables in Supabase using these SQL commands:
+
+### 1) user_profiles
+
+```sql
+CREATE TABLE IF NOT EXISTS public.user_profiles (
+  id                  BIGSERIAL       PRIMARY KEY,
+  created_at          TIMESTAMPTZ     NOT NULL DEFAULT now(),
+  name                TEXT,
+  email               TEXT            UNIQUE,
+  daily_calorie_goal  INTEGER,
+  age                 INTEGER,
+  sex                 TEXT,
+  height              INTEGER,
+  weight              REAL,
+  activity_level      TEXT,
+  allergies           TEXT[],
+  likes               TEXT[],
+  dislikes            TEXT[],
+  diet                TEXT,
+  goal                TEXT
+);
+```
+
+### 2) chat_history
+
+```sql
+CREATE TABLE IF NOT EXISTS public.chat_history (
+  id          BIGSERIAL    PRIMARY KEY,
+  user_id     BIGINT       NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  sender      TEXT,
+  message     TEXT
+);
+```
+
+### 3) food_intake
+
+```sql
+CREATE TABLE IF NOT EXISTS public.food_intake (
+  id          BIGSERIAL    PRIMARY KEY,
+  user_id     BIGINT       NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  food_item   TEXT,
+  calories    INTEGER,
+  protein_g   NUMERIC,
+  carbs_g     NUMERIC,
+  fat_g       NUMERIC,
+  details     JSONB
+);
+```
 
 3.  **Set up the Frontend:**
     *   Navigate to the frontend directory (from the project root):
@@ -50,6 +97,13 @@ This document provides instructions on how to set up and run the DietBot applica
         npm install
         ```
 
+ *   **Then, populate the supabase database:**
+        Once your `.env` file is configured with the Supabase credentials, run the script to populate your database with initial schema and data. Make sure you are in the `backend` directory.
+            ```bash
+            python scripts/populate_supabase.py
+            ```
+        This script will create necessary tables and insert some sample data.
+        
 ## Running the Application
 
 ### 1. Start the Backend Service
