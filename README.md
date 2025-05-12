@@ -125,6 +125,16 @@ CREATE TABLE IF NOT EXISTS public.food_intake (
     ```
 *   The frontend application will be accessible at `http://localhost:3000`.
 
+### 3. Starting the ollama server:
+
+To start Ollama server:
+
+```bash
+ollama pull gemma3
+ollama serve
+```
+Restart ollama if port is already in use.
+
 ## Accessing the Application
 
 Once both services are running, open your web browser and go to:
