@@ -1,9 +1,8 @@
 import logging
 import uvicorn
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 from .routers import user_routes, nutrient_routes, chat_routes

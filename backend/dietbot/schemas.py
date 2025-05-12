@@ -27,7 +27,7 @@ class UserResponse(UserBase):
     id: int
 
     class Config:
-        orm_mode = True 
+        from_attributes = True
 
 # Nutrient Intake
 class NutrientBase(BaseModel):
@@ -48,7 +48,7 @@ class NutrientResponse(NutrientBase):
     date: date
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Chat
 class ChatQuery(BaseModel):
@@ -63,7 +63,7 @@ class UserContextResponse(BaseModel):
     recent_intake: List[NutrientResponse]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # RDI Comparison
 class NutrientComparison(BaseModel):
