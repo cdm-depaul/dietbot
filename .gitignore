@@ -137,3 +137,8 @@ venv/
 .vscode/*
 *.code-workspace
 
+/backend/data/archive (1)
+/backend/data/Clean Transcripts
+/backend/data/Transcripts
+
+
