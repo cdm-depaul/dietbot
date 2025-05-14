@@ -137,4 +137,3 @@ venv/
 .vscode/*
 *.code-workspace
 
-/backend/data/
