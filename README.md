@@ -1,4 +1,4 @@
-# DietBot Project
+# DietBot Project v. 1.2
 
 This document provides instructions on how to set up and run the DietBot application, including both the backend and frontend services.
 
