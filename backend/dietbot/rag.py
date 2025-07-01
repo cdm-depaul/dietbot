@@ -10,7 +10,10 @@ HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 embedder = SentenceTransformer(EMBED_MODEL_NAME)
 
+""" 6/29/2025 nt: path fixed
 CSV_PATH = "/app/data/intent_embeddings/intent_embeddings_all.csv"
+"""
+CSV_PATH = "../data/intent_embeddings/intent_embeddings_all.csv"
 
 df_knowledge = pd.DataFrame()
 try:

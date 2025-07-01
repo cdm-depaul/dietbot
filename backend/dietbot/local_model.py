@@ -4,9 +4,13 @@ import logging
 import requests
 from dotenv import load_dotenv
 
+## 6/29/2025 nt: path fixed
 from .potts import IntentClassifier
+#from potts import IntentClassifier
 from .retriever import Retriever
+#from retriever import Retriever
 from .tools import meal_planning, meal_logging
+#from tools import meal_planning, meal_logging
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -327,5 +331,6 @@ class LocalModel:
 
 if __name__ == "__main__":
     engine = LocalModel()
-    response = engine.get_response("What is the importance of protein?")
+    #response = engine.get_response("What is the importance of protein?")
+    response = engine.get_response("How much protein does tofu contain?")
     print(json.dumps(response, indent=2)) 

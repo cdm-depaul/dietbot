@@ -11,7 +11,9 @@ Module for Ms. Potts.  So far it classifies a user query into one of the four in
 	3. Personalized-Health-Advice
 """
 
+## 6/29/2025 nt: path fixed
 CSV_PATH = "./data/intent_embeddings/intent_embeddings_all.csv"
+#CSV_PATH = "../data/intent_embeddings/intent_embeddings_all.csv"
 
 class IntentClassifier:
     def __init__(self):

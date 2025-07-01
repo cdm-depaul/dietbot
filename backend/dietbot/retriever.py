@@ -12,7 +12,8 @@ class Retriever:
         try:
             self.embed_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
             
-            data_path = os.path.join(os.path.dirname(__file__), '../data/embeddings.csv')
+            #data_path = os.path.join(os.path.dirname(__file__), '../data/embeddings.csv')
+            data_path = './data/embeddings.csv'
             self.knowledge_df = pd.read_csv(data_path)
             
             self.knowledge_embeddings = np.array(
