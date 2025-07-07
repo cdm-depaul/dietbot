@@ -4,7 +4,7 @@ import logging
 import requests
 from dotenv import load_dotenv
 
-## 6/29/2025 nt: path fixed
+## 6/29/2025 nt: path fixed -- but reverted later after successful system integration
 from .potts import IntentClassifier
 #from potts import IntentClassifier
 from .retriever import Retriever
@@ -13,7 +13,7 @@ from .tools import meal_planning, meal_logging
 #from tools import meal_planning, meal_logging
 
 # Logging configuration
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -184,7 +184,34 @@ class LocalModel:
                 "context_used": ""
             }
 
-        # Prepare system messages, including user profile if available
+	    ## 7/6/2025 nt: change to check for non-diet/nutrition related queries and reject first.
+	    ##  To do so, the initial intent classification with the query will do.  NO need to add
+	    ##  user context yet.
+        query_embedding = self.retriever.embed_query(query)
+        intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
+         
+        ## 7/6/2025 nt:
+        ## if the best score (between query and intent example sentences) are below threshold,
+        best_score = intent_result['top_score']
+        if best_score < self.intent_classifier.threshold: # defined in potts.py
+            # query totally out of domain (e.g. changing tires), early exit..
+            print(f'DEBUG: ^^^^^ Top intent OUT OF SCOPE ^^^^^') # displayed to stdout 
+            return {
+                #"reasoning": initial_context.replace("OUT_OF_SCOPE:", "Question out of scope:"),
+                "reasoning": "Totally OUT_OF_SCOPE:",
+                "final_answer": (
+                    "This question is outside my nutrition expertise. "
+                    "Please ask about food, nutrients, or health-related topics."
+                ),
+                #"detected_intent": top_intent,   ## nt: not needed for this
+                #"context_used": initial_context  ## nt: not needed for this
+            }
+            
+        ## if the first intent is above threshold, we do either meal-logging (without user profile info) 
+        ##  or mean-Planning or Education.  We set the intent index.
+        ##  For that, we first build up the user profile.
+        ##  NOTE: The code below is not good.  It NEEDS TO BE factored out and cleaned up.
+	    # Prepare system messages, including user profile if available
         messages = [{"role": "system", "content": self.system_prompt}]
         if user_context and 'profile' in user_context:
             profile = user_context['profile']
@@ -215,23 +242,32 @@ class LocalModel:
         else:
             logger.info("No user context provided or profile missing.")
 
+        ## 7/6/2025 nt: Identify intent
         try:
-            query_embedding = self.retriever.embed_query(query)
-            intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
-            top_intent = intent_result['top_intent']
-            initial_context = self.retriever.retrieve(query)
+            ## 7/6/2025 nt: these are done above
+            #query_embedding = self.retriever.embed_query(query)
+            #intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
             
+            # from here we can go..
+            top_intent = intent_result['top_intent']
+            print(f'DEBUG: ^^^ Top intent = {top_intent} ^^^')
+            
+            ## 7/6/2025 nt: pass in an embedding (to avoid duplicate embed_query())
+            #initial_context = self.retriever.retrieve(query)
+            initial_context = self.retriever.retrieve(query_embedding)
+            
+            ## 7/6/2025 nt: NO need to do this because totally unrelated query is rejected earlier.
             # Unrelated question handling
-            if "OUT_OF_SCOPE" in initial_context:
-                return {
-                    "reasoning": initial_context.replace("OUT_OF_SCOPE:", "Question out of scope:"),
-                    "final_answer": (
-                        "This question is outside my nutrition expertise. "
-                        "Please ask about food, nutrients, or health-related topics."
-                    ),
-                    "detected_intent": top_intent,
-                    "context_used": initial_context
-                }
+            #if "OUT_OF_SCOPE" in initial_context:
+            #    return {
+            #        "reasoning": initial_context.replace("OUT_OF_SCOPE:", "Question out of scope:"),
+            #        "final_answer": (
+            #            "This question is outside my nutrition expertise. "
+            #            "Please ask about food, nutrients, or health-related topics."
+            #        ),
+            #        "detected_intent": top_intent,
+            #        "context_used": initial_context
+            #    }
 
             # Prepare messages for Ollama API
             if top_intent == "Educational-Content" or top_intent == "Personalized-Health-Advice":
@@ -270,6 +306,8 @@ class LocalModel:
             ollama_response = self._call_ollama(messages)
             response_content = ollama_response.get("message", {}).get("content", "")
             
+            ## 7/6/2025 nt: I don't know why you have to loop to get more info...
+            ##  But I'm leaving this here just in case it does something...
             # Agent loop for context retrieval
             count = 0
             while count < self.agent_loop_limit:
@@ -302,6 +340,8 @@ class LocalModel:
                 
                 if final_answer:
                     break
+                    
+                print('---------- messages: {messages} -----------')
                 
                 # Make another call to Ollama with updated context
                 ollama_response = self._call_ollama(messages)
