@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
-from typing import Tuple, List
+from typing import Tuple, List, Union
+import logging
 
 """ 12/15/2024: nt
 Module for Ms. Potts.  So far it classifies a user query into one of the four intents:
@@ -10,6 +11,8 @@ Module for Ms. Potts.  So far it classifies a user query into one of the four in
 	2. Educational-Content
 	3. Personalized-Health-Advice
 """
+## 7/6/2025 nt: added
+logger = logging.getLogger(__name__)
 
 ## 6/29/2025 nt: path fixed
 CSV_PATH = "./data/intent_embeddings/intent_embeddings_all.csv"
@@ -30,7 +33,7 @@ class IntentClassifier:
         self.intent_norms = np.linalg.norm(self.intent_embeddings, axis=1)
         
         ## 7/6/2025 nt: use a threshold to filter out non-diet/nutrition related query
-        self.threshold = 0.4
+        self.threshold = 0.3
         
     #def compute_similarity(self, query_embedding: np.ndarray, intent_embeddings: np.ndarray) -> List[Tuple[int, float]]:
     def compute_similarity(self, query_embedding: np.ndarray) -> List[Tuple[int, float]]:
@@ -39,23 +42,24 @@ class IntentClassifier:
         #    np.linalg.norm(intent_embeddings, axis=1) * np.linalg.norm(query_embedding)
         #)
         similarities = np.dot(self.intent_embeddings, query_embedding) / (
-	               self.intent_norms * np.linalg.norm(query_embedding)
-	               )
+	                   self.intent_norms * np.linalg.norm(query_embedding)
+	                   )
         
         top_indices = np.argsort(similarities)[::-1] # 7/6/2025 nt: sort by sim score
-        return [(idx, similarities[idx]) for idx in top_indices[:3]]
+        #return [(idx, similarities[idx]) for idx in top_indices[:3]]
+        return [(idx, similarities[idx]) for idx in top_indices]
     
-    def classify_from_embedding(self, query_embedding: np.ndarray) -> dict:
-        ## 7/6/2025 nt: do these in the pre-computation of intent embeddings in constructor
-        #df_temp = self.intent_df.drop(['Intent', 'Category'], axis=1)
-        #embeddings = df_temp.to_numpy()
-        #results = self.compute_similarity(query_embedding, embeddings)
+    ## 7/6/2025 nt: rewrote the code.
+    def classify_from_embedding(self, query_embedding: np.ndarray) -> Union[str, dict]:
+    	# first compute the similarity of query to intents
         results = self.compute_similarity(query_embedding)
-        
-        ## 7/6/2025 nt: moved to the constructor for efficiency
-        #categories = self.intent_df['Category'].to_numpy()
-        #intents = self.intent_df['Intent'].to_numpy()
-        
+
+		# if the top score is below the threshold, immediate return with 'OUT_OF_SCOPE'
+        top_score = results[0][1]
+        if top_score < self.threshold:
+            logger.info(f"Query OUT_OF_SCOPE (cosine_score: {top_score:.2f})")
+            return ("OUT_OF_SCOPE")
+		# else:
         classifications = [
             {
                 "category": self.categories[idx], # 7/6/2025 nt: changed
@@ -64,10 +68,10 @@ class IntentClassifier:
             }
             for idx, score in results
         ]
-        
+
         return {
-            "top_intent": classifications[0]["intent"],
             "top_category": classifications[0]["category"],
+            "top_intent": classifications[0]["intent"],
             ## 7/6/2025 nt: addition
             "top_score": classifications[0]["confidence"],
             "classifications": classifications

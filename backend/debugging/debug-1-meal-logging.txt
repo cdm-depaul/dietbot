@@ -1,0 +1,32 @@
+
+
+dietbot_app  | ========= KB embedding norms created =======
+dietbot_app  | INFO:     Started server process [9]
+dietbot_app  | INFO:     Waiting for application startup.
+dietbot_app  | INFO:     Application startup complete.
+dietbot_app  | INFO:     172.18.0.1:44642 - "OPTIONS /chat/1/ask HTTP/1.1" 200 OK
+dietbot_app  | INFO:httpx:HTTP Request: GET https://abqnxwzcihvysmxwqhhv.supabase.co/rest/v1/user_profiles?select=%2A&user_id=eq.1&limit=1 "HTTP/2 200 OK"
+dietbot_app  | INFO:httpx:HTTP Request: GET https://abqnxwzcihvysmxwqhhv.supabase.co/rest/v1/daily_nutrient_intake?select=%2A&user_id=eq.1&order=date.desc%2Cid.desc&limit=5 "HTTP/2 404 Not Found"
+dietbot_app  | Error fetching recent nutrient intake for user '1': {'code': '42P01', 'details': None, 'hint': None, 'message': 'relation "public.daily_nutrient_intake" does not exist'}
+dietbot_app  | INFO:dietbot.services:Processing query: 'I want to log my dinner today.  I had 4 pieces of small grilled chicken wings and a large bowl of cut-up watermelon.' for user ID: 1
+dietbot_app  | INFO:dietbot.services:Generating response with the model...
+Batches: 100%|¦¦¦¦¦¦¦¦¦¦| 1/1 [00:00<00:00, 20.71it/s]
+dietbot_app  | ^^^^^^^^ Top intent = Meal-Logging, score = 0.7345530674407054 ^^^^^^^^
+dietbot_app  |    ======== (1) Meal logging ollama messages: [{'role': 'user', 'content': 'I want to log my dinner today.  I had 4 pieces of small grilled chicken wings and a large bowl of cut-up watermelon.'}, {'role': 'system', 'content': "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. You are also a professional dietitian, with expert knowledge on food, nutrients and human health. Furthermore, you are a personal dietitian to the user.  Take every consideration the user's biometric, diet history and emotional state in responding. Also importantly, be gentle, kind and empathetic.  Understand the user's emotions and provide supportive responses. "}, {'role': 'system', 'content': 'User profile: name: Rhodey, age: 50, sex: Male, height: 175, weight: 70, activity_level: Moderately active, diet: Balanced, goal: Prevent diabetes, allergies: nuts, shellfish, likes: apples, chicken, dislikes: broccoli'}, {'role': 'assistant', 'content': 'The nutrients of the meal is \nMeal: I want to log my dinner today.  I had 4 pieces of small grilled chicken wings and a large bowl of cut-up watermelon.\nCalories: 863.6 kcal\nProtein: 80.89 g\nFat: 57.36 g\nCarbohydrates: 0.0 g\nFiber: 0.0 g\nSodium: 333.2 mg\n'}, {'role': 'system', 'content': "Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. Be positive and encouraging considering the user's goal. Also DO NOT be critical if the user ate too much undesirable nutrients. Be as SUPER gentle as possible because the user is already concerned about their food intake or habit. They may already have stigma about it. Suggest a next meal that compensates this meal. Lastly, make the response as concise as possible.  Remember 'TLDR;'"}] ===========
+dietbot_app  |       ===> (1) Meal logging ollama response: Okay Rhodey, let's take a look at what you had tonight.
+dietbot_app  |
+dietbot_app  | Overall, this was a pretty tasty and refreshing dinner! 4 grilled chicken wings is a good source of lean protein, which is fantastic for you as you’re working on preventing diabetes – protein helps keep you feeling full and stable. And the watermelon is wonderful for hydration and a bit of natural sweetness.
+dietbot_app  |
+dietbot_app  | Now, let's be realistic – those chicken wings, while tasty, do contain a fair amount of fat. It's perfectly okay to enjoy treats occasionally, but let’s keep an eye on it as we’re aiming for consistent healthy choices.
+dietbot_app  |
+dietbot_app  | **TLDR:** A good, satisfying meal, but let’s focus on balanced choices moving forward.
+dietbot_app  |
+dietbot_app  | **For your next meal,** how about a large apple with a handful of almonds (safe for you!), and a hearty lentil soup? Lentils are packed with fiber and nutrients that support blood sugar control, and the apple will satisfy your sweet cravings.
+dietbot_app  |
+dietbot_app  | How are you feeling about everything, Rhodey? Just know that every small, positive step you take is amazing and I’m here to support you every step of the way! ?? ===>>>>>>>>>>>
+dietbot_app  | INFO:dietbot.services:Generated response for user 1: '("Your meal has been logged successfully.\nMeal: I want to log my dinner today.  I had 4 pieces of small grilled chicken wings and a large bowl of cut-up watermelon.\nCalories: 863.6 kcal\nProtein: 80.89 g\nFat: 57.36 g\nCarbohydrates: 0.0 g\nFiber: 0.0 g\nSodium: 333.2 mg\n\nFeedback: Okay Rhodey, let's take a look at what you had tonight. \n\nOverall, this was a pretty tasty and refreshing dinner! 4 grilled chicken wings is a good source of lean protein, which is fantastic for you as you’re working on preventing diabetes – protein helps keep you feeling full and stable. And the watermelon is wonderful for hydration and a bit of natural sweetness.\n\nNow, let's be realistic – those chicken wings, while tasty, do contain a fair amount of fat. It's perfectly okay to enjoy treats occasionally, but let’s keep an eye on it as we’re aiming for consistent healthy choices. \n\n**TLDR:** A good, satisfying meal, but let’s focus on balanced choices moving forward. \n\n**For your next meal,** how about a large apple with a handful of almonds (safe for you!), and a hearty lentil soup? Lentils are packed with fiber and nutrients that support blood sugar control, and the apple will satisfy your sweet cravings. \n\nHow are you feeling about everything, Rhodey? Just know that every small, positive step you take is amazing and I’m here to support you every step of the way! ??",)...'
+dietbot_app  | Error calling chat service: 1 validation error for ChatResponse
+dietbot_app  | response
+dietbot_app  |   Input should be a valid string [type=string_type, input_value=("Your meal has been logg...step of the way! ??",), input_type=tuple]
+dietbot_app  |     For further information visit https://errors.pydantic.dev/2.11/v/string_type
+dietbot_app  | INFO:     172.18.0.1:44642 - "POST /chat/1/ask HTTP/1.1" 500 Internal Server Error

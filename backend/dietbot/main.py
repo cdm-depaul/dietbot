@@ -24,8 +24,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-classifier = IntentClassifier()
-model = LocalModel()
+## 7/7/2025 nt: removed
+#classifier = IntentClassifier()
+#model = LocalModel()
 
 app.add_middleware(
     CORSMiddleware,

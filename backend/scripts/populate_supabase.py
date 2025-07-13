@@ -35,7 +35,7 @@ def populate_db():
             #'id': user_id_to_insert, 
             'user_id': user_id_to_insert,    ## 7/3/2025 nt: changed
             'created_at': str(date.today()), ## 7/1/2025 nt: added
-            'name': 'Jack',
+            'name': 'Rhodey',
             'age': 50,
             'sex': 'Male', 
             'height': 175, # cm

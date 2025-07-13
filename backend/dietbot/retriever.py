@@ -9,8 +9,15 @@ logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
 logger = logging.getLogger(__name__)
 
 class Retriever:
+    ## 7/7/2025 nt: add a class variable to see how many times the class is called.
+    static_count = 0
+    
     def __init__(self):
         """Initialize the retriever by loading the embedding model and the knowledge base."""
+        ## 7/7/2025 nt: first increment the static count vriable
+        print (f"#### Retriever constructor called: {Retriever.static_count}")
+        Retriever.static_count += 1
+        
         try:
             self.embed_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
             
@@ -52,7 +59,6 @@ class Retriever:
                 query_embedding = self.embed_query(query)
             else:
                 query_embedding = query # nt: just to align variable names
-                print (f"*********** query_embebedding same as query ************")
             
             ## 7/6/2025 nt: norms are pre-computed in the constructor
             #knowledge_norms = np.linalg.norm(self.knowledge_embeddings, axis=1)
@@ -63,7 +69,7 @@ class Retriever:
             max_score = np.max(similarities)
             
             if max_score < 0.30:
-                return (f"OUT_OF_SCOPE: This question is outside my nutrition expertise. "
+                return (f"Sorry, this question is outside my nutrition expertise. "
                         f"Please ask about food, nutrients, or health-related topics. (score: {max_score:.2f})")
                 
             most_relevant_idx = np.argmax(similarities)
