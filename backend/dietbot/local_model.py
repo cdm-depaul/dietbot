@@ -136,7 +136,7 @@ class LocalModel:
         print (f'      ===> (1) Meal logging ollama response: {response_content} ===>>>>>>>>>>>')
     
         # overwrite the final answer with the additional feedback!
-        ret_dict['final_answer'] = ret_dict['final_answer'] + f"\nFeedback: {response_content}",
+        ret_dict['final_answer'] = ret_dict['final_answer'] + f"\nFeedback: {response_content}"
         return ret_dict
 
 	## (2) 7/11/2025 nt: for personalized meal planning
