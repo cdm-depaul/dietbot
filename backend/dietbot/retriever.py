@@ -25,7 +25,9 @@ class Retriever:
             7/6/2025 nt: KB data as text chunks and their embeddings is stored in a csv file.
             They are first read into a dataframe and then placed in parallel np arrays.            
             """
-            data_path = './data/embeddings.csv'  
+            ##data_path = './data/embeddings.csv'  
+            data_path = './data/dci_chunk5.csv' ### 7/17/2025 nt: NEW Knowledge base!!!!!!!!!!!
+            
             self.knowledge_df = pd.read_csv(data_path)
             
             ## 7/6/2025 nt: embeddings arrays/vectors
@@ -68,12 +70,16 @@ class Retriever:
                            )
             max_score = np.max(similarities)
             
-            if max_score < 0.30:
-                return (f"Sorry, this question is outside my nutrition expertise. "
-                        f"Please ask about food, nutrients, or health-related topics. (score: {max_score:.2f})")
+            ## 7/17 nt: When the max match is less than threshold, return a different message when KB doesn't have answer
+            if max_score < 0.40: ## threshold
+                return
+                (f"Sorry, our knowledge base does not have answers that reliably answer your question (score: {max_score:.2f}) "                        
+                f"If you are interested in getting  some answers, you can post your question on AI large langguage models such as ChatGPT, on your end")
                 
             most_relevant_idx = np.argmax(similarities)
-            return f"Knowledge Source (score: {max_score:.2f}): {self.knowledge_texts[most_relevant_idx]}"
+            source = self.knowledge_df.at[most_relevant_idx, 'filename']
+            chunk_id = self.knowledge_df.at[most_relevant_idx, 'chunk_number']
+            return f"Knowledge Source ({source}: {chunk_id}; score: {max_score:.2f}): {self.knowledge_texts[most_relevant_idx]}"
             
         except Exception as e:
             logger.error(f"Retrieval error: {e}")

@@ -96,7 +96,7 @@ class LocalModel:
         return init_messages
     
 
-	## (1) 7/11/2025 nt: for meal logging
+    ## (1) 7/11/2025 nt: for meal logging
     def call_meal_logging(self, query, user_context, messages) -> dict:
         # first call the meal_logging tool in tools.py to get a dictionary
         ret_dict = meal_logging(query, user_context['profile']['user_id']) # user_id only
@@ -139,7 +139,7 @@ class LocalModel:
         ret_dict['final_answer'] = ret_dict['final_answer'] + f"\nFeedback: {response_content}"
         return ret_dict
 
-	## (2) 7/11/2025 nt: for personalized meal planning
+    ## (2) 7/11/2025 nt: for personalized meal planning
     def call_meal_planning(self, query, user_context, messages) -> dict:
         # first call the meal_planning in tools.py to get the intent-specific prompt string
         prompt = meal_planning(user_context) # from tool.py; 
@@ -172,7 +172,7 @@ class LocalModel:
         retrieved_context = self.retriever.retrieve(query_embedding) # embedding of original query
         print (f'------ RAG retrieved context: {retrieved_context} -------')
         
-		## add the retrieved context in the messags
+	## add the retrieved context in the messags
         messages.append({
             "role": "user", 
             "content": f"Context: {retrieved_context}\n\nPlease use the context above to answer the query."}
@@ -204,7 +204,7 @@ class LocalModel:
         retrieved_context = self.retriever.retrieve(query_embedding) # embedding of original query
         print (f'------ RAG retrieved context: {retrieved_context} -------')
         
-		## add the retrieved context in the messags
+	## add the retrieved context in the messags
         messages.append({
             "role": "user", 
             "content": f"Context: {retrieved_context}\n\nPlease use the context above to answer the query."}

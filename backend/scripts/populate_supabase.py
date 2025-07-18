@@ -35,15 +35,15 @@ def populate_db():
             #'id': user_id_to_insert, 
             'user_id': user_id_to_insert,    ## 7/3/2025 nt: changed
             'created_at': str(date.today()), ## 7/1/2025 nt: added
-            'name': 'Rhodey',
+            'name': 'Peter',
             'age': 50,
             'sex': 'Male', 
             'height': 175, # cm
             'weight': 70,  # kg
             'activity_level': 'Moderately active',
-            'allergies': ['nuts', 'shellfish'],
-            'likes': ['apples', 'chicken'],
-            'dislikes': ['broccoli'],
+            'allergies': ['nuts', 'wheat'],
+            'likes': ['bananas', 'chicken'],
+            'dislikes': ['peas'],
             'diet': 'Balanced', 
             #'goal': 'Maintain weight'
             'goal': 'Prevent diabetes' #'Maintain weight' ## 7/1/2025 nt: changed

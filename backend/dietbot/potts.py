@@ -22,7 +22,7 @@ class IntentClassifier:
     def __init__(self):
         self.intent_df = pd.read_csv(CSV_PATH)
 
-		## 7/6/2025 nt: moved from under classify_from..()
+	## 7/6/2025 nt: moved from under classify_from..()
         self.categories = self.intent_df['Category'].to_numpy()
         self.intents = self.intent_df['Intent'].to_numpy()
         
@@ -54,7 +54,7 @@ class IntentClassifier:
     	# first compute the similarity of query to intents
         results = self.compute_similarity(query_embedding)
 
-		# if the top score is below the threshold, immediate return with 'OUT_OF_SCOPE'
+	# if the top score is below the threshold, immediate return with 'OUT_OF_SCOPE'
         top_score = results[0][1]
         if top_score < self.threshold:
             logger.info(f"Query OUT_OF_SCOPE (cosine_score: {top_score:.2f})")
