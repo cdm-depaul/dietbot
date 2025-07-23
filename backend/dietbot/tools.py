@@ -4,7 +4,7 @@ import requests
 from dotenv import load_dotenv
 
 # Logging configuration
-logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
+logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep the INFO level (not below)
 logger = logging.getLogger(__name__)
 
 load_dotenv()

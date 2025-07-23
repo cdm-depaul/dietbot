@@ -73,8 +73,7 @@ class Retriever:
             ## 7/17 nt: When the max match is less than threshold, return a different message when KB doesn't have answer
             if max_score < 0.40: ## threshold
                 return
-                (f"Sorry, our knowledge base does not have answers that reliably answer your question (score: {max_score:.2f}) "                        
-                f"If you are interested in getting  some answers, you can post your question on AI large langguage models such as ChatGPT, on your end")
+                (f"Sorry, our knowledge base does not have answers that reliably answer your question (score: {max_score:.2f}) ")
                 
             most_relevant_idx = np.argmax(similarities)
             source = self.knowledge_df.at[most_relevant_idx, 'filename']

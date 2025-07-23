@@ -33,20 +33,20 @@ def populate_db():
         
         user_data = {
             #'id': user_id_to_insert, 
-            'user_id': user_id_to_insert,    ## 7/3/2025 nt: changed
-            'created_at': str(date.today()), ## 7/1/2025 nt: added
-            'name': 'Peter',
-            'age': 50,
-            'sex': 'Male', 
-            'height': 175, # cm
-            'weight': 70,  # kg
-            'activity_level': 'Moderately active',
-            'allergies': ['nuts', 'wheat'],
-            'likes': ['bananas', 'chicken'],
-            'dislikes': ['peas'],
-            'diet': 'Balanced', 
-            #'goal': 'Maintain weight'
-            'goal': 'Prevent diabetes' #'Maintain weight' ## 7/1/2025 nt: changed
+            "user_id": user_id_to_insert,    ## 7/3/2025 nt: changed
+            "created_at": str(date.today()), ## 7/1/2025 nt: added
+            "name": 'Peter',
+            "age": 39,
+            "sex": 'Male', 
+            "height": 180, # cm
+            "weight": 79,  # kg
+            "activity_level": "Moderately active",
+            "allergies": ["nuts", "wheat"],
+            "likes": ["bananas", "chicken"],
+            "dislikes": ["brussels sprouts"],
+            "diet": "Balanced but includes some processed snacks and sugary drinks", 
+            #"goal": "Maintain weight",
+            "goal": "Prevent diabetes" #'Maintain weight' ## 7/1/2025 nt: changed
         }
         
         response_user = supabase.table('user_profiles').upsert(user_data).execute()
@@ -68,17 +68,17 @@ def populate_db():
             #nutrient_data = [
             #    {
             nutrient_data = {
-                    'id' : id_count + 1,  ## 7/1/2025 nt: added
-                    'user_id': user_id_to_insert, 
-                    'created_at': date.today().isoformat(),  # Use ISO format for dates str(date.today()),  ## 7/1/2025 nt: changed
-                    #'dish_name': 'Breakfast Burrito', ## 7/1/2025 nt: changed
-                    'food_item': 'Breakfast Burrito', 
-                    'calories': 550, 
-                    'protein_g': 25.0, ## 7/1/2025 nt: changed
-                    'fat_g': 30.0, ## 7/1/2025 nt: changed
+                    "id" : id_count + 1,  ## 7/1/2025 nt: added
+                    "user_id": user_id_to_insert, 
+                    "created_at": date.today().isoformat(),  # Use ISO format for dates str(date.today()),  ## 7/1/2025 nt: changed
+                    #"dish_name": "Breakfast Burrito", ## 7/1/2025 nt: changed
+                    "food_item": 'Breakfast Burrito', 
+                    "calories": 550, 
+                    "protein_g": 25.0, ## 7/1/2025 nt: changed
+                    "fat_g": 30.0, ## 7/1/2025 nt: changed
                     ## 7/1/2025 nt: changed
                     #'details': {"fiber": 8, "sodium": 900},#::jsonb,
-                    'carbs_g': 40.0
+                    "carbs_g": 40.0
             }#,
                 #{
                 #    'id' : id_count + 2,  ## 7/1/2025 nt: added

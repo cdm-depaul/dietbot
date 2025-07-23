@@ -40,8 +40,8 @@ class LocalModel:
         self.system_prompt = (
             "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. "
             "You are also a professional dietitian, with expert knowledge on food, nutrients and human health. "
-            "Furthermore, you are a personal dietitian to the user.  Take every consideration the user's biometric, diet history and emotional state in responding. "
-            "Also importantly, be gentle, kind and empathetic.  Understand the user's emotions and provide supportive responses. "
+            "Furthermore, you are a personal dietitian to the user.  Take every consideration the user's biometric and dietary profile in responding. "
+            "Also importantly, respond in a gentle, kind and empathetic tone. "
 
         )
 
@@ -122,8 +122,6 @@ class LocalModel:
              "content": ("Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. "
                          "Be positive and encouraging considering the user's goal. "
                          "Also DO NOT be critical if the user ate too much undesirable nutrients. "
-                         "Be as SUPER gentle as possible because the user is already concerned about their food intake or habit. "
-                         "They may already have stigma about it. "
                          "Suggest a next meal that compensates this meal. "
                          "Lastly, make the response as concise as possible.  Remember 'TLDR;'")
             }
@@ -154,10 +152,10 @@ class LocalModel:
         print (f'      ===> (2) Meal-plannig ollama response: {response_content} ===>>>>>>>>>>>')
         
         return {
-		    "reasoning": f"A meal and its recipe are generated.",
-		    "final_answer": f"A recommended meal has been found successfully.\n{response_content}",
-		    "detected_intent": "Meal-Planning-Recipes",
-		    "context_used": query
+	    "reasoning": f"A meal and its recipe are generated.",
+	    "final_answer": f"A recommended meal has been found successfully.\n{response_content}",
+	    "detected_intent": "Meal-Planning-Recipes",
+	    "context_used": query
         }
     
     ## (3) 7/12/2025 nt: personal_health_advice
@@ -187,10 +185,10 @@ class LocalModel:
         ##
         return {
             "reasoning": f"Personalized Health Advice successfully generated",
-		    "final_answer": response_content,
-		    "detected_intent": 'Personalized-Health-Advice',
-		    "context_used": retrieved_context
-		}
+	    "final_answer": response_content,
+	    "detected_intent": 'Personalized-Health-Advice',
+	    "context_used": retrieved_context
+	}
 
     ## (4) 7/12/2025 nt: educational_content
     def call_educational_content(self, query_embedding, user_context, messages) -> dict:
@@ -204,13 +202,22 @@ class LocalModel:
         retrieved_context = self.retriever.retrieve(query_embedding) # embedding of original query
         print (f'------ RAG retrieved context: {retrieved_context} -------')
         
+        ## 7/22 return without fallback LLM call if KB doesn't have an answer
+        if retrieved_content[:5] == 'Sorry':
+            return {
+	        "reasoning": f"NoKnowledgeMatch",
+		"final_answer": "That's a great question! Unfortunately, I don'tcurrently have enough information to answer it accurately. Could you try rephrasing or providing more details?",
+		"detected_intent": 'Educational-Content',
+		"context_used": retrieved_context
+	    }
+        
 	## add the retrieved context in the messags
         messages.append({
             "role": "user", 
             "content": f"Context: {retrieved_context}\n\nPlease use the context above to answer the query."}
         )
 
-        ## call ollama with the enhanced messages
+        ## (*) call ollama with the enhanced messages
         print (f'   ======== (4) Educational-Content messages: {messages} ===========')
         ollama_response = self._call_ollama(messages)
         response_content = ollama_response.get("message", {}).get("content", "")
@@ -219,10 +226,10 @@ class LocalModel:
         ##
         return {
             "reasoning": f"Educational Content successfully processed",
-		    "final_answer": response_content,
-		    "detected_intent": 'Educational-Content',
-		    "context_used": retrieved_context
-		}
+	    "final_answer": response_content,
+	    "detected_intent": 'Educational-Content',
+	    "context_used": retrieved_context
+	}
 		
 
     # Response generation method with classification RAG
@@ -236,18 +243,18 @@ class LocalModel:
                 "context_used": ""
             }
 
-	    ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
+	## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
         query_embedding = self.retriever.embed_query(query)
         intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
         
         ## if an IMMEDIATE out of scope (by intent classifier), return an empty dict
         if intent_result == 'OUT_OF_SCOPE':
             return {
-			    "reasoning": "Query out of scope",
-			    "final_answer": "ERROR: Query OUT_OF_SCOPE. This question is not relevant to food, nutrition or diet at all. " +
+		"reasoning": "Query out of scope",
+		"final_answer": "This query is out of scope. I'm here to help with questions about food, nutrition, and health. " +
                                 "Please try again.",
-			    "detected_intent": None,
-			    "context_used": ""
+		"detected_intent": None,
+		"context_used": ""
             }
         
         ## 7/7/2025 nt: if query is relevant, report classification result immediately (for debugging)
