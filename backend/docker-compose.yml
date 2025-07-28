@@ -18,4 +18,12 @@ services:
       sh -c "echo 'Starting Uvicorn on port 8001...' &&
              uvicorn dietbot.main:app --host 0.0.0.0 --port 8001 --reload"
 
+  logger-app:
+    build: .
+    container_name: logger-app
+    volumes:
+      - ./logs:/logs  # logs folder on host, shared with /logs inside container
+    restart: unless-stopped
+    command: ["sh", "-c", "touch /logs/testfile && ls -l /logs"]
+    
 volumes: {}

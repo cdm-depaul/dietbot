@@ -22,10 +22,21 @@ COPY requirements.txt .
 # Install Python dependencies with increased timeout
 RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
 
+# (*) 7/27 nt: Install logging package
+RUN pip install python-json-logger
+
 # Copy the rest of the application code into the container
 COPY . .
 
+# (*) 7/27 nt: Make log directory inside the container (to match volume mount)
+RUN mkdir -p /logs
+
+
+# (*) 7/27 nt: Set the default command to run the app
+CMD ["python", "app.py"]
+
 # Expose the port the app will run on (matching the uvicorn command)
 EXPOSE 8001
+
 
 

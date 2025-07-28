@@ -69,10 +69,10 @@ if __name__ == "__main__":
     USER_ID = 1  # replace with a valid user ID from your DB
     ENDPOINT = f"{BASE_URL}/chat/{USER_ID}/ask"
 
-    #testfile = "./evaluate/test_questions.csv"
-    testfile = "./evaluate/test_questions_tiny.csv"
-    #outfile = "./evaluate/test_results-0.63.csv" # align threshold with line 79 in retriever.py
-    outfile = "./evaluate/test_results_tiny-0.63.csv"
+    testfile = "./evaluate/test_questions.csv"
+    #testfile = "./evaluate/test_questions_tiny.csv"
+    outfile = "./evaluate/test_results-0.63_eval.csv" # align threshold with line 79 in retriever.py
+    #outfile = "./evaluate/test_results_tiny-0.63.csv"
 
     # Read the CSV file into a DataFrame
     questions = read_csv_questions(testfile)

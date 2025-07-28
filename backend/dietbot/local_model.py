@@ -128,10 +128,10 @@ class LocalModel:
         )
                   
         ## cal ollama with the enhanced messages
-        print (f'   ======== (1) Meal logging ollama messages: {messages} ===========')
+        #print (f'   ======== (1) Meal logging ollama messages: {messages} ===========')
         ollama_response = self._call_ollama(messages)
         response_content = ollama_response.get("message", {}).get("content", "")
-        print (f'      ===> (1) Meal logging ollama response: {response_content} ===>>>>>>>>>>>')
+        #print (f'      ===> (1) Meal logging ollama response: {response_content} ===>>>>>>>>>>>')
     
         ## overwrite the final answer with the additional feedback!
         result["reasoning"] = ret_dict["reasoning"]
@@ -149,10 +149,10 @@ class LocalModel:
         messages.append({"role": "system", "content": prompt}) # this includes 'thinking process/steps'...
         
         ## call ollama with the enhanced messages
-        print (f'   ======== (2) Meal-planning ollama messages: {messages} ===========')
+        #print (f'   ======== (2) Meal-planning ollama messages: {messages} ===========')
         ollama_response = self._call_ollama(messages)
         response_content = ollama_response.get("message", {}).get("content", "")
-        print (f'      ===> (2) Meal-plannig ollama response: {response_content} ===>>>>>>>>>>>')
+        #print (f'      ===> (2) Meal-plannig ollama response: {response_content} ===>>>>>>>>>>>')
         
         ## overwrite the final result and return it
         result["reasoning"] = "A meal is generated and suggested."
@@ -171,7 +171,7 @@ class LocalModel:
         
         ## call retriever to get related facts from the KB
         ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
-        print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
+        #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
 	    ## add the retrieved context in the messags
         messages.append({
@@ -180,10 +180,10 @@ class LocalModel:
         )
 
         ## call ollama with the enhanced messages
-        print (f'   ======== (3) Personalized Health Advice messages: {messages} ===========')
+        #print (f'   ======== (3) Personalized Health Advice messages: {messages} ===========')
         ollama_response = self._call_ollama(messages)
         response_content = ollama_response.get("message", {}).get("content", "")
-        print (f'      ===> (3) Health Advice ollama response: {response_content} ===>>>>>>>>>>>')
+        #print (f'      ===> (3) Health Advice ollama response: {response_content} ===>>>>>>>>>>>')
         
         ## overwrite the final result and return it
         result["reasoning"] = ret_dict["reasoning"]
@@ -204,7 +204,7 @@ class LocalModel:
         
         ## call retriever to get related facts from the KB
         ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
-        print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
+        #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
         ## 7/22 return without fallback LLM call if KB doesn't have an answer
         if ret_dict["reasoning"] == 'NO_KNOWLEDGE_MATCH':
@@ -223,10 +223,10 @@ class LocalModel:
         )
 
         ## (*) call ollama with the enhanced messages
-        print (f'   ======== (4) Educational-Content messages: {messages} ===========')
+        #print (f'   ======== (4) Educational-Content messages: {messages} ===========')
         ollama_response = self._call_ollama(messages)
         response_content = ollama_response.get("message", {}).get("content", "")
-        print (f'      ===> (4) Educational-Content ollama response: {response_content} ===>>>>>>>>>>>')
+        #print (f'      ===> (4) Educational-Content ollama response: {response_content} ===>>>>>>>>>>>')
         
         ## overwrite the final result and return it
         result["reasoning"] = "Educational Content successfully processed"
@@ -276,7 +276,7 @@ class LocalModel:
         
         ## 7/7/2025 nt: if query is relevant, report classification result immediately (for debugging)
         top_intent = intent_result['top_intent']
-        print(f'^^^^^^^^ Top intent = {top_intent}, score = {intent_result['top_score']} ^^^^^^^^')
+        #print(f'^^^^^^^^ Top intent = {top_intent}, score = {intent_result['top_score']} ^^^^^^^^')
          
         ## Calling Tools (when the first intent is above threshold)
         ## Note: this can be made into 'Tool Calls' (typically used in recent AI) :)

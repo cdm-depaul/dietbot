@@ -15,7 +15,7 @@ class Retriever:
     def __init__(self):
         """Initialize the retriever by loading the embedding model and the knowledge base."""
         ## 7/7/2025 nt: first increment the static count vriable
-        print (f"#### Retriever constructor called: {Retriever.static_count}")
+        #print (f"#### Retriever constructor called: {Retriever.static_count}")
         Retriever.static_count += 1
         
         try:
@@ -41,7 +41,7 @@ class Retriever:
             
             ## 7/6/2025 nt: text chunks
             self.knowledge_texts = self.knowledge_df['sentence_chunk'].tolist()
-            print ("========= KB embedding norms created =======")
+            #print ("========= KB embedding norms created =======")
             
         except Exception as e:
             logger.error(f"Error initializing Retriever: {e}")
@@ -70,7 +70,7 @@ class Retriever:
                            )
             ##
             max_score = np.max(similarities)
-            print (f'$$$$$ max_score: {max_score} $$$$$')
+            #print (f'$$$$$ max_score: {max_score} $$$$$')
 
             ## declare a dictionary to return 
             ret_dict = {"ret_score": max_score}            
