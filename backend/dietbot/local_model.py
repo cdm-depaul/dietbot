@@ -40,8 +40,8 @@ class LocalModel:
         self.system_prompt = (
             "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. "
             "You are also a professional dietitian, with expert knowledge on food, nutrients and human health. "
-            "Furthermore, you are a personal dietitian to the user.  Take every consideration the user's biometric and dietary profile in responding. "
-            "Also importantly, respond in a gentle, kind and empathetic tone. "
+            "Furthermore, you are a personal dietitian to the user.  Take every consideration of the user's biometric and dietary profile in responding. "
+            "Also, respond in a gentle, kind, and empathetic tone. "
 
         )
 
@@ -97,7 +97,7 @@ class LocalModel:
     
 
     ## (1) 7/11/2025 nt: for meal logging
-    def call_meal_logging(self, query, user_context, messages) -> dict:
+    def call_meal_logging(self, query, user_context, messages, result) -> dict:
         # first call the meal_logging tool in tools.py to get a dictionary
         ret_dict = meal_logging(query, user_context['profile']['user_id']) # user_id only
        
@@ -115,15 +115,15 @@ class LocalModel:
         ## Add another role instruction in messages:
         messages.append(
             {"role": "assistant", 
-             "content": f"The nutrients of the meal is {summary}"}
+             "content": f"The nutrients of the meal are {summary}"}
         )
         messages.append(
             {"role": "system", 
              "content": ("Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. "
                          "Be positive and encouraging considering the user's goal. "
                          "Also DO NOT be critical if the user ate too much undesirable nutrients. "
-                         "Suggest a next meal that compensates this meal. "
-                         "Lastly, make the response as concise as possible.  Remember 'TLDR;'")
+                         "Suggest a next meal and give a short description. "
+                         "Remember TLDR; Make the response as concise as possible.")
             }
         )
                   
@@ -133,12 +133,15 @@ class LocalModel:
         response_content = ollama_response.get("message", {}).get("content", "")
         print (f'      ===> (1) Meal logging ollama response: {response_content} ===>>>>>>>>>>>')
     
-        # overwrite the final answer with the additional feedback!
-        ret_dict['final_answer'] = ret_dict['final_answer'] + f"\nFeedback: {response_content}"
-        return ret_dict
+        ## overwrite the final answer with the additional feedback!
+        result["reasoning"] = ret_dict["reasoning"]
+        result["ret_context"] = ret_dict["context_used"]
+        result["final_answer"] = ret_dict["final_answer"] + f"\nFeedback: {response_content}"
+        return result
+
 
     ## (2) 7/11/2025 nt: for personalized meal planning
-    def call_meal_planning(self, query, user_context, messages) -> dict:
+    def call_meal_planning(self, query, user_context, messages, result) -> dict:
         # first call the meal_planning in tools.py to get the intent-specific prompt string
         prompt = meal_planning(user_context) # from tool.py; 
         
@@ -151,15 +154,15 @@ class LocalModel:
         response_content = ollama_response.get("message", {}).get("content", "")
         print (f'      ===> (2) Meal-plannig ollama response: {response_content} ===>>>>>>>>>>>')
         
-        return {
-	    "reasoning": f"A meal and its recipe are generated.",
-	    "final_answer": f"A recommended meal has been found successfully.\n{response_content}",
-	    "detected_intent": "Meal-Planning-Recipes",
-	    "context_used": query
-        }
+        ## overwrite the final result and return it
+        result["reasoning"] = "A meal is generated and suggested."
+        result["ret_context"] = response_content
+        result["final_answer"] = f"A recommended meal has been found successfully.\n{response_content}"
+        return result
+
     
     ## (3) 7/12/2025 nt: personal_health_advice
-    def call_personal_health_advice(self, query_embedding, user_context, messages) -> dict:
+    def call_personal_health_advice(self, query_embedding, user_context, messages, result) -> dict:
         # get the intent-specific prompt string
         prompt = personal_health_advice();
         
@@ -167,13 +170,13 @@ class LocalModel:
         messages.append({"role": "system", "content": prompt}) # emphasizes on ACCURACY and personalization
         
         ## call retriever to get related facts from the KB
-        retrieved_context = self.retriever.retrieve(query_embedding) # embedding of original query
-        print (f'------ RAG retrieved context: {retrieved_context} -------')
+        ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
+        print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
-	## add the retrieved context in the messags
+	    ## add the retrieved context in the messags
         messages.append({
             "role": "user", 
-            "content": f"Context: {retrieved_context}\n\nPlease use the context above to answer the query."}
+            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
         )
 
         ## call ollama with the enhanced messages
@@ -182,16 +185,17 @@ class LocalModel:
         response_content = ollama_response.get("message", {}).get("content", "")
         print (f'      ===> (3) Health Advice ollama response: {response_content} ===>>>>>>>>>>>')
         
-        ##
-        return {
-            "reasoning": f"Personalized Health Advice successfully generated",
-	    "final_answer": response_content,
-	    "detected_intent": 'Personalized-Health-Advice',
-	    "context_used": retrieved_context
-	}
+        ## overwrite the final result and return it
+        result["reasoning"] = ret_dict["reasoning"]
+        result["ret_source"] = ret_dict["ret_source"]
+        result["ret_score"] = ret_dict["ret_score"]
+        result["ret_context"] = ret_dict["ret_context"]
+        result["final_answer"] = response_content
+        return result
+
 
     ## (4) 7/12/2025 nt: educational_content
-    def call_educational_content(self, query_embedding, user_context, messages) -> dict:
+    def call_educational_content(self, query_embedding, user_context, messages, result) -> dict:
         # get the intent-specific prompt string
         prompt = educational_content();
         
@@ -199,22 +203,23 @@ class LocalModel:
         messages.append({"role": "system", "content": prompt}) # emphasizes on ACCURACY
         
         ## call retriever to get related facts from the KB
-        retrieved_context = self.retriever.retrieve(query_embedding) # embedding of original query
-        print (f'------ RAG retrieved context: {retrieved_context} -------')
+        ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
+        print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
         ## 7/22 return without fallback LLM call if KB doesn't have an answer
-        if retrieved_content[:5] == 'Sorry':
-            return {
-	        "reasoning": f"NoKnowledgeMatch",
-		"final_answer": "That's a great question! Unfortunately, I don'tcurrently have enough information to answer it accurately. Could you try rephrasing or providing more details?",
-		"detected_intent": 'Educational-Content',
-		"context_used": retrieved_context
-	    }
-        
-	## add the retrieved context in the messags
+        if ret_dict["reasoning"] == 'NO_KNOWLEDGE_MATCH':
+            result["reasoning"] = ret_dict["reasoning"]
+            result["final_answer"] = "Great question!  But unfortunately, I don't currently have enough information to answer it accurately.\n\nCould you try rephrasing or providing more details?"
+            result["ret_source"] = ret_dict["ret_source"]
+            result["ret_score"] = ret_dict["ret_score"]
+            result["ret_context"] = ret_dict["ret_context"]
+            return result # (*) non-local exit
+
+        # else:
+	    ## add the retrieved context in the messags
         messages.append({
             "role": "user", 
-            "content": f"Context: {retrieved_context}\n\nPlease use the context above to answer the query."}
+            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
         )
 
         ## (*) call ollama with the enhanced messages
@@ -223,39 +228,51 @@ class LocalModel:
         response_content = ollama_response.get("message", {}).get("content", "")
         print (f'      ===> (4) Educational-Content ollama response: {response_content} ===>>>>>>>>>>>')
         
-        ##
-        return {
-            "reasoning": f"Educational Content successfully processed",
-	    "final_answer": response_content,
-	    "detected_intent": 'Educational-Content',
-	    "context_used": retrieved_context
-	}
+        ## overwrite the final result and return it
+        result["reasoning"] = "Educational Content successfully processed"
+        result["ret_source"] = ret_dict["ret_source"]
+        result["ret_score"] = ret_dict["ret_score"]
+        result["ret_context"] = ret_dict["ret_context"]
+        result["final_answer"] = response_content
+        return result
 		
 
     # Response generation method with classification RAG
     def get_response(self, query: str, user_context: dict = None) -> dict:
         """Generate a response based on the query and user context"""
-        if not query or not query.strip():
-            return {
-                "reasoning": "No valid query provided.",
-                "final_answer": "Please provide a valid query.",
-                "detected_intent": None,
-                "context_used": ""
-            }
+        # default return dict
+        result = {
+            "query": query,     # directly from argument
+            "reasoning": None,  # overall result
+            "intent": None,
+            "intent_score": 0.0,
+            "ret_source": None,
+            "ret_score": 0.0,
+            "ret_context": None,
+            "final_answer": ""
+        }
 
-	## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
+        # check if query is properly provided
+        if not query or not query.strip():
+            result["reasoning"] = "No valid query provided."
+            result["final_answer"] = "Please provide a valid query."
+            return result  # (*) non-local exit
+
+	    ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
         query_embedding = self.retriever.embed_query(query)
         intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
         
+        ## fill in the top intent score in result
+        result["intent"] = intent_result["top_intent"]
+        result["intent_score"] = intent_result["top_score"]
+        
         ## if an IMMEDIATE out of scope (by intent classifier), return an empty dict
-        if intent_result == 'OUT_OF_SCOPE':
-            return {
-		"reasoning": "Query out of scope",
-		"final_answer": "This query is out of scope. I'm here to help with questions about food, nutrition, and health. " +
-                                "Please try again.",
-		"detected_intent": None,
-		"context_used": ""
-            }
+        if intent_result["top_intent"] == 'OUT_OF_SCOPE':
+            result["reasoning"] = "Query out of scope"
+            result["final_answer"] = \
+                ("This query is out of scope. I'm here to help with questions about food, nutrition, and health.\n"
+                 "Please try again.")
+            return result  # (*) non-local exit
         
         ## 7/7/2025 nt: if query is relevant, report classification result immediately (for debugging)
         top_intent = intent_result['top_intent']
@@ -263,8 +280,6 @@ class LocalModel:
          
         ## Calling Tools (when the first intent is above threshold)
         ## Note: this can be made into 'Tool Calls' (typically used in recent AI) :)
-        result = dict()
-        
         try:
             ## identify the name of the tool function to call (tedious code but clear)
             fn_name = ""
@@ -280,10 +295,10 @@ class LocalModel:
             ## set the tool function name
             fn = getattr(self, fn_name)
 
-            ## create initial message list and fn args
+            ## create initial message (common to all intents) and fn args
             init_messages = self.create_init_messages(query, user_context['profile'])
-            args1 = (query, user_context, init_messages) 
-            args2 = (query_embedding, user_context, init_messages) # query_embedding instead of query
+            args1 = (query, user_context, init_messages, result) 
+            args2 = (query_embedding, user_context, init_messages, result) # query_embedding instead of query str
 
             ## (*) invoke the function by name with appropriate arguments
             if top_intent == "Meal-Logging" or top_intent == "Meal-Planning-Recipes":
@@ -295,7 +310,6 @@ class LocalModel:
             logger.error(f"Error during calling tools: {e}")
             raise
 
-            
         # Format the final result
         return result
 

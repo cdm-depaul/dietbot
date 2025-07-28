@@ -51,7 +51,7 @@ class Retriever:
         """Generate an embedding for the given query."""
         return self.embed_model.encode([query])[0]
 
-    def retrieve(self, query) -> str:
+    def retrieve(self, query) -> dict:
         """Retrieve relevant context from the knowledge base based on the query.
            Cosine angle is used as the simlarity metric."""
         try:
@@ -68,18 +68,32 @@ class Retriever:
             similarities = np.dot(self.knowledge_embeddings, query_embedding) / (
                            self.knowledge_norms * np.linalg.norm(query_embedding)
                            )
+            ##
             max_score = np.max(similarities)
+            print (f'$$$$$ max_score: {max_score} $$$$$')
+
+            ## declare a dictionary to return 
+            ret_dict = {"ret_score": max_score}            
             
             ## 7/17 nt: When the max match is less than threshold, return a different message when KB doesn't have answer
-            if max_score < 0.40: ## threshold
-                return
-                (f"Sorry, our knowledge base does not have answers that reliably answer your question (score: {max_score:.2f}) ")
-                
+            if max_score < 0.63: ## (**) threshold
+                ret_dict["reasoning"] = "NO_KNOWLEDGE_MATCH"
+                ret_dict["ret_source"] = None
+                ret_dict["ret_context"] = None
+                return ret_dict # (*) non-local exit
+            
+            # else:
             most_relevant_idx = np.argmax(similarities)
             source = self.knowledge_df.at[most_relevant_idx, 'filename']
             chunk_id = self.knowledge_df.at[most_relevant_idx, 'chunk_number']
-            return f"Knowledge Source ({source}: {chunk_id}; score: {max_score:.2f}): {self.knowledge_texts[most_relevant_idx]}"
+            context = self.knowledge_texts[most_relevant_idx]
+            
+            ret_dict["reasoning"] = "Relevant KB chunk found."
+            ret_dict["ret_source"] = f"{source}: {chunk_id}"
+            ret_dict["ret_context"] = context
+            return ret_dict
             
         except Exception as e:
             logger.error(f"Retrieval error: {e}")
-            return "Error accessing knowledge base"
+            ret_dict["reasoning"] = "Error accessing knowledge base"
+            return ret_dict

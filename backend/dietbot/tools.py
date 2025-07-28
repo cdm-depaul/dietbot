@@ -120,10 +120,10 @@ def meal_planning(user_context: dict) -> str:
         "1. Check allergies first - remove prohibited ingredients\n"
         "2. Eliminate disliked foods\n"
         "3. Select preferred ingredients\n"
-        f"4. Calculate nutritional needs based on {goal}\n"
-        "5. Propose a meal meeting all criteria\n\n"
-        f"Your responses should also be creative but easily achievable without extreneous efforts. "
-        "Make it sound so that the user will look forward to cooking the meal."
+        "4. Suggest one or more meals that meet all criteria and describe it succinctly\n"
+        f"5. For each meal, explain concicely how well each fits with the user's {goal}\n"
+        "6. Add a concise, encouring statement so that the user will look forward to cooking the meal"
+        "7. No recipe is necessary unless the user asked for one in the prompt"
     )
     
     return prompt

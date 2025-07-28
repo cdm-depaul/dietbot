@@ -54,11 +54,12 @@ class IntentClassifier:
     	# first compute the similarity of query to intents
         results = self.compute_similarity(query_embedding)
 
-	# if the top score is below the threshold, immediate return with 'OUT_OF_SCOPE'
+	    # if the top score is below the threshold, immediate return with 'OUT_OF_SCOPE'
         top_score = results[0][1]
         if top_score < self.threshold:
             logger.info(f"Query OUT_OF_SCOPE (cosine_score: {top_score:.2f})")
-            return ("OUT_OF_SCOPE")
+            return {"top_score": top_score,
+                    "top_intent": "OUT_OF_SCOPE"}
 		# else:
         classifications = [
             {
