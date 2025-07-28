@@ -10,7 +10,7 @@ services:
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       NUTRITIONIX_APP_ID: ${NUTRITIONIX_APP_ID}
       NUTRITIONIX_API_KEY: ${NUTRITIONIX_API_KEY}
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-dietbot}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma3}
       OLLAMA_API_URL: http://host.docker.internal:11434/api/chat
     volumes:
       - .:/app
@@ -18,4 +18,12 @@ services:
       sh -c "echo 'Starting Uvicorn on port 8001...' &&
              uvicorn dietbot.main:app --host 0.0.0.0 --port 8001 --reload"
 
+  logger-app:
+    build: .
+    container_name: logger-app
+    volumes:
+      - ./logs:/logs  # logs folder on host, shared with /logs inside container
+    restart: unless-stopped
+    command: ["sh", "-c", "touch /logs/testfile && ls -l /logs"]
+    
 volumes: {}

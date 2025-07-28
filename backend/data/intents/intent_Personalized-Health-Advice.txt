@@ -1,89 +1,76 @@
-Here are **50 different ways** users might express their intent for **Personalized Health Advice**, grouped into **distinct clusters** to ensure comprehensive coverage.
+Here are the **50 personalized health advice queries clustered into 5 categories**, each with a clear category name and the relevant questions grouped underneath.
 
 ---
 
-### **User Expressions for Personalized Health Advice**
+#### **Cluster 1: Blood Sugar Management & Symptoms (XX Statements)**
 
-#### **Cluster 1: Seeking Advice for Specific Health Conditions (15 Statements)**  
-1. "What should I eat to manage my diabetes?"  
-2. "Can you help me with a diet for high blood pressure?"  
-3. "I need advice on managing cholesterol through food."  
-4. "What foods should I avoid with my kidney condition?"  
-5. "Can you suggest meals for improving my heart health?"  
-6. "What�s a good diet for someone with arthritis?"  
-7. "How can I manage my IBS symptoms through my diet?"  
-8. "What foods are good for my liver health?"  
-9. "I�m looking for diet tips to manage PCOS."  
-10. "What�s a good eating plan for thyroid issues?"  
-11. "Can you help me with meals for my anemia?"  
-12. "What should I eat to boost my immune system?"  
-13. "I want advice on managing my acid reflux with food."  
-14. "What�s the best diet for someone with osteoporosis?"  
-15. "Can you help me eat better to prevent migraines?"
-
----
-
-#### **Cluster 2: Weight and Fitness-Related Advice (10 Statements)**  
-1. "What should I eat to lose weight healthily?"  
-2. "Can you help me with a meal plan for gaining muscle?"  
-3. "I need advice on food for weight maintenance."  
-4. "What should I eat before and after workouts?"  
-5. "Can you give me tips for reducing belly fat through diet?"  
-6. "How do I eat to improve my stamina?"  
-7. "What�s the best food plan for improving my fitness level?"  
-8. "How do I gain weight without eating junk food?"  
-9. "Can you suggest foods to help with endurance training?"  
-10. "What�s a good diet for improving my athletic performance?"
+1. My sugar’s been up even though I’m eating better. What am I doing wrong?
+2. I’ve lost 10 pounds but my A1C didn’t improve. What should I try next?
+3. My blood sugar spikes after breakfast. What can I change?
+4. I get headaches when my sugar drops. How can I stop that?
+5. I’ve been feeling dizzy after meals. What’s happening?
+6. My fasting sugar is high but my A1C is okay. Is that a problem?
+7. I don’t eat sweets but my sugar is still up. What else should I check?
+8. I feel sleepy after I eat. How can I fix that?
+9. I keep waking up thirsty. Is that from my blood sugar?
+10. My A1C keeps going up even though I exercise. What else should I try?
+11. I’ve been skipping meals to lose weight but my sugar is high. Why?
+12. I get shaky in the afternoon. What snacks would help?
+13. My sugar drops at night. What can I eat before bed?
+14. I’ve been feeling depressed and my sugar is higher. Are they related?
+15. I’m losing weight too fast. Could that hurt my sugar?
+16. I keep getting infections. Is it because of my sugar?
 
 ---
 
-#### **Cluster 3: Tailored Advice for Specific Diet Goals (10 Statements)**  
-1. "What�s a good diet for boosting my energy levels?"  
-2. "How do I eat to get better sleep?"  
-3. "What foods can help improve my mental focus?"  
-4. "Can you suggest meals to improve my gut health?"  
-5. "What should I eat to reduce inflammation?"  
-6. "How can I improve my digestion through diet?"  
-7. "What�s the best way to detox my body with food?"  
-8. "Can you give me tips for reducing sugar in my diet?"  
-9. "What foods are good for improving my skin?"  
-10. "How can I include more antioxidants in my meals?"
+#### **Cluster 2: Diet & Nutrition Preferences (XX Statements)**
+
+17. I’m vegetarian and my sugar is still high. Can you help me adjust my diet?
+18. I’m vegan and my sugar is borderline high. What can I eat more of?
+19. I’m confused about good vs bad fats. Can you explain for someone with diabetes?
+20. I don’t like veggies much. How can I still eat healthy for my sugar?
+21. I get bloated after eating carbs. What should I replace them with?
+22. I’m craving carbs constantly. How can I stop that?
+23. I want to lower my sugar without meds. What should I focus on?
+24. I have joint pain and diabetes. Any foods that help with both?
+25. I have fatty liver and prediabetes. What should I eat less of?
+26. I want to build muscle but have diabetes. What should I eat?
+27. I’m eating low-carb but still gaining weight. Why?
+28. I can’t seem to stick to any diet. Can you help me find something easy?
 
 ---
 
-#### **Cluster 4: Age-Related Health Advice (5 Statements)**  
-1. "What�s a good diet for someone my age?"  
-2. "Can you suggest meals to maintain bone health as I get older?"  
-3. "How can I adjust my diet for healthy aging?"  
-4. "What foods are good for memory as I age?"  
-5. "I need advice on eating well during menopause."
+#### **Cluster 3: Weight, Exercise & Lifestyle Habits (XX Statements)**
+
+29. I’m always hungry even though I eat every few hours. What should I do?
+30. I’ve been walking daily but no weight loss. Any advice?
+31. I’m overweight and exhausted. Where do I start?
+32. I’m active but still have belly fat. How do I lose it safely?
+33. I want to fast for religious reasons. Is it safe with my diabetes?
+34. I’ve been stressed a lot lately. Could that be making my sugar worse?
+35. I’m always tired after lunch. What can I eat to stay energized?
+36. I have sleep apnea and diabetes. Any diet tips to help both?
+37. I work night shifts and my sugar is always high. How should I eat?
+38. I’m trying to get pregnant but I’m prediabetic. What should I eat?
 
 ---
 
-#### **Cluster 5: Advice for Chronic Illness Management (5 Statements)**  
-1. "Can you suggest meals for managing chronic fatigue?"  
-2. "What�s a good diet for managing my autoimmune condition?"  
-3. "How can I adjust my meals for chronic pain management?"  
-4. "I need help with meals for managing my depression."  
-5. "What foods are good for reducing chronic inflammation?"
+#### **Cluster 4: Prevention & Family History (XX Statements)**
+
+39. My family has diabetes and heart disease. What should I watch for?
+40. I have a family history of diabetes. What can I eat to avoid it?
+41. I’m borderline diabetic. Is it too late to reverse it?
+42. I’m over 50 and diabetic. What should I change in my diet now?
+43. I’m in menopause and my sugar got worse. What can I do?
+44. I’m worried about diabetes complications. How do I prevent them?
 
 ---
 
-#### **Cluster 6: Preventative Health and Wellness (5 Statements)**  
-1. "What�s a good diet for preventing heart disease?"  
-2. "Can you suggest foods to lower my risk of cancer?"  
-3. "How do I eat to avoid lifestyle diseases?"  
-4. "What�s the best way to eat for overall longevity?"  
-5. "How can I use food to stay as healthy as possible?"
+#### **Cluster 5: Co-existing Conditions & Combined Health Concerns (XX Statements)**
 
----
-
-### **Summary of Clusters**
-1. **Seeking Advice for Specific Health Conditions (15 Statements):** Users need tailored recommendations for managing health issues like diabetes, PCOS, or arthritis.  
-2. **Weight and Fitness-Related Advice (10 Statements):** Focus on weight management, muscle building, or performance improvement.  
-3. **Tailored Advice for Specific Diet Goals (10 Statements):** Users request guidance on improving energy, sleep, digestion, and other specific health goals.  
-4. **Age-Related Health Advice (5 Statements):** Focused on eating habits for healthy aging and age-specific needs.  
-5. **Advice for Chronic Illness Management (5 Statements):** Tailored help for chronic conditions such as autoimmune diseases or chronic pain.  
-6. **Preventative Health and Wellness (5 Statements):** Users ask for proactive tips to maintain long-term health.
-
-This grouping ensures the chatbot can provide personalized responses to meet diverse user needs. Let me know if you'd like chatbot replies tailored to these clusters!
+45. My cholesterol is high too. Can you help me balance both that and my sugar?
+46. I have PCOS and prediabetes. What should I focus on with my diet?
+47. I have high blood pressure and diabetes. What diet helps both?
+48. I have joint pain and diabetes. Any foods that help with both?
+49. I have diabetes and kidney issues. What should I avoid?
+50. I’ve been feeling depressed and my sugar is higher. Are they related? (Also fits here as mental health)

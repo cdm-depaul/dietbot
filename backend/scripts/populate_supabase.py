@@ -6,7 +6,12 @@ from supabase import create_client, Client
 
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
-load_dotenv(dotenv_path=os.path.join(project_root, '.env'))
+
+## 7/1/2025 nt:
+dotenv_path=os.path.join(project_root, '.env')
+print (dotenv_path)
+load_dotenv(dotenv_path)
+##
 
 def populate_db():
     """Connects to Supabase and inserts initial data."""
@@ -27,18 +32,20 @@ def populate_db():
         print(f"Attempting to insert/update user with ID: {user_id_to_insert}")
         
         user_data = {
-            'id': user_id_to_insert,
-            'name': 'Default User',
-            'age': 30,
-            'sex': 'Male', 
-            'height': 175, # cm
-            'weight': 70,  # kg
-            'activity_level': 'Moderately active',
-            'allergies': ['nuts', 'shellfish'],
-            'likes': ['apples', 'chicken'],
-            'dislikes': ['broccoli'],
-            'diet': 'Balanced', 
-            'goal': 'Maintain weight' 
+            #'id': user_id_to_insert, 
+            "user_id": user_id_to_insert,
+            "created_at": str(date.today()),
+            "name": 'Peter',
+            "age": 39,
+            "sex": 'Male', 
+            "height": 180, # cm
+            "weight": 79,  # kg
+            "activity_level": "Moderately active",
+            "allergies": ["nuts", "wheat"],
+            "likes": ["bananas", "chicken"],
+            "dislikes": ["brussels sprouts"],
+            "diet": "Balanced but includes some processed snacks and sugary drinks", 
+            "goal": "Prevent diabetes" 
         }
         
         response_user = supabase.table('user_profiles').upsert(user_data).execute()
@@ -56,33 +63,55 @@ def populate_db():
         # Populate nutrient_intake table
         print(f"Attempting to insert sample nutrient intake for user {user_id_to_insert}...")
         try:
-            nutrient_data = [
-                {
-                    'user_id': user_id_to_insert, 
-                    'date': str(date.today()),
-                    'dish_name': 'Breakfast Burrito', 
-                    'calories': 550, 
-                    'protein': 25, 
-                    'fat': 30, 
-                    'carbs': 40, 
-                    'fiber': 8, 
-                    'sodium': 900
-                },
-                {
-                    'user_id': user_id_to_insert, 
-                    'date': str(date.today()),
-                    'dish_name': 'Chicken Salad', 
-                    'calories': 350, 
-                    'protein': 30, 
-                    'fat': 15, 
-                    'carbs': 20, 
-                    'fiber': 5, 
-                    'sodium': 600
-                }
-            ]
+            id_count = 1
+            today = date.today().isoformat()
+            #nutrient_data = [
+            #    {
+            nutrient_data = {
+                    "id" : id_count,
+                    "user_id": user_id_to_insert, 
+                    "created_at": today,
+                    "food_item": "Breakfast Burrito", 
+                    "calories": 550, 
+                    "protein_g": 25.0,
+                    "fat_g": 30.0,
+                    "carbs_g": 40.0
+            }#,
+                #{
+                #    'id' : id_count + 2,  ## 7/1/2025 nt: added
+                #    'user_id': user_id_to_insert, 
+                #    'created_at': str(date.today()),  ## 7/1/2025 nt: changed from 'date': str(date.today())
+                #    'food_item':'Chicken Salad',  ## 7/1/2025 nt: changed
+                #    'calories': 350, 
+                #    'protein_g': 30, 
+                #    'fat_g': 15, 
+                #    ## 7/1/2025 nt: changed
+                #    #'details': {"fiber": 5, "sodium": 600},#::jsonb
+                #    'carbs_g': 20
+                #}
+            #]
+            print()
+            print (nutrient_data)
+            print ()
+            
+            print(f"Inserting sample nutrient intake for user {user_id_to_insert}: {nutrient_data}")
             response_nutrient = supabase.table('nutrient_intake').insert(nutrient_data).execute()
             print(f"Inserted sample nutrient intake for user {user_id_to_insert}: {response_nutrient}")
+            ## 7/2/2025 nt:
+            #for idx, data in enumerate(nutrient_data):
+            #	print(f"({idx}) Inserting sample nutrient intake for user {user_id}: {response_nutrient}")
+            #	response_nutrient = supabase.table('nutrient_intake').insert(data).execute()
             
+            ###-------------------
+	        # Query data from the table
+            response = supabase.table('nutrient_intake').select('*').execute()
+            data = response.data
+	    
+	        # Print the data
+            for row in data:
+              print(row)
+	        ###--------------------
+
             if hasattr(response_nutrient, 'error') and response_nutrient.error:
                 print(f"Error inserting nutrient intake: {response_nutrient.error}")
             elif not response_nutrient.data:

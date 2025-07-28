@@ -4,7 +4,7 @@ import requests
 from dotenv import load_dotenv
 
 # Logging configuration
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep the INFO level (not below)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -15,7 +15,8 @@ def safe_float(value):
     except (ValueError, TypeError):
         return 0.0
 
-def meal_logging(query: str, user_context: dict = None) -> dict:
+## 7/7/2025 nt: user_contex changed to user_id (only)
+def meal_logging(query: str, user_id: str) -> dict:
     """Handle meal logging intent using the Nutritionix API."""
     dish_name = (query or "").strip()
 
@@ -78,6 +79,12 @@ def meal_logging(query: str, user_context: dict = None) -> dict:
         f"Sodium: {macros['sodium']} mg\n"
     )
     
+    ##
+    ## 7/7/2025 nt:
+    ## Database (food_intake) entry is needed here.  
+    ## User can be looked up by user_id.
+    ##
+    
     return {
         "reasoning": f"Meal logging identified. Processed dish: {dish_name}",
         "final_answer": f"Your meal has been logged successfully.\n{macros_summary}",
@@ -85,6 +92,7 @@ def meal_logging(query: str, user_context: dict = None) -> dict:
         "context_used": dish_name
     }
 
+# 7/2025 nt: All other tools return a prompt string...
 def meal_planning(user_context: dict) -> str:
     """Build a meal planning prompt based on user context."""
     if not user_context:
@@ -92,13 +100,15 @@ def meal_planning(user_context: dict) -> str:
             "User's intent is Meal-Planning-Recipes. "
             "No user context provided. Suggest a general meal."
         )
-    
+        
+    ## 7/2025 nt: picks-out select elements/features in user_context
     allergies = ', '.join(user_context.get("allergies", [])) or "None"
     likes = ', '.join(user_context.get("likes", [])) or "No specific preferences"
     dislikes = ', '.join(user_context.get("dislikes", [])) or "None"
     diet = user_context.get("diet", "No Restriction")
     goal = user_context.get("goal", "Maintain Weight")
     
+    # intent-specific prompt
     prompt = (
         f"You are a nutritionist creating meal plans. Critical constraints:\n"
         f"- ABSOLUTELY NEVER suggest {allergies} (life-threatening allergies)\n"
@@ -110,8 +120,29 @@ def meal_planning(user_context: dict) -> str:
         "1. Check allergies first - remove prohibited ingredients\n"
         "2. Eliminate disliked foods\n"
         "3. Select preferred ingredients\n"
-        f"4. Calculate nutritional needs based on {goal}\n"
-        "5. Propose a meal meeting all criteria"
+        "4. Suggest one or more meals that meet all criteria and describe it succinctly\n"
+        f"5. For each meal, explain concicely how well each fits with the user's {goal}\n"
+        "6. Add a concise, encouring statement so that the user will look forward to cooking the meal"
+        "7. No recipe is necessary unless the user asked for one in the prompt"
+    )
+    
+    return prompt
+    
+
+def personal_health_advice() -> str:
+    # intent-specific prompt
+    prompt = (
+        "Emphasize on accuracy.  Remember our liability is at stake!! "
+        "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
+    )
+    
+    return prompt
+    
+def educational_content() -> str:
+    # intent-specific prompt
+    prompt = (
+        "Emphasize on accuracy.  Do NOT hallucinate!! "
+        "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
     )
     
     return prompt

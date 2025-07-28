@@ -3,13 +3,17 @@ import os
 import logging
 import requests
 from dotenv import load_dotenv
+from typing import Tuple, List
 
+## 6/29/2025 nt: path fixed -- but reverted later after successful system integration
 from .potts import IntentClassifier
+#from potts import IntentClassifier
 from .retriever import Retriever
-from .tools import meal_planning, meal_logging
+#from retriever import Retriever
+from .tools import meal_planning, meal_logging, personal_health_advice, educational_content
 
 # Logging configuration
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -34,12 +38,11 @@ class LocalModel:
         
         # Base system prompt
         self.system_prompt = (
-            "You are an AI assistant whose primary goal is to answer user questions effectively. "
-            "When a user's question lacks sufficient information, use the `retrieve_context` tool to find relevant information. "
-            "If retrieving additional context doesn't help, ask the user to clarify their question for more details. "
-            "Avoid excessive looping to find answers if the information is unavailable; instead, be transparent and admit if you don't know. "
-            "Always use the `retrieve_context` tool to verify the question's relevance to nutrition before answering. "
-            "If the tool indicates the question is out of scope, inform the user immediately."
+            "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. "
+            "You are also a professional dietitian, with expert knowledge on food, nutrients and human health. "
+            "Furthermore, you are a personal dietitian to the user.  Take every consideration of the user's biometric and dietary profile in responding. "
+            "Also, respond in a gentle, kind, and empathetic tone. "
+
         )
 
     def _call_ollama(self, messages):
@@ -49,6 +52,7 @@ class LocalModel:
                 "model": self.model,
                 "messages": messages
             }
+            
             # Use the configured OLLAMA_API_URL
             response = requests.post(OLLAMA_API_URL, json=payload, stream=True)
             response.raise_for_status()
@@ -72,260 +76,246 @@ class LocalModel:
         except Exception as e:
             logger.error(f"Error calling Ollama API: {e}")
             raise
+    
+    ## 7/11/2025 nt:
+    def create_init_messages(self, query: str, profile_dict : dict):
+        elements1 = ['name', 'age', 'sex', 'height', 'weight', 'activity_level', 'diet', 'goal'] # single text
+        elements2 = ['allergies', 'likes', 'dislikes'] # list of text
 
-    def _parse_tool_calls(self, response_content):
-        """Parse tool calls from Ollama response"""
-        tool_calls = []
-        
-        # Look for retrieve_context tool call pattern in the response
-        if "```tool_code" in response_content:
-            # Find all instances of tool code blocks
-            tool_blocks = response_content.split("```tool_code")
-            for block in tool_blocks[1:]:  # Skip the first element which is before the first tool_code
-                if "```" in block:
-                    tool_code = block.split("```")[0].strip()
-                    
-                    # Extract function call and arguments
-                    if "retrieve_context" in tool_code:
-                        # Parse argument string from patterns like: retrieve_context("query text")
-                        query_start = tool_code.find("retrieve_context") + len("retrieve_context")
-                        query_text = tool_code[query_start:].strip()
-                        
-                        # Extract the query inside parentheses and quotes
-                        if "(" in query_text and ")" in query_text:
-                            query_inside = query_text.split("(")[1].split(")")[0]
-                            # Remove quotes if present
-                            query = query_inside.strip('"\'')
-                            
-                            tool_calls.append({
-                                "id": f"tool_call_{len(tool_calls) + 1}",
-                                "function": {
-                                    "name": "retrieve_context",
-                                    "arguments": json.dumps({"query": query})
-                                }
-                            })
-        
-        return tool_calls
+        profile = [f"{element}: {profile_dict[element]}" for element in elements1] + \
+                  [f"{element}: {', '.join(profile_dict[element])}" for element in elements2]
 
-    def _format_final_response(self, response_content, top_intent, collected_contexts):
-        """Extract and format the final response from Ollama"""
-        # Remove tool_code blocks for final response
-        final_content = response_content
-        while "```tool_code" in final_content:
-            pre_tool = final_content.split("```tool_code")[0]
-            post_tool = final_content.split("```tool_code")[1]
-            if "```" in post_tool:
-                post_tool = post_tool.split("```", 1)[1]
-                final_content = pre_tool + post_tool
-            else:
-                final_content = pre_tool
+        profile_str = ', '.join(profile) # to make one string (accepted by the messages format)
+                   
+        init_messages = [
+            {"role": "user", "content": query},
+            {"role": "system", "content": self.system_prompt},
+            {"role": "system", 
+             "content": f"User profile: {profile_str}"}
+        ]
+        return init_messages
+    
+
+    ## (1) 7/11/2025 nt: for meal logging
+    def call_meal_logging(self, query, user_context, messages, result) -> dict:
+        # first call the meal_logging tool in tools.py to get a dictionary
+        ret_dict = meal_logging(query, user_context['profile']['user_id']) # user_id only
+       
+        # get the summary
+        answer = ret_dict['final_answer']
+        summary = ""
+        if "success" in answer:
+           try:
+               pos = answer.index('\n')
+               summary = answer[pos:] # nt: needs parsing... later
+           except ValueError:
+               print("Error finding the second line in final answer")
+
+        ## Evaluate the food intake and give encouraging feedback to the user.
+        ## Add another role instruction in messages:
+        messages.append(
+            {"role": "assistant", 
+             "content": f"The nutrients of the meal are {summary}"}
+        )
+        messages.append(
+            {"role": "system", 
+             "content": ("Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. "
+                         "Be positive and encouraging considering the user's goal. "
+                         "Also DO NOT be critical if the user ate too much undesirable nutrients. "
+                         "Suggest a next meal and give a short description. "
+                         "Remember TLDR; Make the response as concise as possible.")
+            }
+        )
+                  
+        ## cal ollama with the enhanced messages
+        #print (f'   ======== (1) Meal logging ollama messages: {messages} ===========')
+        ollama_response = self._call_ollama(messages)
+        response_content = ollama_response.get("message", {}).get("content", "")
+        #print (f'      ===> (1) Meal logging ollama response: {response_content} ===>>>>>>>>>>>')
+    
+        ## overwrite the final answer with the additional feedback!
+        result["reasoning"] = ret_dict["reasoning"]
+        result["ret_context"] = ret_dict["context_used"]
+        result["final_answer"] = ret_dict["final_answer"] + f"\nFeedback: {response_content}"
+        return result
+
+
+    ## (2) 7/11/2025 nt: for personalized meal planning
+    def call_meal_planning(self, query, user_context, messages, result) -> dict:
+        # first call the meal_planning in tools.py to get the intent-specific prompt string
+        prompt = meal_planning(user_context) # from tool.py; 
         
-        # Check if the response contains a JSON object
-        try:
-            # First look for JSON object in markdown code block
-            json_match = None
-            if "```json" in final_content:
-                json_blocks = final_content.split("```json")
-                for block in json_blocks[1:]:
-                    if "```" in block:
-                        json_text = block.split("```")[0].strip()
-                        try:
-                            json_match = json.loads(json_text)
-                            break
-                        except:
-                            continue
-            
-            # If no JSON found in code blocks, try to find it in the text
-            if not json_match:
-                json_start = final_content.find('{')
-                json_end = final_content.rfind('}')
-                
-                if json_start != -1 and json_end != -1:
-                    json_str = final_content[json_start:json_end+1]
-                    json_match = json.loads(json_str)
-            
-            if json_match and isinstance(json_match, dict):
-                if "reasoning" in json_match and "final_answer" in json_match:
-                    return {
-                        "reasoning": f"Identified intent: {top_intent}. " + json_match.get("reasoning", ""),
-                        "final_answer": json_match.get("final_answer", ""),
-                        "detected_intent": top_intent,
-                        "context_used": collected_contexts[-1] if collected_contexts else "",
-                        "raw_content": response_content
-                    }
-        except Exception as e:
-            logger.warning(f"Error parsing JSON from response: {e}")
+        # use the prompt to enhance messages
+        messages.append({"role": "system", "content": prompt}) # this includes 'thinking process/steps'...
         
-        # If no valid JSON found, use the full text as the answer
-        # Clean up the response by removing tool call mentions
-        clean_content = final_content.replace("I'll use the `retrieve_context` tool to get some relevant information.", "")
-        clean_content = clean_content.strip()
+        ## call ollama with the enhanced messages
+        #print (f'   ======== (2) Meal-planning ollama messages: {messages} ===========')
+        ollama_response = self._call_ollama(messages)
+        response_content = ollama_response.get("message", {}).get("content", "")
+        #print (f'      ===> (2) Meal-plannig ollama response: {response_content} ===>>>>>>>>>>>')
         
-        return {
-            "reasoning": f"Identified intent: {top_intent}.",
-            "final_answer": clean_content,
-            "detected_intent": top_intent,
-            "context_used": collected_contexts[-1] if collected_contexts else "",
-            "raw_content": response_content
-        }
+        ## overwrite the final result and return it
+        result["reasoning"] = "A meal is generated and suggested."
+        result["ret_context"] = response_content
+        result["final_answer"] = f"A recommended meal has been found successfully.\n{response_content}"
+        return result
+
+    
+    ## (3) 7/12/2025 nt: personal_health_advice
+    def call_personal_health_advice(self, query_embedding, user_context, messages, result) -> dict:
+        # get the intent-specific prompt string
+        prompt = personal_health_advice();
+        
+        ## use the prompt to enhance messages
+        messages.append({"role": "system", "content": prompt}) # emphasizes on ACCURACY and personalization
+        
+        ## call retriever to get related facts from the KB
+        ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
+        #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
+        
+	    ## add the retrieved context in the messags
+        messages.append({
+            "role": "user", 
+            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
+        )
+
+        ## call ollama with the enhanced messages
+        #print (f'   ======== (3) Personalized Health Advice messages: {messages} ===========')
+        ollama_response = self._call_ollama(messages)
+        response_content = ollama_response.get("message", {}).get("content", "")
+        #print (f'      ===> (3) Health Advice ollama response: {response_content} ===>>>>>>>>>>>')
+        
+        ## overwrite the final result and return it
+        result["reasoning"] = ret_dict["reasoning"]
+        result["ret_source"] = ret_dict["ret_source"]
+        result["ret_score"] = ret_dict["ret_score"]
+        result["ret_context"] = ret_dict["ret_context"]
+        result["final_answer"] = response_content
+        return result
+
+
+    ## (4) 7/12/2025 nt: educational_content
+    def call_educational_content(self, query_embedding, user_context, messages, result) -> dict:
+        # get the intent-specific prompt string
+        prompt = educational_content();
+        
+        ## use the prompt to enhance messages
+        messages.append({"role": "system", "content": prompt}) # emphasizes on ACCURACY
+        
+        ## call retriever to get related facts from the KB
+        ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
+        #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
+        
+        ## 7/22 return without fallback LLM call if KB doesn't have an answer
+        if ret_dict["reasoning"] == 'NO_KNOWLEDGE_MATCH':
+            result["reasoning"] = ret_dict["reasoning"]
+            result["final_answer"] = "Great question!  But unfortunately, I don't currently have enough information to answer it accurately.\n\nCould you try rephrasing or providing more details?"
+            result["ret_source"] = ret_dict["ret_source"]
+            result["ret_score"] = ret_dict["ret_score"]
+            result["ret_context"] = ret_dict["ret_context"]
+            return result # (*) non-local exit
+
+        # else:
+	    ## add the retrieved context in the messags
+        messages.append({
+            "role": "user", 
+            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
+        )
+
+        ## (*) call ollama with the enhanced messages
+        #print (f'   ======== (4) Educational-Content messages: {messages} ===========')
+        ollama_response = self._call_ollama(messages)
+        response_content = ollama_response.get("message", {}).get("content", "")
+        #print (f'      ===> (4) Educational-Content ollama response: {response_content} ===>>>>>>>>>>>')
+        
+        ## overwrite the final result and return it
+        result["reasoning"] = "Educational Content successfully processed"
+        result["ret_source"] = ret_dict["ret_source"]
+        result["ret_score"] = ret_dict["ret_score"]
+        result["ret_context"] = ret_dict["ret_context"]
+        result["final_answer"] = response_content
+        return result
+		
 
     # Response generation method with classification RAG
     def get_response(self, query: str, user_context: dict = None) -> dict:
         """Generate a response based on the query and user context"""
+        # default return dict
+        result = {
+            "query": query,     # directly from argument
+            "reasoning": None,  # overall result
+            "intent": None,
+            "intent_score": 0.0,
+            "ret_source": None,
+            "ret_score": 0.0,
+            "ret_context": None,
+            "final_answer": ""
+        }
+
+        # check if query is properly provided
         if not query or not query.strip():
-            return {
-                "reasoning": "No valid query provided.",
-                "final_answer": "Please provide a valid query.",
-                "detected_intent": None,
-                "context_used": ""
-            }
+            result["reasoning"] = "No valid query provided."
+            result["final_answer"] = "Please provide a valid query."
+            return result  # (*) non-local exit
 
-        # Prepare system messages, including user profile if available
-        messages = [{"role": "system", "content": self.system_prompt}]
-        if user_context and 'profile' in user_context:
-            profile = user_context['profile']
-            profile_parts = []
-            if profile.get('allergies'):
-                profile_parts.append(f"Allergies: {', '.join(profile['allergies'])}")
-            if profile.get('likes'):
-                profile_parts.append(f"Likes: {', '.join(profile['likes'])}")
-            if profile.get('dislikes'):
-                profile_parts.append(f"Dislikes: {', '.join(profile['dislikes'])}")
-            if profile.get('diet'): # Assuming 'diet' key exists based on user data
-                profile_parts.append(f"Diet Type: {profile['diet']}")
-            if profile.get('goal'): # Assuming 'goal' key exists
-                profile_parts.append(f"Goal: {profile['goal']}")
-            # Add other relevant fields like age, sex, weight, height, activity_level if needed for the model's task
-            # if profile.get('age'): profile_parts.append(f"Age: {profile['age']}")
-            # if profile.get('sex'): profile_parts.append(f"Sex: {profile['sex']}")
-            # if profile.get('weight'): profile_parts.append(f"Weight: {profile['weight']}kg")
-            # if profile.get('height'): profile_parts.append(f"Height: {profile['height']}cm")
-            # if profile.get('activity_level'): profile_parts.append(f"Activity Level: {profile['activity_level']}")
-                
-            if profile_parts:
-                profile_context = "User Profile Constraints: " + "; ".join(profile_parts) + ". Please strictly adhere to these constraints, especially allergies, when generating meal plans or recommendations."
-                messages.append({"role": "system", "content": profile_context})
-                logger.info(f"Added user profile context to messages: {profile_context}")
-            else:
-                logger.info("User context provided, but no relevant profile constraints found to add.")
-        else:
-            logger.info("No user context provided or profile missing.")
-
+	    ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
+        query_embedding = self.retriever.embed_query(query)
+        intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
+        
+        ## fill in the top intent score in result
+        result["intent"] = intent_result["top_intent"]
+        result["intent_score"] = intent_result["top_score"]
+        
+        ## if an IMMEDIATE out of scope (by intent classifier), return an empty dict
+        if intent_result["top_intent"] == 'OUT_OF_SCOPE':
+            result["reasoning"] = "Query out of scope"
+            result["final_answer"] = \
+                ("This query is out of scope. I'm here to help with questions about food, nutrition, and health.\n"
+                 "Please try again.")
+            return result  # (*) non-local exit
+        
+        ## 7/7/2025 nt: if query is relevant, report classification result immediately (for debugging)
+        top_intent = intent_result['top_intent']
+        #print(f'^^^^^^^^ Top intent = {top_intent}, score = {intent_result['top_score']} ^^^^^^^^')
+         
+        ## Calling Tools (when the first intent is above threshold)
+        ## Note: this can be made into 'Tool Calls' (typically used in recent AI) :)
         try:
-            query_embedding = self.retriever.embed_query(query)
-            intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
-            top_intent = intent_result['top_intent']
-            initial_context = self.retriever.retrieve(query)
-            
-            # Unrelated question handling
-            if "OUT_OF_SCOPE" in initial_context:
-                return {
-                    "reasoning": initial_context.replace("OUT_OF_SCOPE:", "Question out of scope:"),
-                    "final_answer": (
-                        "This question is outside my nutrition expertise. "
-                        "Please ask about food, nutrients, or health-related topics."
-                    ),
-                    "detected_intent": top_intent,
-                    "context_used": initial_context
-                }
+            ## identify the name of the tool function to call (tedious code but clear)
+            fn_name = ""
+            if top_intent == "Meal-Logging": # (1)
+                fn_name = "call_meal_logging"
+            elif top_intent == "Meal-Planning-Recipes": # (2)
+                fn_name = "call_meal_planning"
+            elif top_intent == "Personalized-Health-Advice": # (3)
+                fn_name = "call_personal_health_advice"
+            else: # "Educational-Content" # (4)
+                fn_name = "call_educational_content"
+                
+            ## set the tool function name
+            fn = getattr(self, fn_name)
 
-            # Prepare messages for Ollama API
-            if top_intent == "Educational-Content" or top_intent == "Personalized-Health-Advice":
-                system_content = (
-                    f"User's intent is {top_intent}. "
-                    "You are a nutrition expert. If asked about non-nutrition topics, respond that it's out of scope. "
-                    "If you need more information, use the retrieve_context tool by writing:\n"
-                    "```tool_code\nretrieve_context(\"your query here\")\n```\n"
-                    f"If the user's intent is classified as {top_intent}, "
-                    "your primary goal is to answer questions effectively using the provided context."
-                )
-                
-                messages.append({"role": "system", "content": system_content})
-                messages.append({"role": "user", "content": query})
-            
-            # Meal logging tool
-            elif top_intent == "Meal-Logging":
-                return meal_logging(query, user_context)
-            
-            # Meal planning tool
-            elif top_intent == "Meal-Planning-Recipes":
-                prompt_with_context = (
-                    meal_planning(user_context) + "\n\n"
-                    "You are a nutrition expert. Always avoid allergies, respect dislikes, "
-                    "prioritize likes, and follow the user's diet/goal."
-                )
-                
-                messages.append({"role": "system", "content": prompt_with_context})
-                messages.append({"role": "user", "content": query})
+            ## create initial message (common to all intents) and fn args
+            init_messages = self.create_init_messages(query, user_context['profile'])
+            args1 = (query, user_context, init_messages, result) 
+            args2 = (query_embedding, user_context, init_messages, result) # query_embedding instead of query str
 
-            # Response generation
-            collected_contexts = [initial_context]
-            final_answer = None
-            
-            # Initial call to Ollama
-            ollama_response = self._call_ollama(messages)
-            response_content = ollama_response.get("message", {}).get("content", "")
-            
-            # Agent loop for context retrieval
-            count = 0
-            while count < self.agent_loop_limit:
-                # Check for tool calls in the response
-                tool_calls = self._parse_tool_calls(response_content)
-                
-                if not tool_calls:
-                    # No tool calls, assume final response
-                    break
-                
-                # Process tool calls and add context
-                for tool_call in tool_calls:
-                    arguments = json.loads(tool_call["function"]["arguments"])
-                    context = self.retriever.retrieve(arguments.get("query", query))
-                    collected_contexts.append(context)
-                    
-                    if context.startswith("OUT_OF_SCOPE:"):
-                        final_answer = context.replace("OUT_OF_SCOPE:", "").strip()
-                        break
-                    
-                    # Add tool response to messages
-                    messages.append({
-                        "role": "assistant", 
-                        "content": f"I need to retrieve context for: {arguments.get('query', query)}"
-                    })
-                    messages.append({
-                        "role": "user", 
-                        "content": f"Context: {context}\n\nPlease use this context to answer the original question."
-                    })
-                
-                if final_answer:
-                    break
-                
-                # Make another call to Ollama with updated context
-                ollama_response = self._call_ollama(messages)
-                response_content = ollama_response.get("message", {}).get("content", "")
-                count += 1
-
-            # Process final response
-            if final_answer:
-                return {
-                    "reasoning": f"Identified intent: {top_intent}. Question out of scope",
-                    "final_answer": final_answer,
-                    "detected_intent": top_intent,
-                    "context_used": collected_contexts[-1] if collected_contexts else ""
-                }
-            
-            # Format the final response
-            return self._format_final_response(response_content, top_intent, collected_contexts)
-
+            ## (*) invoke the function by name with appropriate arguments
+            if top_intent == "Meal-Logging" or top_intent == "Meal-Planning-Recipes":
+            	result = fn(*args1)
+            else:
+                result = fn(*args2)
+			    
         except Exception as e:
-            logger.error(f"Error getting response: {e}")
-            return {
-                "reasoning": f"Error occurred: {str(e)}",
-                "final_answer": f"Error: {str(e)}",
-                "detected_intent": None,
-                "context_used": ""
-            }
+            logger.error(f"Error during calling tools: {e}")
+            raise
+
+        # Format the final result
+        return result
+
 
 if __name__ == "__main__":
     engine = LocalModel()
-    response = engine.get_response("What is the importance of protein?")
+    #response = engine.get_response("What is the importance of protein?")
+    response = engine.get_response("How much protein does tofu contain?")
     print(json.dumps(response, indent=2)) 

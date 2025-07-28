@@ -31,7 +31,9 @@ def create_user(user: schemas.UserCreate) -> Optional[dict]:
 def get_user_profile(user_id: int) -> Optional[dict]:
     """Fetches a user profile by ID from Supabase."""
     try:
-        response = supabase.table('user_profiles').select("*", count='exact').eq('id', user_id).limit(1).execute() 
+    	## 7/4/2025 nt changed
+        #response = supabase.table('user_profiles').select("*", count='exact').eq('id', user_id).limit(1).execute() 
+        response = supabase.table('user_profiles').select("*", count='exact').eq('user_id', user_id).limit(1).execute() 
         if response.count > 0 and response.data:
             return response.data[0]
         return None
