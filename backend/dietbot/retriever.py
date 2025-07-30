@@ -76,7 +76,7 @@ class Retriever:
             ret_dict = {"ret_score": max_score}            
             
             ## 7/17 nt: When the max match is less than threshold, return a different message when KB doesn't have answer
-            if max_score < 0.63: ## (**) threshold
+            if max_score < 0.0: ## (**) threshold
                 ret_dict["reasoning"] = "NO_KNOWLEDGE_MATCH"
                 ret_dict["ret_source"] = None
                 ret_dict["ret_context"] = None

@@ -71,14 +71,16 @@ if __name__ == "__main__":
 
     testfile = "./evaluate/test_questions.csv"
     #testfile = "./evaluate/test_questions_tiny.csv"
-    outfile = "./evaluate/test_results-0.63_eval.csv" # align threshold with line 79 in retriever.py
+    #outfile = "./evaluate/test_results-0.63_eval.csv" # align threshold with line 79 in retriever.py
+    outfile = "./evaluate/test_results-0.0.csv" # (*) to get answers to all answerable questions
     #outfile = "./evaluate/test_results_tiny-0.63.csv"
 
     # Read the CSV file into a DataFrame
     questions = read_csv_questions(testfile)
     
     # Generate response to all queries
-    results = generate_response(questions)
+    #results = generate_response(questions)
+    results = generate_response(questions[:50]) # (*) to get answers to answerable questions only
     
     # Write to an output file
     write_query_response(outfile, results)
