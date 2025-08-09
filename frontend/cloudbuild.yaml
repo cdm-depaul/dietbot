@@ -1,0 +1,18 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    dir: frontend
+    args:
+      - build
+      - -f
+      - Dockerfile
+      - -t
+      - gcr.io/$PROJECT_ID/dietbot-frontend
+      - --build-arg
+      - NEXT_PUBLIC_BACKEND_URL=${_NEXT_PUBLIC_BACKEND_URL}
+      - .
+images:
+  - gcr.io/$PROJECT_ID/dietbot-frontend
+
+# Default value (you can override from the script)
+substitutions:
+  _NEXT_PUBLIC_BACKEND_URL: https://dietbot-backend-329764297954.us-central1.run.app

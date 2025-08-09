@@ -1,3 +1,5 @@
+import os
+
 RDI_VALUES = {
     'Male': {
         'Sedentary': {
@@ -52,3 +54,5 @@ RDI_VALUES = {
         }
     }
 }
+
+OLLAMA_API_URL = os.getenv("OLLAMA_API_URL", "http://localhost:11434")

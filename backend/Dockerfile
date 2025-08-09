@@ -1,23 +1,26 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VERSION=3.12.7
-FROM python:${PYTHON_VERSION}-slim as base
+FROM python:${PYTHON_VERSION}-slim AS base
 
-# Set environment variables to prevent generating .pyc files and ensure logs aren't buffered
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# === ENVIRONMENT SETTINGS ===
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies that might be needed by psycopg2
-# RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev && rm -rf /var/lib/apt/lists/*
-# Note: -slim images might require installing build tools first if needed for pip installs.
-# Alpine images (like python:3.10-alpine) are smaller but might require different packages (e.g., postgresql-dev instead of libpq-dev).
-# Let's try without explicit system deps first, psycopg2-binary often includes them.
+# === OPTIONAL: SYSTEM DEPENDENCIES ===
+# Uncomment if your dependencies (like psycopg2) require them
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     gcc libpq-dev build-essential && \
+#     rm -rf /var/lib/apt/lists/*
 
-# Copy only the requirements file first to leverage Docker layer caching
+# === INSTALL PYTHON DEPENDENCIES FIRST TO LEVERAGE CACHE ===
 COPY requirements.txt .
+RUN python -m pip install --upgrade pip && \
+    pip install --default-timeout=300 -r requirements.txt
 
 # Install Python dependencies with increased timeout
 RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
@@ -40,3 +43,12 @@ EXPOSE 8001
 
 
 
+# === COPY APPLICATION CODE ===
+COPY . .
+
+# === OPTIONAL: Drop privileges ===
+# RUN useradd -m appuser && chown -R appuser /app
+# USER appuser
+
+EXPOSE 8080
+CMD ["uvicorn", "dietbot.main:app", "--host", "0.0.0.0", "--port", "8080"]

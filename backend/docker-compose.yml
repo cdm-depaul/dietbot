@@ -10,8 +10,11 @@ services:
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       NUTRITIONIX_APP_ID: ${NUTRITIONIX_APP_ID}
       NUTRITIONIX_API_KEY: ${NUTRITIONIX_API_KEY}
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma3}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma3:1b}
       OLLAMA_API_URL: http://host.docker.internal:11434/api/chat
+      GOOGLE_APPLICATION_CREDENTIALS: ./dietbot-gemma-sa.json
+      CLOUD_RUN_URL: ${CLOUD_RUN_URL}
+      SA_KEY_JSON: ${SA_KEY_JSON}
     volumes:
       - .:/app
     command: >

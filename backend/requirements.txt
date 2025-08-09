@@ -16,3 +16,4 @@ ollama
 psycopg2-binary
 hf_xet
 supabase
+google-auth

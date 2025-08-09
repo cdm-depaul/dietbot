@@ -5,27 +5,26 @@ import requests
 from dotenv import load_dotenv
 from typing import Tuple, List
 
-## 6/29/2025 nt: path fixed -- but reverted later after successful system integration
 from .potts import IntentClassifier
-#from potts import IntentClassifier
 from .retriever import Retriever
-#from retriever import Retriever
 from .tools import meal_planning, meal_logging, personal_health_advice, educational_content
 
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
+import google.auth
+from google.auth import default
+
 # Logging configuration
-#logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
 logger = logging.getLogger(__name__)
 
 load_dotenv()
 
 DEFAULT_MODEL = "dietbot"
 AGENT_LOOP_LIMIT = 3
-# Read Ollama API URL from environment variable, defaulting to localhost if not set
 OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434/api/chat')
 
 class LocalModel:
     def __init__(self) -> None:
-        """Initialize model components"""
         try:
             self.intent_classifier = IntentClassifier()
             self.retriever = Retriever()
@@ -35,8 +34,7 @@ class LocalModel:
         
         self.model = os.getenv('OLLAMA_MODEL', DEFAULT_MODEL)
         self.agent_loop_limit = AGENT_LOOP_LIMIT
-        
-        # Base system prompt
+
         self.system_prompt = (
             "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. "
             "You are also a professional dietitian, with expert knowledge on food, nutrients and human health. "
@@ -44,57 +42,132 @@ class LocalModel:
             "Also, respond in a gentle, kind, and empathetic tone. "
 
         )
-
     def _call_ollama(self, messages):
-        """Make API call to local Ollama model and process streaming response"""
+        import os
+        import json
+        import requests
+        import logging
+        from google.auth import default
+        from google.auth.transport import requests as google_requests
+        from google.oauth2 import service_account
+        from google.oauth2 import id_token
+
+        logger = logging.getLogger(__name__)
+        print("📡 Calling Ollama...")
+
         try:
+            cloud_run_url = os.getenv("CLOUD_RUN_URL")  # e.g. https://gemma3-1b-329764297954.us-central1.run.app
+            sa_key_path = os.getenv("SA_KEY_JSON")
+            model = "gemma3:1b"
+            ollama_api_url = os.getenv("OLLAMA_API_URL", "http://localhost:11434/api/chat")
+
+            print(f"🌐 CLOUD_RUN_URL: {cloud_run_url}")
+            print(f"🔐 SA_KEY_JSON: {sa_key_path}")
+            print(f"🤖 MODEL: {model}")
+
+            user_prompt = next((msg.get("content") for msg in reversed(messages) if msg.get("role") == "user"), "")
             payload = {
-                "model": self.model,
-                "messages": messages
+                "model": model,
+                "prompt": user_prompt
             }
-            
-            # Use the configured OLLAMA_API_URL
-            response = requests.post(OLLAMA_API_URL, json=payload, stream=True)
-            response.raise_for_status()
-            
-            # Process the streaming response
-            full_content = ""
-            for line in response.iter_lines():
-                if line:
+
+            if cloud_run_url:
+                print("--- Beginning Cloud Run Call Logic ---")
+                auth_request = google_requests.Request()
+                token = None
+
+                if sa_key_path and os.path.exists(sa_key_path):
+                    print("🔑 Using service account key file")
+                    credentials = service_account.IDTokenCredentials.from_service_account_file(
+                        sa_key_path, target_audience=cloud_run_url
+                    )
+                    credentials.refresh(auth_request)
+                    token = credentials.token
+                else:
+                    print("🔐 Using default GCP credentials (Workload Identity)")
+                    credentials, _ = default()
+                    token = id_token.fetch_id_token(auth_request, cloud_run_url)
+
+                if not token:
+                    raise ValueError("Failed to obtain authentication token.")
+
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"
+                }
+
+                endpoint = f"{cloud_run_url}/api/generate"
+                print(f"🚀 Sending request to Cloud Run at: {endpoint}")
+                print(f"🔍 Request Headers: {headers}")
+                print(f"🔍 Request Payload: {json.dumps(payload)}")
+
+                response = requests.post(endpoint, headers=headers, json=payload)
+                print(f"✅ Received response with status code: {response.status_code}")
+                response.raise_for_status()
+
+                print(f"✅ Status check passed. Processing response...")
+                print(f"📝 Raw response content: {response.text}")
+
+                # New chunked-style parsing
+                full_content = ""
+                for line in response.text.splitlines():
                     try:
-                        chunk = json.loads(line.decode('utf-8'))
-                        content_chunk = chunk.get("message", {}).get("content", "")
+                        chunk = json.loads(line)
+                        content_chunk = chunk.get("response", "")
                         full_content += content_chunk
-                        
-                        # Check if this is the final message
                         if chunk.get("done", False):
                             break
                     except json.JSONDecodeError:
-                        logger.warning(f"Failed to decode JSON from line: {line}")
-            
-            return {"message": {"content": full_content}}
+                        print(f"⚠️ Failed to decode chunk: {line}")
+                        continue
+
+                full_content = full_content.strip()
+                return {"message": {"content": full_content}}
+
+            else:
+                print("--- Beginning Local Ollama Call Logic ---")
+                headers = {"Content-Type": "application/json"}
+                payload = {
+                    "model": model,
+                    "messages": messages,
+                    "stream": True
+                }
+                response = requests.post(ollama_api_url, headers=headers, json=payload, stream=True)
+                response.raise_for_status()
+
+                full_content = ""
+                for line in response.iter_lines():
+                    if line:
+                        try:
+                            chunk = json.loads(line.decode("utf-8"))
+                            content_chunk = chunk.get("message", {}).get("content") or chunk.get("response", "")
+                            full_content += content_chunk
+                            if chunk.get("done", False):
+                                break
+                        except Exception as e:
+                            print(f"⚠️ Failed to decode chunk: {line} — {e}")
+
+                return {"message": {"content": full_content}}
+
         except Exception as e:
-            logger.error(f"Error calling Ollama API: {e}")
+            logger.error(f"❌ Error calling model: {e}")
             raise
-    
-    ## 7/11/2025 nt:
-    def create_init_messages(self, query: str, profile_dict : dict):
-        elements1 = ['name', 'age', 'sex', 'height', 'weight', 'activity_level', 'diet', 'goal'] # single text
-        elements2 = ['allergies', 'likes', 'dislikes'] # list of text
+
+
+    def create_init_messages(self, query: str, profile_dict: dict):
+        elements1 = ['name', 'age', 'sex', 'height', 'weight', 'activity_level', 'diet', 'goal']
+        elements2 = ['allergies', 'likes', 'dislikes']
 
         profile = [f"{element}: {profile_dict[element]}" for element in elements1] + \
                   [f"{element}: {', '.join(profile_dict[element])}" for element in elements2]
 
-        profile_str = ', '.join(profile) # to make one string (accepted by the messages format)
-                   
-        init_messages = [
+        profile_str = ', '.join(profile)
+
+        return [
             {"role": "user", "content": query},
             {"role": "system", "content": self.system_prompt},
-            {"role": "system", 
-             "content": f"User profile: {profile_str}"}
+            {"role": "system", "content": f"User profile: {profile_str}"}
         ]
-        return init_messages
-    
 
     ## (1) 7/11/2025 nt: for meal logging
     def call_meal_logging(self, query, user_context, messages, result) -> dict:
@@ -104,12 +177,6 @@ class LocalModel:
         # get the summary
         answer = ret_dict['final_answer']
         summary = ""
-        if "success" in answer:
-           try:
-               pos = answer.index('\n')
-               summary = answer[pos:] # nt: needs parsing... later
-           except ValueError:
-               print("Error finding the second line in final answer")
 
         ## Evaluate the food intake and give encouraging feedback to the user.
         ## Add another role instruction in messages:
@@ -237,7 +304,6 @@ class LocalModel:
         return result
 		
 
-    # Response generation method with classification RAG
     def get_response(self, query: str, user_context: dict = None) -> dict:
         """Generate a response based on the query and user context"""
         # default return dict
@@ -258,7 +324,6 @@ class LocalModel:
             result["final_answer"] = "Please provide a valid query."
             return result  # (*) non-local exit
 
-	    ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
         query_embedding = self.retriever.embed_query(query)
         intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
         
@@ -304,8 +369,7 @@ class LocalModel:
             if top_intent == "Meal-Logging" or top_intent == "Meal-Planning-Recipes":
             	result = fn(*args1)
             else:
-                result = fn(*args2)
-			    
+                return fn(query_embedding, user_context, init_messages)
         except Exception as e:
             logger.error(f"Error during calling tools: {e}")
             raise
@@ -317,6 +381,5 @@ class LocalModel:
 
 if __name__ == "__main__":
     engine = LocalModel()
-    #response = engine.get_response("What is the importance of protein?")
     response = engine.get_response("How much protein does tofu contain?")
-    print(json.dumps(response, indent=2)) 
+    print(json.dumps(response, indent=2))

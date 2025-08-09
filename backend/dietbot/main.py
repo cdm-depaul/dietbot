@@ -28,9 +28,19 @@ app = FastAPI(
 #classifier = IntentClassifier()
 #model = LocalModel()
 
+origins = [
+    "http://localhost:3000",
+    "https://dietbot-frontend-329764297954.us-central1.run.app",
+    "http://www.dietbotchat.com",
+    "https://www.dietbotchat.com"
+     # add your production frontend here later
+]
+
+print("✅ CORS Middleware active for:", origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=origins,  # no wildcard if credentials = True
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,4 +56,5 @@ async def health_check():
     return {"status": "healthy"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run("dietbot.main:app", host="0.0.0.0", port=port)

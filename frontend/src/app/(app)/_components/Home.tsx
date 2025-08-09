@@ -13,6 +13,8 @@ import {
  * Homepage of the app when the user is logged in. Renders for route '/' by default.
  * Contains welcome message, Chatbox and the Intent for the user to choose manually.
  */
+console.log('🔍 BACKEND URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
+
 export const Home: React.FC = () => {
   return (
     <Body>
@@ -47,7 +49,7 @@ export const Home: React.FC = () => {
           </Intent>
           <button
             onClick={async () => {
-              const response = await fetch('http://localhost:8000', {
+              const response = await fetch('${process.env.NEXT_PUBLIC_BACKEND_URL}', {
                 method: 'Get',
               });
               console.log(await response.json());

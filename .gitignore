@@ -141,4 +141,16 @@ venv/
 /backend/data/Clean Transcripts
 /backend/data/Transcripts
 
+# --- Allow tracked notebooks and notebook outputs ---
+!notebooks/
+!notebooks/*.ipynb
+!data/
+!data/**/*.pdf
+!data/**/*.csv
 
+# Secrets & local artifacts
+*.env
+.env*
+*sa.json
+*dietbot-gemma-sa.json
+*.gsheet

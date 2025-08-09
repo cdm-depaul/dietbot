@@ -1,23 +1,64 @@
+'use client';
+
 export class API {
-  constructor(
-    private decoder: TextDecoder = new TextDecoder(),
-    private api: string = 'http://localhost:8001'
-  ) {}
+  private api: string = 'http://localhost:8001'; // Default fallback
+  private decoder: TextDecoder;
+
+  constructor(decoder: TextDecoder = new TextDecoder()) {
+    this.decoder = decoder;
+
+    if (typeof window !== 'undefined') {
+      try {
+        const runtimeEnv = (window as any).__ENV__?.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+        console.log('🧪 Runtime env from window:', runtimeEnv);
+        console.log('🧪 window.location.href:', window.location.href);
+
+        if (runtimeEnv) {
+          this.api = runtimeEnv;
+        }
+      } catch (err) {
+        console.warn('⚠️ Failed to resolve backend URL at runtime:', err);
+      }
+    }
+
+    console.log('🧪 Final API URL:', this.api);
+  }
+
+  private buildHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      window.location.hostname === 'localhost';
+
+    const idToken = process.env.NEXT_PUBLIC_ID_TOKEN;
+
+    if (isLocalhost && idToken) {
+      headers['Authorization'] = `Bearer ${idToken}`;
+      console.log('🧪 Using ID token for auth (local)');
+    }
+
+    return headers;
+  }
 
   public async postData(
     url: string,
     body: string,
     callback: (response: string) => void
   ): Promise<void> {
-    const response = await fetch(`${this.api}/${url}`, {
-      method: 'Post',
-      headers: {
-        'content-type': 'application/json',
-      },
+    const fullUrl = `${this.api}/${url}`;
+    console.log('🧪 POSTing to:', fullUrl);
+
+    const response = await fetch(fullUrl, {
+      method: 'POST',
+      headers: this.buildHeaders(),
       body,
     });
+
     if (response.body) {
-      const reader = response.body?.getReader();
+      const reader = response.body.getReader();
       let finish = false;
       while (!finish) {
         const { done: doneReading, value } = await reader.read();
@@ -38,25 +79,29 @@ export class API {
     url: string,
     body: object
   ): Promise<T> {
-    const response = await fetch(`${this.api}/${url}`, {
+    const fullUrl = `${this.api}/${url}`;
+    console.log('🧪 POSTing JSON to:', fullUrl);
+    console.log('🧪 Payload:', body);
+
+    const response = await fetch(fullUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.buildHeaders(),
       body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData}`);
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorData}`
+      );
     }
 
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
-        return await response.json() as T;
+      return (await response.json()) as T;
     } else {
-        console.warn('Received non-JSON response or empty response body');
-        return null as T;
+      console.warn('Received non-JSON response or empty response body');
+      return null as T;
     }
   }
 }

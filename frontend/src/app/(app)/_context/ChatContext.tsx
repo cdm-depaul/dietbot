@@ -1,131 +1,102 @@
 import React, { createContext, useReducer } from 'react';
 import { childProps } from '../_components/interface';
-import { Chat } from './../_components';
 import { API } from '../_api/api';
 
 const api = new API();
 
-interface chatInterface {
-  chatHistory: React.ReactNode[];
+/* ---------- Types ---------- */
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;           // Markdown/plain text
 }
-
-interface chatMethodsInterface extends chatInterface {
+interface ChatState {
+  chatHistory: ChatMessage[];
+}
+interface ChatMethods extends ChatState {
   newChat: () => void;
   postQuery: (query: string) => void;
 }
 
-const chatContext = createContext<chatMethodsInterface>({
+/* ---------- Context ---------- */
+const chatContext = createContext<ChatMethods>({
   chatHistory: [],
   newChat: () => {},
-  postQuery: (query: string) => {},
+  postQuery: (_: string) => {},
 });
 
-const chatReducer = (
-  state: chatInterface,
-  payload:
-    | { action: 'newChat' }
-    | { action: 'userQuery'; value: React.ReactNode[] }
-    | { action: 'llmResponse'; value: [number, string] }
-) => {
-  switch (payload.action) {
-    case 'llmResponse':
-      return {
-        ...state,
-        chatHistory: state.chatHistory.map((chat, index) => {
-          if (index === payload.value[0]) {
-            return React.cloneElement(
-              <Chat className="" key={payload.value[0]}>
-                <div className="flex">
-                  {/* <span className="w-3 h-3 mr-5 rounded-full border"></span> */}
-                  <div
-                    className="border-none rounded-xl whitespace-pre-line"
-                    dangerouslySetInnerHTML={{ __html: payload.value[1] }}
-                  />
-                  {/* {payload.value[1]}
-                </div> */}
-                </div>
-              </Chat>
-            );
-          }
-          return chat;
-        }),
-      };
-    case 'newChat':
-      return { ...state, chatHistory: [] };
-    case 'userQuery':
-      return {
-        ...state,
-        chatHistory: [...state.chatHistory, ...payload.value],
-      };
+/* ---------- Reducer ---------- */
+type Action =
+  | { type: 'NEW_CHAT' }
+  | { type: 'ADD_MESSAGES'; value: ChatMessage[] }
+  | { type: 'SET_ASSISTANT_AT'; index: number; content: string };
+
+function chatReducer(state: ChatState, action: Action): ChatState {
+  switch (action.type) {
+    case 'NEW_CHAT':
+      return { chatHistory: [] };
+
+    case 'ADD_MESSAGES':
+      return { chatHistory: [...state.chatHistory, ...action.value] };
+
+    case 'SET_ASSISTANT_AT': {
+      const next = [...state.chatHistory];
+      if (next[action.index] && next[action.index].role === 'assistant') {
+        next[action.index] = { ...next[action.index], content: action.content };
+      }
+      return { chatHistory: next };
+    }
+
     default:
       return state;
   }
-};
+}
 
+/* ---------- Provider ---------- */
 export const ChatContextProvider: React.FC<childProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(chatReducer, {
-    chatHistory: [],
-  });
-  const postQuery = async (query: string) => {
-    const userQueryIndex = state.chatHistory.length;
-    const llmResponseIndex = userQueryIndex + 1;
+  const [state, dispatch] = useReducer(chatReducer, { chatHistory: [] });
 
+  const postQuery = async (query: string) => {
+    // index where we'll later place the assistant's response
+    const userIndex = state.chatHistory.length;
+    const assistantIndex = userIndex + 1;
+
+    // Append user message and a placeholder assistant bubble
     dispatch({
-      action: 'userQuery',
+      type: 'ADD_MESSAGES',
       value: [
-        React.cloneElement(
-          <Chat key={userQueryIndex} className="my-3">
-            <div className="flex justify-end">
-              <span
-                className="border rounded-xl p-1 px-3"
-                style={{ maxWidth: '70%' }}
-              >
-                {query}
-              </span>
-            </div>
-          </Chat>
-        ),
-        React.cloneElement(
-          <Chat className="" key={llmResponseIndex}>
-            <div>...</div> 
-          </Chat>
-        ),
+        { role: 'user', content: query },
+        { role: 'assistant', content: '...' },
       ],
     });
 
     try {
-      const userId = 1; // Hardcoded user ID, replace later
-      const requestBody = { query: query };
+      const userId = 1;
+      const requestBody = { query };
       const responseData = await api.postJsonData<{ response: string }>(
-          `chat/${userId}/ask`, // URL relative to base API URL
-          requestBody
+        `chat/${userId}/ask`,
+        requestBody
       );
-      
-      if (responseData && responseData.response) {
-          dispatch({
-              action: 'llmResponse',
-              value: [llmResponseIndex, responseData.response]
-          });
-      } else {
-           // Improper message handling
-           dispatch({
-              action: 'llmResponse',
-              value: [llmResponseIndex, "Sorry, I couldn't get a response."]
-          });
-           console.error("Received empty or invalid response from backend:", responseData);
-      }
-    } catch (error) {
-        console.error("Error posting query:", error);
-        dispatch({
-            action: 'llmResponse',
-            value: [llmResponseIndex, `Error: ${error instanceof Error ? error.message : 'Failed to fetch response'}`]
-        });
+
+      const text =
+        responseData?.response ??
+        "Sorry, I couldn't get a response.";
+
+      // Expecting Markdown/plain text here
+      dispatch({ type: 'SET_ASSISTANT_AT', index: assistantIndex, content: text });
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'Failed to fetch response';
+      dispatch({
+        type: 'SET_ASSISTANT_AT',
+        index: assistantIndex,
+        content: `Error: ${msg}`,
+      });
+      console.error('Error posting query:', err);
     }
   };
 
-  const newChat = () => {
-    dispatch({ action: 'newChat' });
-  };
+  const newChat = () => dispatch({ type: 'NEW_CHAT' });
+
   return (
     <chatContext.Provider value={{ ...state, newChat, postQuery }}>
       {children}
