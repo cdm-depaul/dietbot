@@ -5,6 +5,8 @@ import { ChatHistory, Settings } from './index';
 import { NewChatSVG } from '_svgs';
 import chatContext from '../_context/ChatContext';
 
+
+
 /**
  * Renders a Navbar that is shared across all the pages and routes.
  * Contains company name that is static as of now, as in could be changed to image that could be taken as a prop

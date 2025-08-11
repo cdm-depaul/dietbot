@@ -56,7 +56,7 @@ class LocalModel:
         print("📡 Calling Ollama...")
 
         try:
-            cloud_run_url = os.getenv("CLOUD_RUN_URL")  # e.g. https://gemma3-1b-329764297954.us-central1.run.app
+            cloud_run_url = os.getenv("CLOUD_RUN_URL")  # e.g. https://gemma3-1b-xxx.run.app
             sa_key_path = os.getenv("SA_KEY_JSON")
             model = "gemma3:1b"
             ollama_api_url = os.getenv("OLLAMA_API_URL", "http://localhost:11434/api/chat")
@@ -64,12 +64,6 @@ class LocalModel:
             print(f"🌐 CLOUD_RUN_URL: {cloud_run_url}")
             print(f"🔐 SA_KEY_JSON: {sa_key_path}")
             print(f"🤖 MODEL: {model}")
-
-            user_prompt = next((msg.get("content") for msg in reversed(messages) if msg.get("role") == "user"), "")
-            payload = {
-                "model": model,
-                "prompt": user_prompt
-            }
 
             if cloud_run_url:
                 print("--- Beginning Cloud Run Call Logic ---")
@@ -96,24 +90,34 @@ class LocalModel:
                     "Content-Type": "application/json"
                 }
 
-                endpoint = f"{cloud_run_url}/api/generate"
+                # ⬇️ Change: send full messages to a chat endpoint, streaming
+                payload = {
+                    "model": model,
+                    "messages": messages,
+                    "stream": True
+                }
+                endpoint = f"{cloud_run_url}/api/chat"
+
                 print(f"🚀 Sending request to Cloud Run at: {endpoint}")
                 print(f"🔍 Request Headers: {headers}")
-                print(f"🔍 Request Payload: {json.dumps(payload)}")
+                print(f"🔍 Request Payload: {json.dumps(payload)[:500]}...")
+                # Print out messages
+                print("🔍 Request Messages:")
+                for message in payload["messages"]:
+                    print(f"  {message['role']}: {message['content']}"
+                          )
 
                 response = requests.post(endpoint, headers=headers, json=payload)
                 print(f"✅ Received response with status code: {response.status_code}")
                 response.raise_for_status()
 
                 print(f"✅ Status check passed. Processing response...")
-                print(f"📝 Raw response content: {response.text}")
-
-                # New chunked-style parsing
                 full_content = ""
                 for line in response.text.splitlines():
                     try:
                         chunk = json.loads(line)
-                        content_chunk = chunk.get("response", "")
+                        # support either {message:{content}} or {response: "..."}
+                        content_chunk = (chunk.get("message", {}) or {}).get("content") or chunk.get("response", "")
                         full_content += content_chunk
                         if chunk.get("done", False):
                             break
@@ -154,20 +158,35 @@ class LocalModel:
             raise
 
 
+
     def create_init_messages(self, query: str, profile_dict: dict):
+        # expected fields
         elements1 = ['name', 'age', 'sex', 'height', 'weight', 'activity_level', 'diet', 'goal']
         elements2 = ['allergies', 'likes', 'dislikes']
 
-        profile = [f"{element}: {profile_dict[element]}" for element in elements1] + \
-                  [f"{element}: {', '.join(profile_dict[element])}" for element in elements2]
+        # safe formatting (skip missing/empty)
+        parts = []
+        for e in elements1:
+            val = profile_dict.get(e)
+            if val not in (None, "", []):
+                parts.append(f"{e}: {val}")
+        for e in elements2:
+            vals = profile_dict.get(e) or []
+            if isinstance(vals, (list, tuple)):
+                if vals:
+                    parts.append(f"{e}: {', '.join(map(str, vals))}")
+            else:
+                # tolerate non-list input
+                parts.append(f"{e}: {vals}")
 
-        profile_str = ', '.join(profile)
+        profile_str = ', '.join(parts) if parts else "unknown"
 
         return [
-            {"role": "user", "content": query},
             {"role": "system", "content": self.system_prompt},
-            {"role": "system", "content": f"User profile: {profile_str}"}
+            {"role": "system", "content": f"User profile: {profile_str}"},
+            {"role": "user", "content": query},
         ]
+
 
     ## (1) 7/11/2025 nt: for meal logging
     def call_meal_logging(self, query, user_context, messages, result) -> dict:
@@ -241,10 +260,8 @@ class LocalModel:
         #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
 	    ## add the retrieved context in the messags
-        messages.append({
-            "role": "user", 
-            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
-        )
+        messages.append({"role": "user",
+            "content": f"Context: {ret_dict['ret_context']}\n\nPlease use the context above to answer the query."})
 
         ## call ollama with the enhanced messages
         #print (f'   ======== (3) Personalized Health Advice messages: {messages} ===========')
@@ -284,10 +301,8 @@ class LocalModel:
 
         # else:
 	    ## add the retrieved context in the messags
-        messages.append({
-            "role": "user", 
-            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
-        )
+        messages.append({"role": "user",
+            "content": f"Context: {ret_dict['ret_context']}\n\nPlease use the context above to answer the query."})
 
         ## (*) call ollama with the enhanced messages
         #print (f'   ======== (4) Educational-Content messages: {messages} ===========')
@@ -366,10 +381,11 @@ class LocalModel:
             args2 = (query_embedding, user_context, init_messages, result) # query_embedding instead of query str
 
             ## (*) invoke the function by name with appropriate arguments
-            if top_intent == "Meal-Logging" or top_intent == "Meal-Planning-Recipes":
-            	result = fn(*args1)
+            if top_intent in ("Meal-Logging", "Meal-Planning-Recipes"):
+                result = fn(*args1)
             else:
-                return fn(query_embedding, user_context, init_messages)
+                result = fn(*args2)
+            return result
         except Exception as e:
             logger.error(f"Error during calling tools: {e}")
             raise

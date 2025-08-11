@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  background-color: #003DA5; /* DePaul Blue */
+  color: #ffffff;
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 5px solid #C8102E; /* DePaul Red */
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subtitle {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.chatContainer {
+  flex: 1;
+  background-color: #f8f9fa;
+  padding: 1rem;
+}
+

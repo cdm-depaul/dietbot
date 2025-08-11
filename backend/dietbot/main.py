@@ -32,7 +32,9 @@ origins = [
     "http://localhost:3000",
     "https://dietbot-frontend-329764297954.us-central1.run.app",
     "http://www.dietbotchat.com",
-    "https://www.dietbotchat.com"
+    "https://www.dietbotchat.com",
+    "http://dietbotchat.com",
+    "https://dietbotchat.com"
      # add your production frontend here later
 ]
 

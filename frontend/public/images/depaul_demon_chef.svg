@@ -1,0 +1,52 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DietBot Demon Chef logo">
+  <title>DietBot Demon Chef</title>
+  <desc>Friendly robot chef head inspired by DePaul blue and red</desc>
+
+  <!-- Palette -->
+  <!-- DePaul Navy: #0A2A52 | DePaul Blue: #004B8D | DePaul Red: #C60C30 | Accent Teal: #5AC18E -->
+
+  <defs>
+    <!-- Subtle hat gradient -->
+    <linearGradient id="hatGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C60C30"></stop>
+      <stop offset="100%" stop-color="#FF7A59"></stop>
+    </linearGradient>
+
+    <!-- Soft drop shadow for the head -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0A2A52" flood-opacity="0.25"></feDropShadow>
+    </filter>
+  </defs>
+
+  <!-- Ears -->
+  <rect x="8" y="55" width="16" height="24" rx="8" ry="8" fill="#0A2A52"></rect>
+  <rect x="96" y="55" width="16" height="24" rx="8" ry="8" fill="#0A2A52"></rect>
+
+  <!-- Antennas -->
+  <g stroke="#0A2A52" stroke-width="6" stroke-linecap="round">
+    <line x1="18" y1="45" x2="10" y2="30"></line>
+    <line x1="102" y1="45" x2="110" y2="30"></line>
+  </g>
+  <circle cx="10" cy="30" r="5" fill="#0A2A52"></circle>
+  <circle cx="110" cy="30" r="5" fill="#0A2A52"></circle>
+
+  <!-- Head outer + inner -->
+  <g filter="url(#softShadow)">
+    <rect x="18" y="40" width="84" height="58" rx="20" ry="20" fill="#0A2A52"></rect>
+    <rect x="22" y="45" width="76" height="48" rx="16" ry="16" fill="#004B8D"></rect>
+  </g>
+
+  <!-- Chef hat -->
+  <path d="M30 40 C 30 22, 90 22, 90 40 L 90 42 L 30 42 Z" fill="url(#hatGrad)" stroke="#0A2A52" stroke-width="4"></path>
+
+  <!-- Eyes: carrot + avocado -->
+  <!-- Left eye (stylized carrot) -->
+  <path d="M44 66 c 8 -18, 20 12, 0 16 c 3 -5, 3 -7, 0 -16 z" fill="#C60C30" stroke="#0A2A52" stroke-width="2"></path>
+  <!-- Right eye (avocado) -->
+  <ellipse cx="76" cy="76" rx="10" ry="12" fill="#5AC18E" stroke="#0A2A52" stroke-width="2"></ellipse>
+  <circle cx="76" cy="76" r="4" fill="#0A2A52"></circle>
+
+  <!-- Smile -->
+  <path d="M50 88 q 10 8 20 0" stroke="#0A2A52" stroke-width="4" fill="none" stroke-linecap="round"></path>
+</svg>

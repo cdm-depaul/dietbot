@@ -1,11 +1,50 @@
 'use client';
-import { Home } from './_components';
-import { memo } from 'react';
-/**
- * Next js uses pages to display a page in the layout, here Homepage is displayed as the user visits the website as of now.
- */
-const App: React.FC = memo(() => <Home />);
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from './Landing.module.css';
+import demonLogo from '../../../public/images/depaul_demon_chef.svg';
 
-App.displayName = 'App';
+export default function Landing() {
+  return (
+    <div className={styles.wrapper}>
+<header className={styles.header}>
+  <div className={styles.brandCol}>
+    <Image src={demonLogo} alt="DePaul Demon Chef" width={60} height={60} className={styles.brandLogo} />
+    <Link href="/" className={styles.brandLinkLeft}>
+      <span className={styles.brandDot} />
+      DietChatBot.com
+    </Link>
+  </div>
 
-export default App;
+  <div className={styles.titleCol}>
+    <h1 className={styles.title}>
+      Enhancing Dynamic Personalization in Dietitian Agents with RAG and Medical Dialogue Fine-Tuning
+    </h1>
+    <h2 className={styles.authors}>
+      Joshua Shargo, Carlos Ortiz, Noriko Tomuro
+    </h2>
+    <p className={styles.subtitle}>
+      Powered by DePaul spirit and AI nutrition
+    </p>
+  </div>
+</header>
+
+
+
+
+      {/* Main content */}
+      <main className={styles.mainContent}>
+        /
+  <h2>Select your preferred interface theme:</h2>
+  <div className={styles.themeButtons}>
+    <Link href="/dietbot">
+      <button className={styles.themeButton}>Classic Theme</button>
+    </Link>
+    <Link href="/dietbot-v2">
+      <button className={styles.themeButton}>DePaul Blue Demon Theme</button>
+    </Link>
+  </div>
+</main>
+    </div>
+  );
+}

@@ -11,7 +11,20 @@ export interface optionalClassName {
 
 export interface bodyInterface extends childProps, optionalClassName {}
 
-export interface chatBoxInterface extends optionalClassName {}
+// ✅ PATCH: extend ChatBox props
+export interface chatBoxInterface extends optionalClassName {
+  /**
+   * Keep the user on the current page (don’t router.push to /chat/[id]).
+   * Default behavior in ChatBox will be true.
+   */
+  disableNavigate?: boolean;
+
+  /**
+   * Optional hook fired when the user submits a query.
+   * Useful to log recents, update side panels, etc.
+   */
+  onSubmitQuery?: (query: string, uuid: string) => void;
+}
 
 export interface chatComponentInterface
   extends childProps,
