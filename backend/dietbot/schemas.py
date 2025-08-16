@@ -1,14 +1,14 @@
-from pydantic import BaseModel, Field, Json
-from typing import List, Optional
-from datetime import date
+from pydantic import BaseModel
+from typing import List, Optional, Literal
+from datetime import date, datetime
 
-# User Profile
+# ---------------- User Profile ----------------
 class UserBase(BaseModel):
     name: str
     age: int
     sex: str
-    height: int
-    weight: int
+    height: int              # cm
+    weight: int              # kg
     activity_level: str
     allergies: List[str] = []
     likes: List[str] = []
@@ -24,12 +24,11 @@ class UserLogin(BaseModel):
     password: str
 
 class UserResponse(UserBase):
-    id: int
-
+    user_id: int
     class Config:
         from_attributes = True
 
-# Nutrient Intake
+# ---------------- Nutrient Intake ----------------
 class NutrientBase(BaseModel):
     dish_name: str
     calories: Optional[float] = 0
@@ -40,32 +39,43 @@ class NutrientBase(BaseModel):
     sodium: Optional[float] = 0
 
 class NutrientCreate(NutrientBase):
-    pass 
+    pass
 
 class NutrientResponse(NutrientBase):
     id: int
     user_id: int
     date: date
-
     class Config:
         from_attributes = True
 
-# Chat
+# ---------------- Chat ----------------
 class ChatQuery(BaseModel):
     query: str
 
 class ChatResponse(BaseModel):
     response: str
 
-# User Context
+# Base for both create + return
+class ChatTurnBase(BaseModel):
+    sender: Literal["user", "assistant"]
+    message: str
+
+# Client → backend (append new turn)
+class ChatTurnCreate(ChatTurnBase):
+    pass
+
+# DB → client (includes created_at)
+class ChatTurn(ChatTurnBase):
+    created_at: datetime
+
+# ---------------- User Context ----------------
 class UserContextResponse(BaseModel):
     profile: UserResponse
     recent_intake: List[NutrientResponse]
-
     class Config:
         from_attributes = True
 
-# RDI Comparison
+# ---------------- RDI Comparison ----------------
 class NutrientComparison(BaseModel):
     nutrient: str
     consumed: float
@@ -74,4 +84,3 @@ class NutrientComparison(BaseModel):
 
 class ComparisonResponse(BaseModel):
     comparisons: List[NutrientComparison]
-
