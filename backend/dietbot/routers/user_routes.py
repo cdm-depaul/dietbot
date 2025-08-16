@@ -110,3 +110,41 @@ def get_nutrient_comparison(user_id: int):
             )
 
     return schemas.ComparisonResponse(comparisons=comparisons)
+
+# --- ADD BELOW (do not change anything above) -------------------------------
+from typing import Any, Dict
+from fastapi import APIRouter as _APIRouter2, HTTPException as _HTTPException2, status as _status2
+
+# Separate router for user endpoints so we don't touch your existing /nutrients router
+users_router = _APIRouter2(
+    prefix="/users",
+    tags=["users"],
+)
+
+@users_router.get("/{user_id}/profile", response_model=Dict[str, Any])  # swap to schemas.UserProfile if you have it
+def get_user_profile(user_id: int):
+    """
+    Return a single user profile row from the 'user_profiles' table.
+    """
+    try:
+        res = (
+            supabase.table("user_profiles")
+            .select(
+                "user_id, created_at, name, age, sex, height, weight, activity_level, "
+                "allergies, likes, dislikes, diet, goal"
+            )
+            .eq("user_id", user_id)
+            .limit(1)
+            .execute()
+        )
+    except Exception as e:
+        raise _HTTPException2(
+            status_code=_status2.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {e}",
+        )
+
+    if not res.data:
+        raise _HTTPException2(status_code=_status2.HTTP_404_NOT_FOUND, detail="User not found")
+
+    return res.data[0]
+# --- END ADDITION -----------------------------------------------------------

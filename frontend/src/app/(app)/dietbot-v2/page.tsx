@@ -1,11 +1,53 @@
 'use client';
 
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
-import { ChatBox } from '../_components/ChatBox'; // uses your existing component
+import { ChatBox } from '../_components/ChatBox';
 import { Chat } from '../_components/Chat';
+import { API } from '../_api/api';
+
+type UserProfile = {
+  user_id?: number;
+  created_at?: string;
+  name?: string;
+  age?: number;
+  sex?: string;
+  height?: number; // cm
+  weight?: number; // kg
+  activity_level?: string;
+  allergies?: string[];
+  likes?: string[];
+  dislikes?: string[];
+  diet?: string;
+  goal?: string;
+  avatarUrl?: string;
+};
 
 export default function UpdatePage() {
   const rootRef = useRef<HTMLDivElement>(null);
+
+  // 🔹 Profile state
+  const [profile, setProfile] = React.useState<UserProfile | null>(null);
+  const [bmi, setBmi] = React.useState<number | null>(null);
+  const [profErr, setProfErr] = React.useState<string | null>(null);
+
+  // 🔹 Fetch profile once (uses API.getUserProfile)
+  useEffect(() => {
+    const api = new API();
+    const userId = 1;
+    (async () => {
+      try {
+        const p = await api.getUserProfile<UserProfile>(userId);
+        setProfile(p || null);
+        if (p?.height && p?.weight) {
+          const nextBmi = +(p.weight / Math.pow(p.height / 100, 2)).toFixed(1);
+          setBmi(nextBmi);
+        }
+      } catch (e: any) {
+        console.error('Failed to load profile', e);
+        setProfErr(e?.message || 'Failed to load profile');
+      }
+    })();
+  }, []);
 
   // When a user sends a message, append to "Recent" and bump the goal bar a bit.
   const handleSubmitQuery = useCallback((query: string, _uuid: string) => {
@@ -104,7 +146,7 @@ export default function UpdatePage() {
                 <rect x="96" y="55" rx="8" ry="8" width="16" height="24" fill="#0A2A52"/>
                 <line x1="18" y1="45" x2="10" y2="30" stroke="#0A2A52" strokeWidth={6} strokeLinecap="round"/>
                 <circle cx="10" cy="30" r="5" fill="#0A2A52"/>
-                <line x1="102" y1="45" x2="110" y2="30" stroke="#0A2A52" strokeWidth={6} strokeLinecap="round"/>
+                <line x1="102" y1="45" x2="110" cy="30" stroke="#0A2A52" strokeWidth={6} strokeLinecap="round"/>
                 <circle cx="110" cy="30" r="5" fill="#0A2A52"/>
                 <path d="M30 40 C 30 22, 90 22, 90 40 L 90 42 L 30 42 Z" fill="url(#hatGrad)" stroke="#0A2A52" strokeWidth={4}/>
                 <path d="M44 66 c 8 -18, 20 12, 0 16 c 3 -5, 3 -7, 0 -16 z" fill="#C60C30" stroke="#0A2A52" strokeWidth={2}/>
@@ -126,14 +168,14 @@ export default function UpdatePage() {
           <div className="panels">
             <div className="panel active" id="historyPanel">
               <div className="card">
-                <h3>Popular Categories</h3>
+                {/* <h3>Popular Categories</h3>
                 <div className="chiprow">
                   <div className="chip" data-cat="Quick & Easy">⚡ Quick & Easy</div>
                   <div className="chip" data-cat="Hearty & Flavorful">🍲 Hearty</div>
                   <div className="chip" data-cat="Light & Fresh">🥗 Light & Fresh</div>
                   <div className="chip" data-cat="High Protein">💪 High Protein</div>
                   <div className="chip" data-cat="Vegetarian">🌿 Vegetarian</div>
-                </div>
+                </div> */}
               </div>
               <div className="card" id="historyList">
                 <h3>Recent</h3>
@@ -148,19 +190,85 @@ export default function UpdatePage() {
             </div>
           </div>
 
+          {/* 🔹 DYNAMIC PROFILE CARD */}
           <div className="card">
-            <div className="profile">
-              <div className="avatar"><img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=240&auto=format&fit=crop" alt="user"/></div>
-              <div>
-                <strong>Alex Johnson</strong>
-                <div className="statline">
-                  <span className="pillstat">Age 34</span>
-                  <span className="pillstat">BMI 22.5</span>
-                  <span className="pillstat">Hydration 70%</span>
+            {!profile && !profErr && (
+              <div style={{fontSize:'.9rem',color:'var(--sub)'}}>Loading profile…</div>
+            )}
+            {profErr && (
+              <div style={{fontSize:'.9rem',color:'crimson'}}>Profile error: {profErr}</div>
+            )}
+
+            {profile && (
+              <>
+                <div className="profile">
+                                    <div className="avatar">
+                    <img
+                        src={
+                        profile.avatarUrl ||
+                        `/images/userid-${profile.user_id || 'default'}.png`
+                        }
+                        alt="user"
+                    />
+                    </div>
+                  <div>
+                    <strong>{profile.name ?? '—'}</strong>
+                    <div className="statline">
+                      {profile.age != null && <span className="pillstat">Age {profile.age}</span>}
+                      {profile.sex && <span className="pillstat">{profile.sex}</span>}
+                      {profile.height && <span className="pillstat">Height {profile.height} cm</span>}
+                      {profile.weight && <span className="pillstat">Weight {profile.weight} kg</span>}
+                      {bmi !== null && <span className="pillstat">BMI {bmi}</span>}
+                      {profile.activity_level && <span className="pillstat">{profile.activity_level}</span>}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="goalWrap">
+
+                <div style={{ marginTop: 10 }}>
+                  <small style={{ color: 'var(--sub)' }}>Goal</small>
+                  <div className="pillrow" style={{ marginTop: 6 }}>
+                    <span className="pillstat" style={{ background: '#ffe9e9', border: '1px solid #ffcdcd' }}>
+                      {profile.goal ?? '—'}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 10 }}>
+                  <small style={{ color: 'var(--sub)' }}>Diet summary</small>
+                  <div style={{ fontSize: '.9rem', marginTop: 4 }}>{profile.diet ?? '—'}</div>
+                </div>
+
+                <div style={{ marginTop: 10 }}>
+                  <small style={{ color: 'var(--sub)' }}>Allergies</small>
+                  <div className="pillrow" style={{ marginTop: 6 }}>
+                    {profile.allergies?.length
+                      ? profile.allergies.map((a) => <span key={a} className="pillstat">{a}</span>)
+                      : <span className="pillstat" style={{opacity:.7}}>None</span>}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 10 }}>
+                  <small style={{ color: 'var(--sub)' }}>Likes</small>
+                  <div className="pillrow" style={{ marginTop: 6 }}>
+                    {profile.likes?.length
+                      ? profile.likes.map((a) => <span key={a} className="pillstat">{a}</span>)
+                      : <span className="pillstat" style={{opacity:.7}}>—</span>}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 10 }}>
+                  <small style={{ color: 'var(--sub)' }}>Dislikes</small>
+                  <div className="pillrow" style={{ marginTop: 6 }}>
+                    {profile.dislikes?.length
+                      ? profile.dislikes.map((a) => <span key={a} className="pillstat">{a}</span>)
+                      : <span className="pillstat" style={{opacity:.7}}>—</span>}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* keep your goal bar example */}
+            <div className="goalWrap" style={{marginTop: 12}}>
               <small style={{color:'var(--sub)'}}>Daily calories</small>
               <div className="goalBar"><div className="goalFill" id="goalFill" style={{width:'35%'}}/></div>
               <div style={{display:'flex',justifyContent:'space-between',color:'var(--sub)',fontSize:'.8rem',marginTop:4}}>
@@ -194,10 +302,12 @@ export default function UpdatePage() {
             <circle cx="76" cy="76" r="10" fill="#00A3E0" opacity="0.06"/>
           </svg>
 
-          {/* Chat list + composer inside Suspense to satisfy useSearchParams in ChatBox */}
+          {/* Chat list + composer inside Suspense */}
           <Suspense fallback={<div style={{padding:16}}>Loading chat…</div>}>
             <div className="chat" style={{padding:0}}>
-              <Chat className="w-full h-full" />
+              <Chat className="w-full h-full">
+                <></>
+            </Chat>
             </div>
 
             <ChatBox
@@ -209,7 +319,7 @@ export default function UpdatePage() {
         </section>
       </div>
 
-      {/* Global styles (unchanged) */}
+      {/* Global styles (unchanged except for .pillrow) */}
       <style jsx global>{`
         :root{
           --dep-blue:#004B8D; --dep-navy:#0A2A52; --dep-red:#C60C30; --dep-light:#E8F1FB;
@@ -247,10 +357,24 @@ export default function UpdatePage() {
         .card{ background:#fff; border-radius:14px; padding:14px; box-shadow: var(--shadow); margin-top:12px }
         .card h3{margin:.2rem 0 .6rem;font-size:.95rem}
         .profile{display:flex; align-items:center; gap:12px}
-        .avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid var(--dep-blue)}
-        .avatar img{width:100%;height:100%;object-fit:cover}
+        .avatar {
+        width: 76px !important;
+        height: 76px !important;
+        aspect-ratio: 1 / 1;     /* guarantees square */
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--dep-blue);
+        flex: 0 0 56px;           /* don't let flexbox stretch/shrink */
+        }
+        .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;           /* remove inline-gap */
+        }
         .statline{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px}
         .pillstat{background:#edf4ff; padding:4px 8px; border-radius:999px; font-size:.78rem; color:var(--sub)}
+        .pillrow{display:flex; flex-wrap:wrap; gap:6px;}
         .goalWrap{margin-top:10px}
         .goalBar{height:10px; background:#0001; border-radius:999px; overflow:hidden}
         .goalFill{height:100%; width:40%; background:linear-gradient(90deg,var(--dep-red),var(--dep-blue));}

@@ -8,6 +8,8 @@ const api = new API();
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;           // Markdown/plain text
+  pending?: boolean;         // assistant “typing”
+  durationMs?: number;       // time to answer
 }
 interface ChatState {
   chatHistory: ChatMessage[];
@@ -28,7 +30,7 @@ const chatContext = createContext<ChatMethods>({
 type Action =
   | { type: 'NEW_CHAT' }
   | { type: 'ADD_MESSAGES'; value: ChatMessage[] }
-  | { type: 'SET_ASSISTANT_AT'; index: number; content: string };
+  | { type: 'SET_AT'; index: number; patch: Partial<ChatMessage> };
 
 function chatReducer(state: ChatState, action: Action): ChatState {
   switch (action.type) {
@@ -38,10 +40,10 @@ function chatReducer(state: ChatState, action: Action): ChatState {
     case 'ADD_MESSAGES':
       return { chatHistory: [...state.chatHistory, ...action.value] };
 
-    case 'SET_ASSISTANT_AT': {
+    case 'SET_AT': {
       const next = [...state.chatHistory];
-      if (next[action.index] && next[action.index].role === 'assistant') {
-        next[action.index] = { ...next[action.index], content: action.content };
+      if (next[action.index]) {
+        next[action.index] = { ...next[action.index], ...action.patch };
       }
       return { chatHistory: next };
     }
@@ -56,40 +58,41 @@ export const ChatContextProvider: React.FC<childProps> = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, { chatHistory: [] });
 
   const postQuery = async (query: string) => {
-    // index where we'll later place the assistant's response
     const userIndex = state.chatHistory.length;
     const assistantIndex = userIndex + 1;
+    const startedAt = Date.now();
 
-    // Append user message and a placeholder assistant bubble
+    // Append user + a pending assistant bubble
     dispatch({
       type: 'ADD_MESSAGES',
       value: [
         { role: 'user', content: query },
-        { role: 'assistant', content: '...' },
+        { role: 'assistant', content: '...', pending: true },
       ],
     });
 
     try {
       const userId = 1;
-      const requestBody = { query };
       const responseData = await api.postJsonData<{ response: string }>(
         `chat/${userId}/ask`,
-        requestBody
+        { query }
       );
 
-      const text =
-        responseData?.response ??
-        "Sorry, I couldn't get a response.";
+      const text = responseData?.response ?? "Sorry, I couldn't get a response.";
+      const durationMs = Date.now() - startedAt;
 
-      // Expecting Markdown/plain text here
-      dispatch({ type: 'SET_ASSISTANT_AT', index: assistantIndex, content: text });
-    } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : 'Failed to fetch response';
+      // ✅ Finalize the assistant message
       dispatch({
-        type: 'SET_ASSISTANT_AT',
+        type: 'SET_AT',
         index: assistantIndex,
-        content: `Error: ${msg}`,
+        patch: { content: text, pending: false, durationMs },
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch response';
+      dispatch({
+        type: 'SET_AT',
+        index: assistantIndex,
+        patch: { content: `Error: ${msg}`, pending: false },
       });
       console.error('Error posting query:', err);
     }

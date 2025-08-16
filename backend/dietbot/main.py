@@ -51,6 +51,7 @@ app.add_middleware(
 app.include_router(user_routes.router)
 app.include_router(nutrient_routes.router)
 app.include_router(chat_routes.router)
+app.include_router(user_routes.users_router)   # NEW /users/{id}/profile
 
 @app.get("/health", tags=["health"])
 async def health_check():

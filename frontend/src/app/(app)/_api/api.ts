@@ -9,7 +9,9 @@ export class API {
 
     if (typeof window !== 'undefined') {
       try {
-        const runtimeEnv = (window as any).__ENV__?.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+        const runtimeEnv =
+          (window as any).__ENV__?.NEXT_PUBLIC_BACKEND_URL ||
+          process.env.NEXT_PUBLIC_BACKEND_URL;
         console.log('🧪 Runtime env from window:', runtimeEnv);
         console.log('🧪 window.location.href:', window.location.href);
 
@@ -24,14 +26,20 @@ export class API {
     console.log('🧪 Final API URL:', this.api);
   }
 
+  /** Safely join base + path (prevents double slashes) */
+  private join(path: string) {
+    const base = this.api.replace(/\/+$/, '');
+    const clean = String(path).replace(/^\/+/, '');
+    return `${base}/${clean}`;
+  }
+
   private buildHeaders(): HeadersInit {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     };
 
     const isLocalhost =
-      typeof window !== 'undefined' &&
-      window.location.hostname === 'localhost';
+      typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
     const idToken = process.env.NEXT_PUBLIC_ID_TOKEN;
 
@@ -48,7 +56,7 @@ export class API {
     body: string,
     callback: (response: string) => void
   ): Promise<void> {
-    const fullUrl = `${this.api}/${url}`;
+    const fullUrl = this.join(url);
     console.log('🧪 POSTing to:', fullUrl);
 
     const response = await fetch(fullUrl, {
@@ -75,11 +83,8 @@ export class API {
     }
   }
 
-  public async postJsonData<T = any>(
-    url: string,
-    body: object
-  ): Promise<T> {
-    const fullUrl = `${this.api}/${url}`;
+  public async postJsonData<T = any>(url: string, body: object): Promise<T> {
+    const fullUrl = this.join(url);
     console.log('🧪 POSTing JSON to:', fullUrl);
     console.log('🧪 Payload:', body);
 
@@ -96,12 +101,37 @@ export class API {
       );
     }
 
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
       return (await response.json()) as T;
     } else {
       console.warn('Received non-JSON response or empty response body');
       return null as T;
     }
+  }
+
+  /** GET JSON helper */
+  public async getJsonData<T = any>(url: string): Promise<T> {
+    const fullUrl = this.join(url);
+    console.log('🧪 GETting JSON from:', fullUrl);
+
+    const res = await fetch(fullUrl, {
+      method: 'GET',
+      headers: this.buildHeaders(),
+      // credentials: 'include', // uncomment if your backend needs cookies
+    });
+
+    if (!res.ok) {
+      const msg = await res.text().catch(() => '');
+      throw new Error(`GET ${fullUrl} failed: ${res.status} ${msg}`);
+    }
+    const ct = res.headers.get('content-type') || '';
+    return ct.includes('application/json') ? ((await res.json()) as T) : (null as T);
+  }
+
+  /** Convenience wrapper specifically for user profile */
+  public async getUserProfile<T = any>(userId: number): Promise<T> {
+    // call WITHOUT a leading slash — join() handles it either way
+    return this.getJsonData<T>(`users/${userId}/profile`);
   }
 }
