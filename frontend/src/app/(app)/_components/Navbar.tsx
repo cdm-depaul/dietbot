@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChatHistory, Settings } from './index';
 import { NewChatSVG } from '_svgs';
 import chatContext from '../_context/ChatContext';
+import styles from '.././Landing.module.css';
 
 
 
@@ -19,11 +20,10 @@ export const Navbar = memo(() => {
   const { newChat } = useContext(chatContext);
   return (
     <div className="w-full z-10 fixed top-0 flex justify-between items-center p-3">
-      <img
-        className="w-10 h-10 rounded-full"
-        src="/images/logo.png"
-        alt="dietbot logo"
-      />
+      <Link href="/" className={styles.brandLinkLeft}>
+      <span className={styles.brandDot} />
+      DietChatBot.com
+    </Link>
       <div className="flex items-center gap-5 ">
         <Link
           href="/"

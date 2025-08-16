@@ -134,4 +134,29 @@ export class API {
     // call WITHOUT a leading slash — join() handles it either way
     return this.getJsonData<T>(`users/${userId}/profile`);
   }
+
+  /** Chat: fetch recent history (newest-first from API, you can reverse in UI) */
+  public async getRecentChat(
+    userId: number,
+    limit = 12
+  ): Promise<{ sender: 'user' | 'assistant'; message: string; created_at: string }[]> {
+    return this.getJsonData(`chat/${userId}/recent?limit=${limit}`);
+  }
+
+  /** Chat: append a single turn (optional—/ask already persists both sides) */
+  public async appendChatTurn(
+    userId: number,
+    turn: { sender: 'user' | 'assistant'; message: string }
+  ): Promise<{ ok: true }> {
+    return this.postJsonData(`chat/${userId}/append`, turn);
+  }
+
+  /** Chat: ask the assistant (persists user+assistant messages server-side) */
+  public async askChat(
+    userId: number,
+    query: string
+  ): Promise<{ response: string }> {
+    return this.postJsonData(`chat/${userId}/ask`, { query });
+  }
 }
+

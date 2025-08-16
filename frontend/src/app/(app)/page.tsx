@@ -8,15 +8,17 @@ export default function Landing() {
   return (
     <div className={styles.wrapper}>
 <header className={styles.header}>
-  <div className={styles.brandCol}>
-    <Image src={demonLogo} alt="DePaul Demon Chef" width={60} height={60} className={styles.brandLogo} />
-    <Link href="/" className={styles.brandLinkLeft}>
-      <span className={styles.brandDot} />
-      DietChatBot.com
-    </Link>
+  <div className={styles.brand}>
+    <Image
+      src={demonLogo}
+      alt="DePaul Demon Chef"
+      width={60}
+      height={60}
+      className={styles.brandLogo}
+    />
   </div>
 
-  <div className={styles.titleCol}>
+  <div className={styles.textBlock}>
     <h1 className={styles.title}>
       Enhancing Dynamic Personalization in Dietitian Agents with RAG and Medical Dialogue Fine-Tuning
     </h1>
@@ -41,7 +43,7 @@ export default function Landing() {
       <button className={styles.themeButton}>Classic Theme</button>
     </Link>
     <Link href="/dietbot-v2">
-      <button className={styles.themeButton}>DePaul Blue Demon Theme</button>
+      <button className={styles.themeButton}>DePaul BlueDemon Theme</button>
     </Link>
   </div>
 </main>

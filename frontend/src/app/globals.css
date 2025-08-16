@@ -3,7 +3,9 @@
 :root {
   --background: rgb(245, 245, 245);
   --foreground: #171717;
+  --nav-h: 64px; /* height of your fixed DietChatBot.com bar */
 }
+
 
 @theme inline {
   --color-background: var(--background);
