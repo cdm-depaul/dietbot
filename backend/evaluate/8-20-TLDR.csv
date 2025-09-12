@@ -1,0 +1,269 @@
+id,answerable,query,response,status_code,time_taken_sec
+1,answerable,What's the best diet to lower my A1C?,"Hi Peter,
+
+It's amazing that you're taking charge of your health! Preventing diabetes is a big goal, and I admire your commitment. 
+
+Let's focus on a Mediterranean-style eating plan that feels good for *you*. Think lots of colorful veggies (except those brussels sprouts – we can work up to them!), yummy fruits like bananas you already love, beans, whole grains, and lean chicken (4-5 servings a week). We'll use healthy olive oil in cooking, enjoy yogurt and cheese occasionally, and cut back on sugary drinks and processed snacks.
+
+Since you have allergies,  we'll make sure everything is completely safe and delicious!
+
+Remember, small changes add up to big results. Let’s start with one or two things this week – how does that sound?",200,101.431
+2,answerable,Can losing weight help reverse my type 2 diabetes?,"""Hey Peter, it's great that you're taking charge of your health!  Losing weight can definitely make a big difference in managing type 2 diabetes. Even a modest amount, like aiming for 15% of your body weight, can really lower those fasting glucose levels.
+
+Don't worry about drastic changes, let's focus on making small, sustainable swaps that you'll actually enjoy.  We can definitely work with your love for bananas and chicken to create a plan that fits your taste buds! """,200,67.753
+3,answerable,Is it okay to drink alcohol if I have diabetes?,"Hey Peter, it's great that you're thinking about how to manage your health! 
+
+It's true that some studies show moderate drinking *might* be okay for people with diabetes, even potentially helping with insulin sensitivity.  But remember, it's super important to be careful because alcohol can mess with your blood sugar, especially if you take medication.  
+
+Even one drink could cause low blood sugar, so always check your levels afterward. 
+
+The best thing to do is talk to your doctor or a dietitian like me. We can figure out what's right for you based on your lifestyle and diet. 
+
+
+Let's work together to keep you healthy!",200,83.289
+4,answerable,Will intermittent fasting help my blood sugar?,"""Hi Peter, it's great that you're taking charge of your health!  I understand wanting to explore intermittent fasting, and while some studies show it *might* help with weight loss, which is important for managing diabetes risk, it doesn't directly lower blood sugar levels.
+
+Since you love bananas and chicken, let's create a delicious meal plan that works for you and keeps your blood sugar in check! We can definitely talk about incorporating intermittent fasting as well, alongside regular exercise and doctor-recommended blood sugar monitoring. Ready to get started?""",200,75.179
+5,answerable,How many carbs should I eat with type 2 diabetes?,"Hey Peter, it's awesome that you're taking charge of your health!  Managing carbs is super important, especially with the risk of type 2 diabetes.
+
+We can totally make this work together. Focus on those delicious bananas – they're packed with fiber which helps balance blood sugar. Think about portion sizes too, and try spreading your carb intake throughout the day.
+
+Since you have wheat and nut allergies, we'll need to be extra careful, but I promise there are tons of yummy options we can explore! 
+
+Let's chat soon so we can create a plan that feels good for you. You got this! 💪 😊",200,97.342
+6,answerable,Are low-carb diets safe for diabetics?,"Hi Peter, it's great that you're taking charge of your health! 
+
+Managing diabetes means being mindful of carbs, especially since they can affect blood sugar levels.  Focus on fiber-rich foods like bananas (yum!) and limit added sugars. Lean protein like chicken is also a fantastic choice.
+
+Would you like to chat about creating a personalized meal plan that works for you, considering your favorite foods and how active you are?",200,67.892
+7,answerable,Can a vegan diet help prevent diabetes?,"Hey Peter, it's great that you're thinking about your health!  At 39, you have plenty of time to make positive changes and lower your diabetes risk.
+
+I love that you enjoy bananas – they're packed with fiber, which is amazing for managing blood sugar. And since you like them already, that makes a plant-focused diet even more accessible. Think lots of colorful veggies, beans, fruits (like those bananas!), and whole grains. 
+
+Focus on eating whole, unprocessed foods, and you'll be doing great things for your body!  Remember, I'm here to support you along the way – just ask if you have any questions. 😊",200,83.283
+8,answerable,Is the Mediterranean diet good for diabetics?,"""Peter, that's wonderful! Taking charge of your health at 39 is a really positive step, and focusing on diabetes prevention shows amazing dedication.
+
+You know what? The Mediterranean diet sounds like a perfect fit for you.  It's all about those things you already enjoy – chicken and bananas! Plus, it naturally cuts down on processed snacks and sugary drinks, which is great for preventing diabetes. 
+
+Think of it as filling your plate with fresh fruits and veggies, lean protein like chicken, and healthy fats. It's delicious and naturally lower in the stuff we want to limit.  Quality matters though – choose whole grains, olive oil, and real fruit over processed options whenever possible.
+
+Ready to brainstorm some tasty meal ideas together? We can even talk about making this change slowly and steadily.""",200,81.768
+9,answerable,Does eating more fiber help with diabetes?,"""Hey Peter, I'm so impressed with your commitment to preventing diabetes! That shows real dedication to your health.
+
+You know, increasing fiber is a fantastic step – it can really help manage blood sugar levels and overall well-being. Aim for about 14 grams per 1,000 calories you eat, focusing on whole grains, fruits (like bananas!), veggies, and legumes.
+
+Remember, start slowly to avoid any tummy troubles.  We can definitely brainstorm some yummy, high-fiber meals together that you'll love! What kind of flavors are you into?""",200,75.926
+10,answerable,Are sugar substitutes like stevia safe for diabetes?,"Hey Peter,
+
+It's great that you're thinking about preventing diabetes!  Using sugar substitutes can definitely be helpful. The FDA has given the all-clear to sweeteners like stevia and monk fruit, saying they're safe even for people with diabetes. 
+
+Since you love bananas and chicken, stevia and monk fruit are fantastic choices for you. They're natural, don't raise your blood sugar much, and won't trigger any allergies you mentioned.  Just remember to enjoy them in moderation as part of a healthy, balanced diet – plenty of lean protein like chicken, and maybe even an occasional banana!
+
+Want some tips on how to use these sweeteners in your meals? Or maybe we could chat about portion sizes and other healthy eating habits? Let me know what you'd like to explore.",200,92.849
+11,answerable,Should I stop eating fat to prevent diabetes?,"""Hey Peter, it's great that you're taking charge of your health!  At 39, you have plenty of time to make positive changes.
+
+It’s awesome you already eat balanced meals with chicken and bananas – those are both fantastic choices! We don’t need to cut out all fat; let’s just focus on swapping out the less healthy kinds for good ones like avocados, olive oil, salmon (you might like it!), and nuts. 
+
+Remember, even healthy fats are calorie-dense, so portion control is important.  Let's gradually reduce sugary drinks and processed snacks too.
+
+Want to brainstorm some delicious meal ideas together that you’ll actually enjoy?""",200,94.334
+12,answerable,Is weight loss important if I have prediabetes?,"""Hi Peter, it's great that you're taking charge of your health! Preventing diabetes is a really smart move.
+
+You know, research shows losing even 10-15% of your weight can make a huge difference – up to 79% less chance of developing type 2 diabetes!  
+
+Since you love bananas and chicken, we can definitely create a plan around those foods while cutting back on processed snacks and sugary drinks.  Let's focus on small, manageable changes that you can stick with long-term. I'm here to support you every step of the way!""",200,78.622
+13,answerable,Can eating too much protein harm me if I'm diabetic?,"Hey Peter, it's great that you're thinking ahead about diabetes prevention – that's awesome!  
+
+Remember, the rules about protein aren't as strict anymore. Aim for around 1.5 grams per kilogram of body weight each day (that's about 15-20% of your total calories). Focus on a balanced diet with lots of whole foods like those bananas and chicken you love.  We can continue working together to keep you healthy! 💪",200,65.807
+14,answerable,How does alcohol affect blood sugar at night?,"Hey Peter! It's great you're thinking about how alcohol might affect your blood sugar, especially with diabetes prevention being so important to you.
+
+You know, alcohol can sometimes play tricks on your body – it might make your blood sugar drop slower, especially if you're taking medication. This is because it can actually interfere with your body's natural ability to keep your blood sugar balanced. 
+
+Remember, eating something with your drink is super important to help stabilize things. And since alcohol can sometimes mask low blood sugar symptoms, checking your levels more often after having a drink is a good idea.  
+
+Want to brainstorm some tasty food choices that pair well with drinks and help keep your blood sugar in check?",200,77.878
+15,answerable,Will a low-fat diet help control diabetes?,"""Peter, it's awesome that you're taking charge of your health at 39!  Let's talk about how we can make healthy changes together.
+
+Focusing on reducing unhealthy fats, especially trans fats, is key. Think nutrient-rich foods like those bananas and chicken you love! We can definitely work with what you enjoy. Maybe swap out some processed snacks for healthier options? I'm here to help every step of the way!""",200,69.875
+16,answerable,Is there a perfect macronutrient ratio for diabetes?,"""Hi Peter, it's great you're taking charge of your health!  Managing diabetes means finding what works best for *you*. While most people aim for around 45% carbs, 36-40% fat, and 16-18% protein, there's no magic number.
+
+Let's focus on your goals – keeping your blood sugar stable, feeling good, and enjoying your meals.  Tell me more about what you like to eat and how active you are, so we can create a plan that fits perfectly!""",200,84.436
+17,answerable,Can I manage diabetes without medication if I lose enough weight?,"""Hi Peter, that's fantastic you're thinking about your health like this! It's truly admirable at 39.
+
+Research shows losing even 7-10% of your weight (around 7-9kg) could make a big difference in preventing diabetes. Think of it as taking control and boosting your body's strength!  
+
+We can totally work together to make this happen with meals you love, like chicken and bananas, plus some fun new healthy ideas.  Let's focus on whole foods, lean protein, lots of fruits and veggies, and maybe even try some resistance training for extra support. You got this!""",200,72.611
+18,answerable,Should I avoid fruit because of the sugar?,"Hey Peter, it's awesome that you're taking charge of your health! 
+
+It sounds like you're trying to be smart about sugar, which is great. While things like stevia can help, they aren't a miracle cure for diabetes prevention.  Focus on replacing sugary drinks and processed snacks with whole foods like those delicious bananas you love! Bananas are packed with good stuff and fiber. Just remember, moderation is key with everything. Keep up the amazing work!",200,68.972
+19,answerable,Does eating more whole grains help with blood sugar?,"""Peter, it's awesome that you're taking charge of your health at 39! Managing diabetes means being smart about carbs, not cutting them out completely. Think of it like this: high-fiber carbs are your best friends because they release sugar slowly, keeping those energy levels steady.
+
+Since you love bananas and chicken, we can definitely find some yummy wheat-free whole grains that fit the bill. How about we brainstorm some meal ideas together?""",200,66.321
+20,answerable,Can fiber supplements lower blood sugar?,"""Hi Peter, that's fantastic you're thinking about preventing diabetes! It shows how much you care for your health.  
+
+It's true that some studies show lower gluten intake can sometimes mean less fiber too. Since fiber is really important for managing blood sugar, let's focus on adding more of it to your diet! You already love bananas and chicken -  how about trying some whole grains (if they agree with you) and even more fruits? Your body will thank you!""",200,58.042
+21,answerable,Will drinking diet soda cause diabetes?,"Hi Peter, it's great that you're taking charge of your health!  
+
+I understand you're worried about diet soda and diabetes. While it seems healthier than regular soda, research shows it can still slightly raise your risk, especially for someone like you who's already focused on prevention. 
+
+The good news is switching to water makes a big difference! It lowers your diabetes risk by 7-8%.  
+
+Let's brainstorm some yummy water alternatives together, like sparkling water with fruit or fun flavor infusions. Want to chat about it?",200,89.831
+22,answerable,Can skipping meals cause blood sugar problems?,"Hey Peter, it's great that you're taking charge of your health!  I understand wanting to try new things like skipping meals to prevent diabetes, but research shows that can actually make blood sugar levels more unstable. 
+
+Think of it this way: when you skip meals, your body gets a bit hangry and releases extra insulin to manage your blood sugar. This leads to bigger spikes later, which isn't ideal for long-term health.
+
+Instead of skipping meals, let's focus on consistent eating times with balanced meals – think bananas and chicken!  We can also work on swapping those processed snacks and sugary drinks for healthier options. 
+
+A 6-hour eating window might be something to explore too - it can be really helpful for some people. Remember, I'm here to support you every step of the way!",200,111.223
+23,answerable,Can I have cheat days if I'm diabetic?,"Hey Peter,  it's great that you want to be proactive about your health! 
+
+While there isn't one magic diet for type 1 diabetes, research suggests focusing on lower carbs (around 47g per day) can be helpful.  You can still enjoy treats like bananas – just remember they're best enjoyed in moderation.
+
+Consistency is key, so don't stress about being perfect! We can work together to find a plan that fits your lifestyle and tastes. 👍",200,65.058
+24,answerable,Do artificial sweeteners increase diabetes risk?,"""Hi Peter, that's great you're taking charge of your health! It shows real commitment.  
+
+I understand you're curious about artificial sweeteners and diabetes. While I can't say they're *bad*, studies show sugary drinks are linked to a higher risk of type 2 diabetes. Sometimes people who use sugar substitutes end up eating more to feel satisfied, so it's important to be mindful of your overall calorie intake.
+
+Since you already eat pretty healthily, let's focus on reducing those occasional processed snacks and maybe find some delicious whole fruit swaps – bananas are a good start! 
+
+Ready to chat about some diabetes prevention strategies that work for you?""",200,73.648
+25,answerable,Is drinking wine okay if I'm prediabetic?,"""Hey Peter,  it's great you're being proactive about your health! 
+
+There have been some studies suggesting *maybe* very small amounts of wine could be linked to a slightly lower risk of diabetes. But remember, it's not something I'd recommend starting just for that reason.  
+
+You're already doing amazing things with your diet and exercise – keep up the fantastic work! Those are the most proven ways to stay healthy and prevent diabetes.""",200,69.376
+26,answerable,Can high cholesterol in my diet worsen diabetes?,"""Hey Peter, it's great that you're taking charge of your health!  
+
+Managing cholesterol is important, especially when you're focused on preventing diabetes. While our bodies make cholesterol, what we eat can still affect how it works in our blood.  
+
+Although more research is needed about cholesterol and diabetes specifically, we know that those processed snacks and sugary drinks can have an impact. 
+
+Would you like to brainstorm some simple swaps? We could focus on yummy foods you already enjoy, like chicken and bananas, while making some healthier choices.""",200,73.605
+27,answerable,Should I limit eggs if I have diabetes?,"Hi Peter,
+
+It's awesome that you're taking charge of your health!  Focusing on diabetes prevention shows how much you care about yourself. 
+
+While those studies you mentioned highlight the power of fruits, veggies, and whole grains from a young age, don't worry too much about eggs. They're generally fine in moderation for most people.
+
+Let's focus on creating a delicious and sustainable eating plan together that helps you feel your best!  We can chat about which foods work best for your body and lifestyle.",200,67.455
+28,answerable,Is it bad to eat saturated fat with diabetes?,"""Hey Peter, I'm so glad you're thinking about your health! It's great that you're taking steps to prevent diabetes. 
+
+You know, recent research shows that swapping saturated fats for unsaturated ones (like those found in olive oil and avocados) is actually really good for your heart and can help lower your risk of type 2 diabetes.  Since you love bananas and chicken, let's brainstorm some yummy ways to add more healthy fats into your diet! Want to try some simple swaps together?""",200,73.372
+29,answerable,Can I get off insulin if I lose weight?,"""Hi Peter, it's so great you're taking charge of your health!  I know preventing diabetes is a big goal, and I want to support you every step of the way.
+
+Research shows that even losing 15% or more of your weight can make a huge difference in improving your blood sugar levels. Since you already eat well and stay active, let's focus on making some small changes together – maybe swapping those processed snacks for whole foods and adding more fruits like those yummy bananas you love! I'm here to help create a plan that feels good for you and helps you reach your goals.""",200,70.327
+30,answerable,Will reducing carbs help reduce diabetes meds?,"""Hey Peter, that's fantastic that you're taking charge of your health! It's great to see you wanting to understand how food can help manage diabetes.
+
+Reducing carbs *can* definitely make a difference, especially focusing on high-fiber options like those yummy bananas (in moderation!) and lean proteins like chicken.  Remember, it's all about finding what works best for YOU. 
+
+Let's chat more about your likes and dislikes so we can create a plan that fits your life and helps you feel your best!""",200,70.182
+31,answerable,Can eating patterns prevent prediabetes from becoming diabetes?,"Hey Peter, it's awesome that you're taking charge of your health!  It shows how much you care about yourself.
+
+Remember, there's no one-size-fits-all diet. We can totally work with your love for bananas and chicken to create a plan that feels good for *you*. 
+
+Think lots of colorful veggies, lean protein like chicken, and enjoy those bananas in moderation!  We'll focus on whole foods and cut back on added sugars and processed stuff.  Ready to make some healthy changes together?  I'm here to support you every step of the way! 😊",200,83.778
+32,answerable,Is weight loss surgery good for people with diabetes?,"""Hey Peter, it’s great that you're taking charge of your health! Preventing diabetes is a really awesome goal, and it sounds like we can make some good progress together.
+
+Studies show that losing around 15% of your weight can significantly improve blood sugar control.  And don't worry, we can totally work with your love for bananas and chicken to create a plan that feels right for you! Let's focus on building healthy habits that you can stick with long-term – I'm here to support you every step of the way.""",200,69.363
+33,answerable,Are plant-based diets better than low-carb for diabetes?,"""Peter, it's great that you're taking charge of your health at 39!  Managing carbohydrates is really important for people with diabetes, but don't worry - it's not about cutting them out completely.
+
+We can focus on choosing smart carbs like bananas (which you love!), that are packed with fiber and help keep your blood sugar steady. And no need to worry about Brussels sprouts if they're not your thing!  
+
+Let's brainstorm some delicious meals and snacks together that fit your preferences and diabetes management goals.""",200,68.053
+34,answerable,How much exercise should I do to prevent diabetes?,"Hey Peter, that's amazing you're focusing on your health!  Taking steps to prevent diabetes shows real commitment. 
+
+Losing 7-10% of your weight (which would be around 5-7kg) can make a huge difference – studies show it can lower your risk by almost 80%!  After that, any extra weight loss doesn't really add more benefits.
+
+Let's find ways to make this fun and work with what you love! Since you like bananas and chicken, we can definitely build a plan around those. Aim for at least 30 minutes of moderate exercise most days – think brisk walking or cycling – and try some strength training a couple times a week.  
+
+Remember, it's all about making healthy choices that fit your life. You've got this!",200,96.511
+35,answerable,Is eating after 8pm bad for blood sugar?,"Hey Peter, it's great that you're being so proactive about preventing diabetes!
+
+I understand you enjoy having an evening drink, but I want to talk about how it can affect your blood sugar, especially if you're eating after 8 pm.  Alcohol can sometimes make it harder for your body to raise its blood sugar if it gets too low overnight. 
+
+The good news is that having a balanced meal with your evening drink *really* helps reduce this risk! Think about enjoying those bananas and chicken you like – they'll make a great difference. 
+
+Remember, consistent blood sugar monitoring is important, especially after having alcohol.  Would you like to brainstorm some ideas for healthy evening meals or talk about managing your alcohol intake in a way that supports your diabetes prevention goals? I'm here to help!",200,86.975
+36,answerable,Can personalized diets based on genetics help with diabetes?,"""Peter, it's great that you're taking charge of your health!  Personalized nutrition can be really helpful, especially considering your genetics and those food allergies.
+
+While quick fixes aren't always the best idea, focusing on what works for YOU is key. We know you like bananas and chicken – those are fantastic choices! 
+
+Let's chat about your favorite meals and find some delicious recipes that keep your blood sugar in check. I'm here to help every step of the way!""",200,72.32
+37,answerable,What eating pattern lowers diabetes risk the most?,"""It's awesome that you're taking charge of your health at 39, Peter!  Focusing on eating habits is a great step towards preventing diabetes.
+
+There isn't one perfect diet for everyone, but the best research shows these things really help: lots of non-starchy veggies (think leafy greens, peppers, zucchini!), less added sugar and refined grains (like sugary drinks and white bread), and choosing whole, unprocessed foods whenever possible.  
+
+You mentioned you like chicken and bananas – those can definitely be part of a healthy eating plan! 
+
+Want to chat about some meal ideas that fit your tastes and any allergies you have?""",200,81.911
+38,answerable,Are nuts good for controlling blood sugar?,"""It's awesome that you're taking charge of your health, Peter! Preventing diabetes is all about making smart choices, especially when it comes to carbs.  
+
+Since you love bananas, that's great! They're packed with fiber which helps keep blood sugar stable. We can definitely focus on more foods like that and find yummy alternatives for things with added sugars. 
+
+Want to brainstorm some meal ideas together? I'm here to help you make this fun and easy!""",200,69.515
+39,answerable,Is it dangerous to fast with type 1 diabetes?,"""Hey Peter, it's great that you're taking charge of your health!  
+
+I understand wanting to prevent type 2 diabetes, especially with the snacks and sugary drinks sometimes tempting you. It's totally possible to make small changes for a big impact on your blood sugar and weight.
+
+Focusing on a balanced diet can help create those healthy habits. We could explore swapping some processed snacks for things like bananas, and adding more lean chicken to your meals –  what do you think about that? 
+
+I'm here to help you make changes you enjoy and feel good about. Would you like to brainstorm some simple swaps together?""",200,81.07
+40,answerable,Can I still drink beer with diabetes?,"It's awesome that you're thinking about how to manage your health, Peter!  
+
+Some studies suggest that moderate drinking - like one 12-oz beer - might even help with insulin sensitivity for some people with diabetes. But it's super important to be careful! Alcohol can drop your blood sugar quickly, so always keep a close eye on it before, during, and after having a drink.
+
+Since you already enjoy healthy foods like bananas and are active, that's a great foundation. Just remember to start small with the beer, pair it with food, and track your blood sugar. 
+
+It's always best to chat with your doctor or a registered dietitian for personalized advice too!  They can help you make sure everything fits perfectly with your health goals.",200,90.282
+41,answerable,Should I take vitamin D for diabetes?,"Hey Peter, it's awesome that you're taking charge of your health and looking into ways to prevent diabetes!  
+
+While I understand wanting to explore options like Vitamin D, current research doesn't show it directly helps manage blood sugar or reduce diabetes risk. The best way to get those nutrients is through a balanced diet – which sounds like you're already doing great with bananas and chicken! Keep up the good work! 💪",200,62.541
+42,answerable,Do people with diabetes need more protein?,"""Peter, it's wonderful that you're taking steps to prevent diabetes!  Focusing on protein is a great idea. 
+
+Recent research suggests that aiming for about 30% of your daily calories from protein can be really helpful. For someone like you who's moderately active and around 39 years old, that could mean aiming for about 68-83 grams of protein per day.
+
+Think chicken and bananas!  Those are already favorites of yours, and they fit perfectly with this goal.  
+
+I'm happy to give you some meal ideas using those foods if you'd like.""",200,77.878
+43,answerable,Does sodium affect diabetes?,"""Hi Peter, it's great that you're taking charge of your health!  It sounds like you're already making healthy choices with bananas and chicken. 
+
+Sodium is definitely something to be mindful of, but cutting back too much might not be the best for everyone with diabetes.  Research shows that very low sodium can actually be harmful. The current recommendation is around 2,300 mg per day, which is a good starting point.
+
+Let's focus on making small changes together that you can stick with long-term! Would you like to brainstorm some tasty ways to reduce sodium without giving up your favorite foods?""",200,78.995
+44,answerable,Will a low-GI diet lower my A1C?,"Hey Peter, it's great you're taking charge of your health! Wanting to prevent diabetes shows real dedication.  
+
+Focusing on a low-GI diet is a fantastic idea - think whole foods like bananas and chicken, while cutting back on processed snacks and sugary drinks. This can really help keep your blood sugar stable and lower that A1C. We can work together to make this feel easy and enjoyable!",200,63.585
+45,answerable,Can losing just 5% of my weight help?,"Hey Peter, it's great you're taking charge of your health!  Preventing diabetes at 39 is really powerful.
+
+Research shows that losing even 5-7% of your weight can make a huge difference. Let's aim for something achievable together – maybe 7-10%? That's totally doable given how active you are and your love for bananas and chicken!  
+
+We can brainstorm some fun ways to move more and swap out those processed snacks for healthier choices. Even small changes add up to big results! Ready to chat about it?",200,71.016
+46,answerable,How much fiber should I eat daily with diabetes?,"Hi Peter, it's so awesome that you're taking charge of your health! 
+
+To help prevent diabetes, let's focus on upping your fiber intake.  Aim for about 50 grams a day – think whole grains like brown rice and quinoa, delicious beans and lentils (yes, you can have those!), and even those bananas you love. Remember, starting slowly is key to avoid any tummy troubles.
+
+You got this! Just listen to your body and we'll find the perfect fiber balance for you. 💪",200,73.78
+47,answerable,Will cutting sugar alone fix my blood sugar?,"Hey Peter, it's awesome that you're taking charge of your health! Cutting back on sugar is a great first step. 
+
+While artificial sweeteners can be helpful for managing blood sugar, remember they're not a magic solution. It's all about balance.  Focus on whole foods like those yummy bananas and chicken you love, and maybe try cutting back on some processed snacks. Keep up the amazing activity level – you're doing great!
+
+
+Let me know if you have any questions about making healthy swaps or building your balanced diet. I'm here to help!",200,74.125
+48,answerable,Do I need to monitor glucose more if I drink alcohol?,"Hey Peter! It's great you're thinking about how alcohol might fit into your diabetes prevention goals.  
+
+It's true that alcohol can sometimes affect blood sugar, but the good news is moderate drinking (one beer, glass of wine, or shot) *can* be okay for some people with diabetes and even potentially help with insulin sensitivity. 
+
+The key is being mindful! Keep a close eye on your blood sugar, especially after having a drink.  Maybe try pairing it with a meal that has protein and complex carbs to help keep things balanced.  
+
+We can definitely brainstorm more strategies together if you'd like! Just remember, every body is different, so always talk to your doctor about what's best for you. 😊",200,89.775
+49,answerable,What's better for diabetes: low-carb or Mediterranean?,"Peter, I'm so impressed that you're taking charge of your health at 39! It can feel overwhelming with all the different diet advice out there, but remember, finding what works for *you* is key.
+
+It sounds like a Mediterranean-style approach could be perfect. You enjoy those flavors and foods like chicken and bananas fit right in! We can definitely tweak it to be a bit lower in carbs to help manage your blood sugar even better. 
+
+Think about swapping sugary drinks for water or unsweetened tea, and adding more colorful veggies to your meals.  Let's make this a journey we enjoy together – what are some small swaps you think you could try?",200,90.832
+50,answerable,Does meal timing affect blood sugar?,"""Peter, it's awesome that you're taking charge of your health at 39!  Focusing on your eating habits is a great way to help prevent diabetes, especially since you're already so active.
+
+There's some really promising research showing that eating fewer carbs – around 75 grams or less per day – can make a big difference in managing blood sugar levels and even reducing the need for insulin.  We don't have to eliminate your favorites like chicken and bananas, we just need to find some lower-carb swaps that work for you!
+
+I'm here to help you figure out a plan that's both healthy and delicious. Let's chat about it!""",200,75.64

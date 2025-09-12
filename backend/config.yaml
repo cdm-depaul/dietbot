@@ -1,0 +1,9 @@
+# config.yaml
+TLDR: true
+intent_thres: 0.3
+ret_thres: 0.0
+llm:
+  model_name: "gemma3"
+  temperature: 1.0 # 0.4 this is too high for fact-based inference, 0.5 is better
+  top_p: 0.95 #0.8 # 
+

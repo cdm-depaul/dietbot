@@ -4,6 +4,9 @@ import os
 import logging
 from sentence_transformers import SentenceTransformer
 
+""" 8/15/2025: nt retrieval threshold in CONFIG["ret_thres"] """
+from config_loader import CONFIG   
+
 ## 7/6/2025 nt: added
 logging.basicConfig(level=logging.INFO) ## 7/6/2025 nt: keep INFO level
 logger = logging.getLogger(__name__)
@@ -76,7 +79,7 @@ class Retriever:
             ret_dict = {"ret_score": max_score}            
             
             ## 7/17 nt: When the max match is less than threshold, return a different message when KB doesn't have answer
-            if max_score < 0.63: ## (**) threshold
+            if max_score < CONFIG["ret_thres"]: ## (**) threshold cosine value
                 ret_dict["reasoning"] = "NO_KNOWLEDGE_MATCH"
                 ret_dict["ret_source"] = None
                 ret_dict["ret_context"] = None
