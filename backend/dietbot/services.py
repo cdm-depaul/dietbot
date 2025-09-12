@@ -30,6 +30,7 @@ async def get_chat_response_from_query(user_context: Dict[str, Any], query: str)
         logger.info("Generating response with the model...")
         response_dict = model.get_response(query=query, user_context=user_context) 
         response_text = response_dict.get("final_answer", "Sorry, I could not generate a response.")
+        response_text = response_text.strip() ## 8/15 nt
         
         #logger.info(f"Generated response for user {user_id}: '{response_text[:100]}...'" ) # Log truncated response
         #logger.info(f"Generated response for user {user_id}: '{response_text[:150]}...'" ) # more words

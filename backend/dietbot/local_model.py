@@ -23,6 +23,12 @@ AGENT_LOOP_LIMIT = 3
 # Read Ollama API URL from environment variable, defaulting to localhost if not set
 OLLAMA_API_URL = os.getenv('OLLAMA_API_URL', 'http://localhost:11434/api/chat')
 
+##--- set the TLDR parameter (to control TLDR output)
+from config_loader import CONFIG
+
+TLDR = CONFIG["TLDR"]
+##-----------------------------
+
 class LocalModel:
     def __init__(self) -> None:
         """Initialize model components"""
@@ -33,16 +39,21 @@ class LocalModel:
             logger.error(f"Failed to initialize components (IntentClassifier/Retriever): {e}")
             raise
         
-        self.model = os.getenv('OLLAMA_MODEL', DEFAULT_MODEL)
+        self.model = os.getenv('OLLAMA_MODEL', DEFAULT_MODEL) # Jarvis
+        #self.model = CONFIG["llm"]["model_name"]
+        #self.model = jarvis
+
         self.agent_loop_limit = AGENT_LOOP_LIMIT
         
         # Base system prompt
         self.system_prompt = (
             "You are an AI assistant whose primary goal is to answer user questions as accurately and effectively as possible. "
-            "You are also a professional dietitian, with expert knowledge on food, nutrients and human health. "
-            "Furthermore, you are a personal dietitian to the user.  Take every consideration of the user's biometric and dietary profile in responding. "
-            "Also, respond in a gentle, kind, and empathetic tone. "
-
+            "You are also a professional dietitian, with expert knowledge on food, nutrients and human health, "
+            "and expected to respond with compassionate, personalized advice to the user. "
+            "A user's health profile and preferences have been shared with you in another message.  "
+            "Utilize the info to make (IMPORTANT) personalized responses while still sounding conversational and human. "
+            "Most importantly, make the response as gentle, kind, and empathetic as you can. "
+            "Remember your user is vulnerable."
         )
 
     def _call_ollama(self, messages):
@@ -50,7 +61,9 @@ class LocalModel:
         try:
             payload = {
                 "model": self.model,
-                "messages": messages
+                "messages": messages,
+                #"temperature": CONFIG["llm"]["temperature"],
+                #"top_p": CONFIG["llm"]["top_p"]
             }
             
             # Use the configured OLLAMA_API_URL
@@ -73,6 +86,36 @@ class LocalModel:
                         logger.warning(f"Failed to decode JSON from line: {line}")
             
             return {"message": {"content": full_content}}
+            
+            """--------COMMENT OUT till the end 
+            8/20 nt: incorporate a second LLM (Ms.Potts)
+            """
+            ## Call the second LLM to rephrase the output string to be more empathetic.
+            # 2. STRUCTURE THE CHAT HISTORY for the next call
+            # This is the crucial step. We create a list of messages.
+            # The 'user' message contains the summary and our new instruction.
+            messages = [
+                {
+                    "role": "user",
+                    "content": f"Here is the response from Jarvis: '{full_content}'. Now, please act as a friendly dietitian and rephrase it in a much more empathetic tone."
+                }
+            ]
+            
+            # 3. SECOND CALL: Use /api/chat with Gemma2 for creative writing
+            chat_payload = {
+                "model": "my-gemma2", #"gemma2", # Different model for the second task
+                "messages": messages, # We pass the list of messages, not a single 'prompt'
+                "stream": False
+            }
+
+            print("Getting story from gemma2...")
+            response_2 = requests.post(OLLAMA_API_URL, json=chat_payload)
+            chat_result = response_2.json()
+            
+            final_story = chat_result['message']['content']
+            return {"message": {"content": final_story}}
+            """-------COMMENT end """
+            
         except Exception as e:
             logger.error(f"Error calling Ollama API: {e}")
             raise
@@ -117,14 +160,19 @@ class LocalModel:
             {"role": "assistant", 
              "content": f"The nutrients of the meal are {summary}"}
         )
+        # system message string
+        system_str = ("Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. "
+                      "Be positive and encouraging considering the user's goal. "
+                      "Also DO NOT be critical if the user ate too much undesirable nutrients. "
+                      "Suggest a next meal and give a short description. "
+                     )
+        if TLDR:
+            system_str = system_str + "Remember TLDR; Make the response as concise as possible."
+
         messages.append(
             {"role": "system", 
-             "content": ("Analyze the nutrient intake with respect to the user profile and goals, and provide friendly and empathetic feedback. "
-                         "Be positive and encouraging considering the user's goal. "
-                         "Also DO NOT be critical if the user ate too much undesirable nutrients. "
-                         "Suggest a next meal and give a short description. "
-                         "Remember TLDR; Make the response as concise as possible.")
-            }
+             "content": system_str
+            }            
         )
                   
         ## cal ollama with the enhanced messages
@@ -173,11 +221,11 @@ class LocalModel:
         ret_dict = self.retriever.retrieve(query_embedding) # embedding of original query
         #print (f'------ RAG retrieved context ({ret_dict["ret_source"]}): {ret_dict["ret_context"]} -------')
         
-	    ## add the retrieved context in the messags
+        ## add the retrieved context in the messags
         messages.append({
             "role": "user", 
-            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
-        )
+            "content": f'Context: Please use the context below to answer the query.\n\n{ret_dict["ret_context"]}'
+        })
 
         ## call ollama with the enhanced messages
         #print (f'   ======== (3) Personalized Health Advice messages: {messages} ===========')
@@ -216,11 +264,11 @@ class LocalModel:
             return result # (*) non-local exit
 
         # else:
-	    ## add the retrieved context in the messags
+        ## add the retrieved context in the messags
         messages.append({
             "role": "user", 
-            "content": f"Context: {ret_dict["ret_context"]}\n\nPlease use the context above to answer the query."}
-        )
+                    "content": f"Context: Please use the context below to answer the query.\n\n{ret_dict["ret_context"]}"
+        })
 
         ## (*) call ollama with the enhanced messages
         #print (f'   ======== (4) Educational-Content messages: {messages} ===========')
@@ -235,7 +283,7 @@ class LocalModel:
         result["ret_context"] = ret_dict["ret_context"]
         result["final_answer"] = response_content
         return result
-		
+        
 
     # Response generation method with classification RAG
     def get_response(self, query: str, user_context: dict = None) -> dict:
@@ -258,7 +306,7 @@ class LocalModel:
             result["final_answer"] = "Please provide a valid query."
             return result  # (*) non-local exit
 
-	    ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
+        ## 7/6/2025 nt: change to reject by intent (non-food/nutrient related) first
         query_embedding = self.retriever.embed_query(query)
         intent_result = self.intent_classifier.classify_from_embedding(query_embedding)
         
@@ -302,16 +350,16 @@ class LocalModel:
 
             ## (*) invoke the function by name with appropriate arguments
             if top_intent == "Meal-Logging" or top_intent == "Meal-Planning-Recipes":
-            	result = fn(*args1)
+                result = fn(*args1)
             else:
                 result = fn(*args2)
-			    
+                
         except Exception as e:
             logger.error(f"Error during calling tools: {e}")
             raise
 
         # Format the final result
-        #print (result)
+        print (f"** RETURNED RESULT: {result} **")
         return result
 
 

@@ -31,9 +31,11 @@ COPY . .
 # (*) 7/27 nt: Make log directory inside the container (to match volume mount)
 RUN mkdir -p /logs
 
+# (*) 8/15 nt: Make root available for imports
+ENV PYTHONPATH=/app
 
 # (*) 7/27 nt: Set the default command to run the app
-CMD ["python", "app.py"]
+CMD ["python", "-m", "app.py"]
 
 # Expose the port the app will run on (matching the uvicorn command)
 EXPOSE 8001

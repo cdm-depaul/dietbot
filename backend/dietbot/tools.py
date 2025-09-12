@@ -9,6 +9,14 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
+##--- set the TLDR parameter (to control TLDR output)
+from config_loader import CONFIG
+
+TLDR = CONFIG["TLDR"]
+print (f"  &&&&&& TLDR = {TLDR} &&&&&")
+
+##-----------------------------
+
 def safe_float(value):
     try:
         return float(value)
@@ -131,18 +139,18 @@ def meal_planning(user_context: dict) -> str:
 
 def personal_health_advice() -> str:
     # intent-specific prompt
-    prompt = (
-        "Emphasize on accuracy.  Remember our liability is at stake!! "
-        "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
-    )
+    prompt = "Emphasize on accuracy.  Remember our liability is at stake!! "
+    if TLDR:
+        #print (f"       !!!!!!!!!!!! TLDR = {TLDR} !!!!!!!!")
+        prompt = prompt + "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
     
     return prompt
     
 def educational_content() -> str:
     # intent-specific prompt
-    prompt = (
-        "Emphasize on accuracy.  Do NOT hallucinate!! "
-        "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
-    )
+    prompt = "Emphasize on accuracy.  Do NOT hallucinate!! "
+    if TLDR:
+        #print (f"       !!!!!!!!!!!! TLDR = {TLDR} !!!!!!!!")
+        prompt = prompt + "Lastly, make the response as concise as possible.  Remember 'TLDR;'"
     
     return prompt

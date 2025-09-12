@@ -1,4 +1,8 @@
 """
+run_test.py -- for running test with the 50 answerable questions.
+Be sure to set 'TLDR' to true/false in "config.yaml" depending on whether 
+you want to test summarized/TL;DR responses or regular non-summarized 
+responses. The parmeter for that is "TLDR" (true by default).
 
 """
 import requests
@@ -7,6 +11,12 @@ import time
 import pandas as pd
 import numpy as np
 
+##--- set the TLDR parameter (to control TLDR output)
+from config_loader import CONFIG
+
+TLDR = CONFIG["TLDR"]
+##-----------------------------
+
 def read_csv_questions(fname) -> np.array:
     """assumes the file is a csv file"""
     # Read the CSV file into a DataFrame
@@ -14,7 +24,6 @@ def read_csv_questions(fname) -> np.array:
     # put them in numpy array and return it
     return df.to_numpy()
     
-
 def generate_response(questions) -> list:
     """post each question-query and obtain response"""
     results = [] # results list
@@ -69,18 +78,24 @@ if __name__ == "__main__":
     USER_ID = 1  # replace with a valid user ID from your DB
     ENDPOINT = f"{BASE_URL}/chat/{USER_ID}/ask"
 
-    testfile = "./evaluate/test_questions.csv"
-    #testfile = "./evaluate/test_questions_tiny.csv"
-    #outfile = "./evaluate/test_results-0.63_eval.csv" # align threshold with line 79 in retriever.py
-    outfile = "./evaluate/test_results-0.0.csv" # (*) to get answers to all answerable questions
-    #outfile = "./evaluate/test_results_tiny-0.63.csv"
+    ##Code for the entire test questions/file...
+    ##testfile = "./evaluate/test_questions.csv"
+    ##
+    ##if TLDR:
+    ##    outfile = "./evaluate/8-23-TLDR.csv" # (*) to get answers to all answerable questions
+    ##else:
+    ##    outfile = "./evaluate/8-23-nolengthlimit.csv" # (*) to get answers to all answerable questions
+
+    ## 9/11/2025 nt: Test only a few sentences, with TLDR etc.
+    testfile = "./evaluate/testsent-3.csv"
+    outfile = "./evaluate/9-12-testsent-3-out.csv"
 
     # Read the CSV file into a DataFrame
     questions = read_csv_questions(testfile)
     
     # Generate response to all queries
-    #results = generate_response(questions)
-    results = generate_response(questions[:50]) # (*) to get answers to answerable questions only
+    results = generate_response(questions[:50]) # (*) access only answerable questions
+    #results = generate_response(questions[6:9]) # (*) some samples
     
     # Write to an output file
     write_query_response(outfile, results)

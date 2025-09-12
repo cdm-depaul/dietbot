@@ -1,147 +1,51 @@
 # DietBot Project v. 1.2
 
-This document provides instructions on how to set up and run the DietBot application, including both the backend and frontend services.
+NT: My branch (as of 9/11/2025)
 
-## Setup
+Important notes:
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/cdm-depaul/dietbot.git
-    cd dietbot
-    ```
+1. **Two LLMs** (Javis in the RAG chain: off-the-shelf Gemma3 with prompt engineering) and Ms. Potts for the user interaction/conversations: off-the-shelf Gemma2 with prompt engineering).  Note that Ms. Potts is implemented in **def _call_ollama(self, messages)** (in local_model.py) as below.  This is NOT the ideal way or place to do so, but the for the time being, it's added in this way (in the call to Ollama):
 
-2.  **Set up the Backend:**
-    *   Navigate to the backend directory:
-        ```bash
-        cd backend
-        ```
-    *   **Supabase Project Setup:**
-        1.  Go to [Supabase](https://supabase.com/) and create a new project or use an existing one.
-        2.  In your Supabase project dashboard, navigate to **Project Settings** > **API**.
-        3.  You will find your **Project URL** (this is your `SUPABASE_URL`) and the **anon public** key (this is your `SUPABASE_ANON_KEY`).
+            """--------COMMENT OUT till the end 
+            8/20 nt: incorporate a second LLM (Ms.Potts)
+            """
+            ## Call the second LLM to rephrase the output string to be more empathetic.
+            # 2. STRUCTURE THE CHAT HISTORY for the next call
+            # This is the crucial step. We create a list of messages.
+            # The 'user' message contains the summary and our new instruction.
+            messages = [
+                {
+                    "role": "user",
+                    "content": f"Here is the response from Jarvis: '{full_content}'. Now, please act as a friendly dietitian and rephrase it in a much more empathetic tone."
+                }
+            ]
+            
+            # 3. SECOND CALL: Use /api/chat with Gemma2 for creative writing
+            chat_payload = {
+                "model": "my-gemma2", #"gemma2", # Different model for the second task
+                "messages": messages, # We pass the list of messages, not a single 'prompt'
+                "stream": False
+            }
 
-    *   The backend requires these environment variables. Create a `.env` file by copying the example file:
-        ```bash
-        cp .env.example .env
-        ```
-    *   Open the `.env` file and fill in the required values you obtained from your Supabase project:
-        *   `SUPABASE_URL`
-        *   `SUPABASE_ANON_KEY`
-        *   Also, configure your API keys for other services:
-        *   `NUTRITIONIX_APP_ID`
-        *   `NUTRITIONIX_API_KEY`
-        *   `OLLAMA_MODEL` (optional, defaults to `dietbot`)
-        *   `OLLAMA_API_URL` (optional, defaults to `http://host.docker.internal:11434/api/chat`)
+            print("Getting story from gemma2...")
+            response_2 = requests.post(OLLAMA_API_URL, json=chat_payload)
+            chat_result = response_2.json()
+            
+            final_story = chat_result['message']['content']
+            return {"message": {"content": final_story}}
+            """-------COMMENT end """
 
-## Supabase Table Schemas
+2. **Test cases** 
 
-Create your db tables in Supabase using these SQL commands:
+The current code assumes the code "run-test.py" to be executed in the "backend" folder.
 
-### 1) user_profiles
+python .\run_test.py
 
-```sql
-CREATE TABLE IF NOT EXISTS public.user_profiles (
-  id                  BIGSERIAL       PRIMARY KEY,
-  created_at          TIMESTAMPTZ     NOT NULL DEFAULT now(),
-  name                TEXT,
-  email               TEXT            UNIQUE,
-  daily_calorie_goal  INTEGER,
-  age                 INTEGER,
-  sex                 TEXT,
-  height              INTEGER,
-  weight              REAL,
-  activity_level      TEXT,
-  allergies           TEXT[],
-  likes               TEXT[],
-  dislikes            TEXT[],
-  diet                TEXT,
-  goal                TEXT
-);
-```
+For the purpose of running one query at a time, the input data to the script and the output file are set as follows:
 
-### 2) chat_history
+    testfile = "./evaluate/testsent-3.csv"
+    outfile = "./evaluate/9-12-testsent-3-out.csv"
 
-```sql
-CREATE TABLE IF NOT EXISTS public.chat_history (
-  id          BIGSERIAL    PRIMARY KEY,
-  user_id     BIGINT       NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
-  created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
-  sender      TEXT,
-  message     TEXT
-);
-```
+where testsent-3.csv contains only just one query sentence.
 
-### 3) food_intake
 
-```sql
-CREATE TABLE IF NOT EXISTS public.food_intake (
-  id          BIGSERIAL    PRIMARY KEY,
-  user_id     BIGINT       NOT NULL REFERENCES public.user_profiles(id) ON DELETE CASCADE,
-  created_at  TIMESTAMPTZ  NOT NULL DEFAULT now(),
-  food_item   TEXT,
-  calories    INTEGER,
-  protein_g   NUMERIC,
-  carbs_g     NUMERIC,
-  fat_g       NUMERIC,
-  details     JSONB
-);
-```
-
-3.  **Set up the Frontend:**
-    *   Navigate to the frontend directory (from the project root):
-        ```bash
-        cd frontend
-        ```
-    *   Install the necessary Node.js dependencies:
-        ```bash
-        npm install
-        ```
-
- *   **Then, populate the supabase database:**
-        Once your `.env` file is configured with the Supabase credentials, run the script to populate your database with initial schema and data. Make sure you are in the `backend` directory.
-            ```bash
-            python scripts/populate_supabase.py
-            ```
-        This script will create necessary tables and insert some sample data.
-        
-## Running the Application
-
-### 1. Start the Backend Service
-
-*   Navigate to the `backend` directory:
-*   Start the backend services using Docker Compose:
-    ```bash
-    docker-compose up --build
-    ```
-    (You can omit `--build` on subsequent runs if the Docker image hasn't changed.)
-*   The backend API will be running at `http://localhost:8001`.
-
-### 2. Start the Frontend Service
-
-*   Navigate to the `frontend` directory:
-*   Start the Next.js development server:
-    ```bash
-    npm run dev
-    ```
-*   The frontend application will be accessible at `http://localhost:3000`.
-
-### 3. Starting the ollama server:
-
-To start Ollama server:
-
-```bash
-ollama pull gemma3
-ollama serve
-```
-Restart ollama if port is already in use.
-
-## Accessing the Application
-
-Once both services are running, open your web browser and go to:
-
-[http://localhost:3000](http://localhost:3000)
-
-## Stopping the Application
-
-*   **Backend**: In the terminal where `docker-compose up` is running, press `Ctrl+C`. To stop and remove the containers, you can run `docker-compose down` from the `backend` directory.
-*   **Frontend**: In the terminal where `npm run dev` is running, press `Ctrl+C`.
